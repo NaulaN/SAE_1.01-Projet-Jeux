@@ -1,4 +1,5 @@
 // https://r12a.github.io/app-conversion/
+import entity.Monster;
 import entity.Player;
 
 
@@ -8,6 +9,8 @@ public class Main
     public static ConsoleFrame consoleFrame = new ConsoleFrame();
     public static MapsEngine mapsEngine;
     public static Player player;
+    // TODO: Seulement pour le test, a remplacer
+    public static Monster monster;
 
 
     public static void main(String[] args)
@@ -26,6 +29,8 @@ public class Main
         mapsEngine.generateMap();
         // Crée le joueur sur les cordonnées '1' en x et '1' en y avec une vitesse de 1
         player = new Player(1, 1, 1);
+
+        monster = new Monster(3, 3, 1);
     }
 
     /**
@@ -33,12 +38,18 @@ public class Main
      */
     public static void draws()
     {
-        // TODO: Ne fait rien pour l'instant
+        // TODO: Ne fait rien pour l'instant :)
         consoleFrame.draws();
         // Modifier la carte selon la position du joueur
         mapsEngine.setElementMap(player.getXPosition(), player.getYPosition(), player.getImg());
         // Clear la derniere "frame"
         mapsEngine.setElementMap(player.getXPreviousPosition(), player.getYPreviousPosition(), "  ");
+
+        // TODO: Pour le test !
+        // Modifier la carte selon la position du monstre
+        mapsEngine.setElementMap(monster.getXPosition(), monster.getYPosition(), monster.getImg());
+        // Clear la derniere "frame"
+        mapsEngine.setElementMap(monster.getXPreviousPosition(), monster.getYPreviousPosition(), "  ");
 
         // TODO: A ranger !
         // Dessine la carte
@@ -56,6 +67,9 @@ public class Main
     public static void updates()
     {
         keyboardInputListener.getInput();
+
+        // TODO: Pour le test !
+        monster.randomMove();
 
         // TODO: Pas parfait, a corrigé !
         // Gere les collisions et les déplacements du joueur
