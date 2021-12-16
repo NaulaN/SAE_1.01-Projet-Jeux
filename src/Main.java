@@ -16,19 +16,32 @@ public class Main
         loop();
     }
 
+    /**
+     * Crée les premieres resources essentiel du jeux
+     */
     public static void creates()
     {
+        // Crée la taille de la carte et génère la carte
         mapsEngine = new MapsEngine(10, 10);
         mapsEngine.generateMap();
+        // Crée le joueur sur les cordonnées '1' en x et '1' en y avec une vitesse de 1
         player = new Player(1, 1, 1);
     }
 
+    /**
+     * Dessine les elements qui necessite a voir sur la console
+     */
     public static void draws()
     {
+        // TODO: Ne fait rien pour l'instant
         consoleFrame.draws();
+        // Modifier la carte selon la position du joueur
         mapsEngine.setElementMap(player.getXPosition(), player.getYPosition(), player.getImg());
+        // Clear la derniere "frame"
         mapsEngine.setElementMap(player.getXPreviousPosition(), player.getYPreviousPosition(), "  ");
 
+        // TODO: A ranger !
+        // Dessine la carte
         for (String[] l : mapsEngine.getMap())
         {
             System.out.println();
@@ -37,12 +50,18 @@ public class Main
         }
     }
 
+    /**
+     * Actualise les valeurs qui ont besoin d'etres actualisé a chaque passage de la boucle
+     */
     public static void updates()
     {
         keyboardInputListener.getInput();
 
+        // TODO: Pas parfait, a corrigé !
+        // Gere les collisions et les déplacements du joueur
         boolean collide = player.checkCollision(mapsEngine.getMap());
-        if (!collide) {
+        if (!collide)
+        {
             if (keyboardInputListener.getMoveUp())
                 player.moveUp();
             else if (keyboardInputListener.getMoveDown())
@@ -54,8 +73,12 @@ public class Main
         }
     }
 
+    /**
+     * Demarre la boucle principal du jeux
+     */
     public static void loop()
     {
+        // TODO: Faire une boucle while correct
         while (true) {
             draws();
             updates();

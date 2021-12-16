@@ -4,19 +4,21 @@ public class Entity
 {
     // UP, DOWN, LEFT, RIGHT
     private final boolean[] whereMoving = {false, false, false, false};
+    // x, y
     private final int[] previousPos = new int[2];
     private final int[] pos = new int[2];
 
+    private int health = 3;
+    private int velocity;
+
     private String img;
 
-    private int velocity;
-    private int health;
 
-
-    public Entity()
+    public Entity(int x, int y, int velocity)
     {
-        health = 3;
-        velocity = 1;
+        pos[0] = x;
+        pos[1] = y;
+        this.velocity = velocity;
     }
 
     public String getImg() { return img; }

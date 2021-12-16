@@ -12,11 +12,11 @@ public class MapEngineTest
         MapsEngine mapEngine = new MapsEngine(5, 5);
 
         String[][] mapAttendu = {
-                {"*","*","*","*","*"},
-                {"*","·","·","·","*"},
-                {"*","·","·","·","*"},
-                {"*","·","·","·","*"},
-                {"*","*","*","*","*"}
+                {"**","**","**","**","**"},
+                {"* ","  ","  ","  "," *"},
+                {"* ","  ","  ","  "," *"},
+                {"* ","  ","  ","  "," *"},
+                {"**","**","**","**","**"}
         };
         mapEngine.generateMap();
         assertArrayEquals(mapAttendu, mapEngine.getMap());
