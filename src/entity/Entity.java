@@ -53,21 +53,22 @@ public class Entity
         previousPos[1] = newYPosition;
     }
 
-    public boolean checkCollision(String[][] maps)
+    public boolean[] checkCollision(String[][] maps)
     {
         // UP check
         if (whereMoving[0] && pos[1]-1 >= 0)
-            return maps[pos[1]-1][pos[0]].equals("**");
+            return new boolean[] {maps[pos[1]-1][pos[0]].equals("**"), maps[pos[1]+1][pos[0]].equals("**"), maps[pos[1]][pos[0]-1].equals(" *") || maps[pos[1]][pos[0]+1].equals("* "), maps[pos[1]][pos[0]+1].equals(" *") || maps[pos[1]][pos[0]+1].equals("* ")};
         // DOWN check
         else if (whereMoving[1] && pos[1]+1 < maps.length)
-            return maps[pos[1]+1][pos[0]].equals("**");
+            return new boolean[] {maps[pos[1]-1][pos[0]].equals("**"), maps[pos[1]+1][pos[0]].equals("**"), maps[pos[1]][pos[0]-1].equals(" *") || maps[pos[1]][pos[0]+1].equals("* "), maps[pos[1]][pos[0]+1].equals(" *") || maps[pos[1]][pos[0]+1].equals("* ")};
         // LEFT check
         else if (whereMoving[2] && pos[0]-1 >= 0)
-            return maps[pos[1]][pos[0]-1].equals(" *") || maps[pos[1]][pos[0]+1].equals("* ");
+            return new boolean[] {maps[pos[1]-1][pos[0]].equals("**"), maps[pos[1]+1][pos[0]].equals("**"), maps[pos[1]][pos[0]-1].equals(" *") || maps[pos[1]][pos[0]+1].equals("* "), maps[pos[1]][pos[0]+1].equals(" *") || maps[pos[1]][pos[0]+1].equals("* ")};
         // RIGHT check
         else if (whereMoving[3] && pos[0]+1 < maps[pos[1]].length)
-            return maps[pos[1]][pos[0]+1].equals(" *") || maps[pos[1]][pos[0]+1].equals("* ");
-        return false;
+            return new boolean[] {maps[pos[1]-1][pos[0]].equals("**"), maps[pos[1]+1][pos[0]].equals("**"), maps[pos[1]][pos[0]-1].equals(" *") || maps[pos[1]][pos[0]+1].equals("* "), maps[pos[1]][pos[0]+1].equals(" *") || maps[pos[1]][pos[0]+1].equals("* ")};
+        // Pas de collision
+        return new boolean[] {false, false, false, false};
     }
 
     public void moveUp()
@@ -82,6 +83,7 @@ public class Entity
 
     public void moveDown()
     {
+        // Ecrit dans le dictionnaire quel mouvement fait l'entité.
         for (int i = 0; i < whereMoving.length; i++)
             whereMoving[i] = i == 1;
 

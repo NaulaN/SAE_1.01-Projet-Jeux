@@ -1,4 +1,4 @@
-// https://r12a.github.io/app-conversion/
+// https://r12a.github.io/app-conversion/  Java char compatibility
 import entity.Monster;
 import entity.Player;
 
@@ -11,6 +11,8 @@ public class Main
     public static Player player;
     // TODO: Seulement pour le test, a remplacer
     public static Monster monster;
+
+    public static boolean running = true;
 
 
     public static void main(String[] args)
@@ -45,7 +47,7 @@ public class Main
         // Clear la derniere "frame"
         mapsEngine.setElementMap(player.getXPreviousPosition(), player.getYPreviousPosition(), "  ");
 
-        // TODO: Pour le test !
+        // TODO: Pour le test ! Probleme clear
         // Modifier la carte selon la position du monstre
         mapsEngine.setElementMap(monster.getXPosition(), monster.getYPosition(), monster.getImg());
         // Clear la derniere "frame"
@@ -69,22 +71,18 @@ public class Main
         keyboardInputListener.getInput();
 
         // TODO: Pour le test !
-        monster.randomMove();
+        monster.randomMove(mapsEngine.getMap());
 
-        // TODO: Pas parfait, a corrigé !
         // Gere les collisions et les déplacements du joueur
-        boolean collide = player.checkCollision(mapsEngine.getMap());
-        if (!collide)
-        {
-            if (keyboardInputListener.getMoveUp())
-                player.moveUp();
-            else if (keyboardInputListener.getMoveDown())
-                player.moveDown();
-            else if (keyboardInputListener.getMoveLeft())
-                player.moveLeft();
-            else if (keyboardInputListener.getMoveRight())
-                player.moveRight();
-        }
+        boolean[] collide = player.checkCollision(mapsEngine.getMap());
+        if (!collide[0] && keyboardInputListener.getMoveUp())
+            player.moveUp();
+        else if (!collide[1] && keyboardInputListener.getMoveDown())
+            player.moveDown();
+        else if (!collide[2] && keyboardInputListener.getMoveLeft())
+            player.moveLeft();
+        else if (!collide[3] && keyboardInputListener.getMoveRight())
+            player.moveRight();
     }
 
     /**
@@ -93,7 +91,8 @@ public class Main
     public static void loop()
     {
         // TODO: Faire une boucle while correct
-        while (true) {
+        while (running)
+        {
             draws();
             updates();
         }

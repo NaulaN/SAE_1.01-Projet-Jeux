@@ -13,41 +13,50 @@ public class Monster extends Entity
     /**
      * Fait bougé le monstre aléatoirement
      */
-    public void randomMove()
+    public void randomMove(String[][] maps)
     {
         int moveRandomly = (int) (Math.random()*8);
+        boolean[] collision = checkCollision(maps);
 
         // Gauche
         if (moveRandomly == 0)
-            moveLeft();
+            if (!collision[2])
+                moveLeft();
         // Diagonal ↖
-        else if (moveRandomly == 1) {
-            moveDown();
-            moveLeft();
-        }
+        if (moveRandomly == 1)
+            if (!collision[1] || !collision[2]) {
+                moveDown();
+                moveLeft();
+            }
         // Haut
-        else if (moveRandomly == 2)
-            moveUp();
+        if (moveRandomly == 2)
+            if (!collision[0])
+                moveUp();
         // Diagonal ↗
-        else if (moveRandomly == 3) {
-            moveRight();
-            moveUp();
-        }
+        if (moveRandomly == 3)
+            if (!collision[3] || !collision[0]) {
+                moveRight();
+                moveUp();
+            }
         // Droite
-        else if (moveRandomly == 4)
-            moveRight();
+        if (moveRandomly == 4)
+            if (!collision[3])
+                moveRight();
         // Diagonal ↘
-        else if (moveRandomly == 5) {
-            moveRight();
-            moveDown();
-        }
+        if (moveRandomly == 5)
+            if (!collision[3] || !collision[1]) {
+                moveRight();
+                moveDown();
+            }
         // Bas
-        else if (moveRandomly == 6)
-            moveDown();
+        if (moveRandomly == 6)
+            if (!collision[1])
+                moveDown();
         // Diagonal ↙
-        else if (moveRandomly == 7) {
-            moveLeft();
-            moveDown();
-        }
+        if (moveRandomly == 7)
+            if (!collision[2] || !collision[1]) {
+                moveLeft();
+                moveDown();
+            }
     }
 }

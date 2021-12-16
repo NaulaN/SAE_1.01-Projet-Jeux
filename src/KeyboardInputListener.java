@@ -8,12 +8,6 @@ public class KeyboardInputListener
     private final Map<Character, Boolean> keys = new HashMap<>();
     private final Scanner sc = new Scanner(System.in);
 
-
-    public KeyboardInputListener()
-    {
-
-    }
-
     public void getInput()
     {
         keys.put('z', false);
@@ -24,9 +18,13 @@ public class KeyboardInputListener
 
         System.out.println();
         System.out.print("Que faire > ");
-        char input = sc.nextLine().charAt(0);
-        if (input == 'z' || input == 's' || input == 'q' || input == 'd' || input == 'a')
-            keys.put(input, true);
+        String input = sc.nextLine();
+        // Evite une erreur
+        if (input.length() != 0) {
+            char key = input.charAt(0);
+            if (key == 'z' || key == 's' || key == 'q' || key == 'd' || key == 'a')
+                keys.put(key, true);
+        }
     }
 
     public boolean getMoveUp() { return keys.get('z'); }
