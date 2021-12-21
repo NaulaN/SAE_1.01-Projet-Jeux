@@ -53,8 +53,10 @@ public class Entity
         previousPos[1] = newYPosition;
     }
 
-    public boolean[] checkCollision(String[][] maps)
+    public boolean[] checkCollision(char[][] maps)
     {
+        // TODO: Adapter le nouveau systeme
+
         // UP check
         if (whereMoving[0] && pos[1]-1 >= 0)
             return new boolean[] {maps[pos[1]-1][pos[0]].equals("**"), maps[pos[1]+1][pos[0]].equals("**"), maps[pos[1]][pos[0]-1].equals(" *") || maps[pos[1]][pos[0]+1].equals("* "), maps[pos[1]][pos[0]+1].equals(" *") || maps[pos[1]][pos[0]+1].equals("* ")};

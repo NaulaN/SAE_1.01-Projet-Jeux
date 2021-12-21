@@ -2,7 +2,7 @@
 
 public class MapsEngine
 {
-    private String[][] map;
+    private char[][] map;
     private int width;
     private int height;
 
@@ -11,12 +11,8 @@ public class MapsEngine
     {
         this.width = width;
         this.height = height;
-        map = new String[height][width];
+        map = new char[height][width];
     }
-
-    public String[][] getMap() { return map; }
-
-    public void setElementMap(int x, int y, String val) { map[y][x] = val; }
 
     /**
      * Genere une map selon la taille specifié lors de la cretion de l'instance de la classe
@@ -25,14 +21,14 @@ public class MapsEngine
     {
         for (int y = 0; y < width; y++)
             for (int x = 0; x < height; x++)
-            {
                 if (y == 0 || y == height-1)
-                    map[y][x] = "**";    // Wall
-                else {
+                    map[y][x] = '1';    // Wall
+                else
                     if (x == 0 || x == width-1)
-                        map[y][x] = (x != 0) ? " *" : "* ";    // Border wall
-                    else map[y][x] = "  ";  // Fill
-                }
-            }
+                        map[y][x] = (x != 0) ? '2' : '3';    // Border wall
+                    else map[y][x] = '0';  // Fill
     }
+
+    public char[][] getMap() { return map; }
+    public void setElementMap(int x, int y, char val) { map[y][x] = val; }
 }

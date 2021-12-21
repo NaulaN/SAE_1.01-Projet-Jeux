@@ -5,7 +5,7 @@ import entity.Player;
 
 public class Main
 {
-    public static KeyboardInputListener keyboardInputListener = new KeyboardInputListener();
+    public static KeyboardInput keyboardInput = new KeyboardInput();
     public static ConsoleFrame consoleFrame = new ConsoleFrame();
     public static MapsEngine mapsEngine;
     public static Player player;
@@ -43,22 +43,22 @@ public class Main
         // TODO: Ne fait rien pour l'instant :)
         consoleFrame.draws();
         // Modifier la carte selon la position du joueur
-        mapsEngine.setElementMap(player.getXPosition(), player.getYPosition(), player.getImg());
+        mapsEngine.setElementMap(player.getXPosition(), player.getYPosition(), '8');
         // Clear la derniere "frame"
-        mapsEngine.setElementMap(player.getXPreviousPosition(), player.getYPreviousPosition(), "  ");
+        mapsEngine.setElementMap(player.getXPreviousPosition(), player.getYPreviousPosition(), '0');
 
         // TODO: Pour le test ! Probleme clear
         // Modifier la carte selon la position du monstre
-        mapsEngine.setElementMap(monster.getXPosition(), monster.getYPosition(), monster.getImg());
+        mapsEngine.setElementMap(monster.getXPosition(), monster.getYPosition(), '9');
         // Clear la derniere "frame"
-        mapsEngine.setElementMap(monster.getXPreviousPosition(), monster.getYPreviousPosition(), "  ");
+        mapsEngine.setElementMap(monster.getXPreviousPosition(), monster.getYPreviousPosition(), '0');
 
         // TODO: A ranger !
         // Dessine la carte
-        for (String[] l : mapsEngine.getMap())
+        for (char[] l : mapsEngine.getMap())
         {
             System.out.println();
-            for (String r : l)
+            for (char r : l)
                 System.out.print(r);
         }
     }
@@ -68,20 +68,20 @@ public class Main
      */
     public static void updates()
     {
-        keyboardInputListener.getInput();
+        keyboardInput.getInput();
 
         // TODO: Pour le test !
         monster.randomMove(mapsEngine.getMap());
 
         // Gere les collisions et les déplacements du joueur
         boolean[] collide = player.checkCollision(mapsEngine.getMap());
-        if (!collide[0] && keyboardInputListener.getMoveUp())
+        if (!collide[0] && keyboardInput.getMoveUp())
             player.moveUp();
-        else if (!collide[1] && keyboardInputListener.getMoveDown())
+        else if (!collide[1] && keyboardInput.getMoveDown())
             player.moveDown();
-        else if (!collide[2] && keyboardInputListener.getMoveLeft())
+        else if (!collide[2] && keyboardInput.getMoveLeft())
             player.moveLeft();
-        else if (!collide[3] && keyboardInputListener.getMoveRight())
+        else if (!collide[3] && keyboardInput.getMoveRight())
             player.moveRight();
     }
 
