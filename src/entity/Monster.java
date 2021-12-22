@@ -1,62 +1,43 @@
 package entity;
 
 
+import static entity.Const.*;
+
 public class Monster extends Entity
 {
-    public Monster(int x, int y, int velocity)
-    {
-        super(x, y, velocity);
-
-        setImg("\uD83D\uDC79");
-    }
+    public Monster(int x, int y, int velocity) { super("Monster", x, y, velocity); }
 
     /**
      * Fait bougé le monstre aléatoirement
      */
-    public void randomMove(String[][] maps)
+    public void randomMove(char[][] maps)
     {
-        int moveRandomly = (int) (Math.random()*8);
-        boolean[] collision = checkCollision(maps);
+        int moveRandomly = (int) (Math.random()*(BOTTOM_RIGHT+1));
+        boolean[] collision = checkCollision(maps); // {UP, DOWN, LEFT, RIGHT}
 
-        // Gauche
-        if (moveRandomly == 0)
-            if (!collision[2])
-                moveLeft();
-        // Diagonal ↖
-        if (moveRandomly == 1)
-            if (!collision[1] || !collision[2]) {
-                moveDown();
-                moveLeft();
-            }
-        // Haut
-        if (moveRandomly == 2)
-            if (!collision[0])
-                moveUp();
-        // Diagonal ↗
-        if (moveRandomly == 3)
-            if (!collision[3] || !collision[0]) {
-                moveRight();
-                moveUp();
-            }
-        // Droite
-        if (moveRandomly == 4)
-            if (!collision[3])
-                moveRight();
-        // Diagonal ↘
-        if (moveRandomly == 5)
-            if (!collision[3] || !collision[1]) {
-                moveRight();
-                moveDown();
-            }
-        // Bas
-        if (moveRandomly == 6)
-            if (!collision[1])
-                moveDown();
-        // Diagonal ↙
-        if (moveRandomly == 7)
-            if (!collision[2] || !collision[1]) {
-                moveLeft();
-                moveDown();
-            }
+        if (moveRandomly == UP && !collision[0])
+            moveUp();
+        if (moveRandomly == TOP_LEFT && (!collision[0] && !collision[2])) {
+            moveDown();
+            moveLeft();
+        }
+        if (moveRandomly == DOWN && !collision[0])
+            moveDown();
+        if (moveRandomly == TOP_RIGHT && (!collision[0] && !collision[3])) {
+            moveRight();
+            moveDown();
+        }
+        if (moveRandomly == LEFT && !collision[2])
+            moveLeft();
+        if (moveRandomly == BOTTOM_LEFT && (!collision[1] && !collision[2])) {
+            moveRight();
+            moveUp();
+        }
+        if (moveRandomly == RIGHT && !collision[3])
+            moveDown();
+        if (moveRandomly == BOTTOM_RIGHT && (!collision[1] && !collision[3])) {
+            moveLeft();
+            moveDown();
+        }
     }
 }

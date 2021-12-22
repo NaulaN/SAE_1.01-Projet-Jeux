@@ -2,6 +2,8 @@
 import entity.Monster;
 import entity.Player;
 
+import static entity.Const.*;
+
 
 public class Main
 {
@@ -43,24 +45,17 @@ public class Main
         // TODO: Ne fait rien pour l'instant :)
         consoleFrame.draws();
         // Modifier la carte selon la position du joueur
-        mapsEngine.setElementMap(player.getXPosition(), player.getYPosition(), '8');
+        mapsEngine.setElementMap(player.getXPosition(), player.getYPosition(), PLAYER);
         // Clear la derniere "frame"
-        mapsEngine.setElementMap(player.getXPreviousPosition(), player.getYPreviousPosition(), '0');
+        mapsEngine.setElementMap(player.getXPreviousPosition(), player.getYPreviousPosition(), EMPTY);
 
         // TODO: Pour le test ! Probleme clear
         // Modifier la carte selon la position du monstre
-        mapsEngine.setElementMap(monster.getXPosition(), monster.getYPosition(), '9');
+        mapsEngine.setElementMap(monster.getXPosition(), monster.getYPosition(), MONSTER);
         // Clear la derniere "frame"
-        mapsEngine.setElementMap(monster.getXPreviousPosition(), monster.getYPreviousPosition(), '0');
+        mapsEngine.setElementMap(monster.getXPreviousPosition(), monster.getYPreviousPosition(), EMPTY);
 
-        // TODO: A ranger !
-        // Dessine la carte
-        for (char[] l : mapsEngine.getMap())
-        {
-            System.out.println();
-            for (char r : l)
-                System.out.print(r);
-        }
+        mapsEngine.draw();
     }
 
     /**

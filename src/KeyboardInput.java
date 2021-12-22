@@ -1,15 +1,10 @@
+import static entity.Const.*;
+
 import java.util.Scanner;
 
 
 public class KeyboardInput
 {
-    // Const
-    private static final int UP = 0;
-    private static final int DOWN = 1;
-    private static final int LEFT = 2;
-    private static final int RIGHT = 3;
-    private static final int SELECT = 4;
-
     private final Scanner sc = new Scanner(System.in);
     public int offset = -1;
 
@@ -25,11 +20,12 @@ public class KeyboardInput
             char key = input.toLowerCase().charAt(0);
             switch (key)
             {
-                case 'z': offset = UP;
-                case 's': offset = DOWN;
-                case 'q': offset = LEFT;
-                case 'd': offset = RIGHT;
-                case 'a': offset = SELECT;
+                case 'z' -> offset = UP;
+                case 's' -> offset = DOWN;
+                case 'q' -> offset = LEFT;
+                case 'd' -> offset = RIGHT;
+                case 'a' -> offset = SELECT;
+                default ->  offset = -1;
             }
         }
     }

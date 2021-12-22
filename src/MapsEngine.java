@@ -1,4 +1,6 @@
+import entity.Const;
 
+import static entity.Const.*;
 
 public class MapsEngine
 {
@@ -21,12 +23,25 @@ public class MapsEngine
     {
         for (int y = 0; y < width; y++)
             for (int x = 0; x < height; x++)
-                if (y == 0 || y == height-1)
-                    map[y][x] = '1';    // Wall
-                else
-                    if (x == 0 || x == width-1)
-                        map[y][x] = (x != 0) ? '2' : '3';    // Border wall
-                    else map[y][x] = '0';  // Fill
+                if ((y == 0 || y == height-1) || (x == 0 || x == width-1))
+                    map[y][x] = WALL; // Wall
+                else map[y][x] = Const.EMPTY;  // Fill
+    }
+
+    public void draw()
+    {
+        for (char[] row : map) {
+            System.out.println();
+            for (char column : row)
+                switch (column)
+                {
+                    case WALL -> System.out.print(WALL_IMG);
+                    case MONSTER -> System.out.print(MONSTER_IMG);
+                    case PLAYER -> System.out.print(PLAYER_IMG);
+
+                    case EMPTY -> System.out.print(EMPTY_IMG);
+                }
+        }
     }
 
     public char[][] getMap() { return map; }

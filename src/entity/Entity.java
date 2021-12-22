@@ -1,9 +1,10 @@
 package entity;
 
+import static entity.Const.*;
+
+
 public class Entity
 {
-    // UP, DOWN, LEFT, RIGHT
-    private final boolean[] whereMoving = {false, false, false, false};
     // x, y
     private final int[] previousPos = new int[2];
     private final int[] pos = new int[2];
@@ -11,17 +12,23 @@ public class Entity
     private int health = 3;
     private int velocity;
 
-    private String img;
+    private int offsetWhereMoving = -1;
+    private char dataImg = '/';
 
 
-    public Entity(int x, int y, int velocity)
+    public Entity(String type, int x, int y, int velocity)
     {
+        if (type.equalsIgnoreCase("player"))
+            dataImg = MONSTER;
+        else if (type.equalsIgnoreCase("monster"))
+            dataImg = PLAYER;
+
         pos[0] = x;
         pos[1] = y;
         this.velocity = velocity;
     }
 
-    public String getImg() { return img; }
+    public char getDataImg() { return dataImg; }
 
     public int[] getPosition() { return pos; }
 
@@ -34,8 +41,6 @@ public class Entity
     public int getYPreviousPosition() { return previousPos[1]; }
 
     public int getHealth() { return health; }
-
-    public void setImg(String newImg) { img = newImg; }
 
     public void setVelocity(int newVelocity) { velocity = newVelocity; }
 
@@ -57,26 +62,23 @@ public class Entity
     {
         // TODO: Adapter le nouveau systeme
 
-        // UP check
-        if (whereMoving[0] && pos[1]-1 >= 0)
-            return new boolean[] {maps[pos[1]-1][pos[0]].equals("**"), maps[pos[1]+1][pos[0]].equals("**"), maps[pos[1]][pos[0]-1].equals(" *") || maps[pos[1]][pos[0]+1].equals("* "), maps[pos[1]][pos[0]+1].equals(" *") || maps[pos[1]][pos[0]+1].equals("* ")};
-        // DOWN check
-        else if (whereMoving[1] && pos[1]+1 < maps.length)
-            return new boolean[] {maps[pos[1]-1][pos[0]].equals("**"), maps[pos[1]+1][pos[0]].equals("**"), maps[pos[1]][pos[0]-1].equals(" *") || maps[pos[1]][pos[0]+1].equals("* "), maps[pos[1]][pos[0]+1].equals(" *") || maps[pos[1]][pos[0]+1].equals("* ")};
-        // LEFT check
-        else if (whereMoving[2] && pos[0]-1 >= 0)
-            return new boolean[] {maps[pos[1]-1][pos[0]].equals("**"), maps[pos[1]+1][pos[0]].equals("**"), maps[pos[1]][pos[0]-1].equals(" *") || maps[pos[1]][pos[0]+1].equals("* "), maps[pos[1]][pos[0]+1].equals(" *") || maps[pos[1]][pos[0]+1].equals("* ")};
-        // RIGHT check
-        else if (whereMoving[3] && pos[0]+1 < maps[pos[1]].length)
-            return new boolean[] {maps[pos[1]-1][pos[0]].equals("**"), maps[pos[1]+1][pos[0]].equals("**"), maps[pos[1]][pos[0]-1].equals(" *") || maps[pos[1]][pos[0]+1].equals("* "), maps[pos[1]][pos[0]+1].equals(" *") || maps[pos[1]][pos[0]+1].equals("* ")};
+        if ((offsetWhereMoving == UP && pos[1]-1 >= 0) ||
+                (offsetWhereMoving == DOWN && pos[1]+1 < maps.length) ||
+                (offsetWhereMoving == LEFT && pos[0]-1 >= 0) ||
+                (offsetWhereMoving == RIGHT && pos[0]+1 < maps[pos[1]].length))
+            return new boolean[] {
+                    maps[pos[1]-1][pos[0]] == WALL,
+                    maps[pos[1]+1][pos[0]] == WALL,
+                    maps[pos[1]][pos[0]-1] == WALL,
+                    maps[pos[1]][pos[0]+1] == WALL
+                    };
         // Pas de collision
         return new boolean[] {false, false, false, false};
     }
 
     public void moveUp()
     {
-        for (int i = 0; i < whereMoving.length; i++)
-            whereMoving[i] = i == 0;
+        offsetWhereMoving = UP;
 
         previousPos[1] = pos[1];
         previousPos[0] = pos[0];
@@ -85,9 +87,7 @@ public class Entity
 
     public void moveDown()
     {
-        // Ecrit dans le dictionnaire quel mouvement fait l'entité.
-        for (int i = 0; i < whereMoving.length; i++)
-            whereMoving[i] = i == 1;
+        offsetWhereMoving = DOWN;
 
         previousPos[1] = pos[1];
         previousPos[0] = pos[0];
@@ -96,8 +96,7 @@ public class Entity
 
     public void moveLeft()
     {
-        for (int i = 0; i < whereMoving.length; i++)
-            whereMoving[i] = i == 2;
+        offsetWhereMoving = LEFT;
 
         previousPos[0] = pos[0];
         previousPos[1] = pos[1];
@@ -106,8 +105,7 @@ public class Entity
 
     public void moveRight()
     {
-        for (int i = 0; i < whereMoving.length; i++)
-            whereMoving[i] = i == 3;
+        offsetWhereMoving = RIGHT;
 
         previousPos[0] = pos[0];
         previousPos[1] = pos[1];
