@@ -21,10 +21,6 @@ public class Const
     public static final int DOWN = 1;
     public static final int LEFT = 2;
     public static final int RIGHT = 3;
-    public static final int TOP_LEFT = LEFT*2;
-    public static final int TOP_RIGHT = RIGHT*2;
-    public static final int BOTTOM_LEFT = LEFT*2 + 1;
-    public static final int BOTTOM_RIGHT = RIGHT*2 + 1;
 
     public static final int SELECT = 10;
 }

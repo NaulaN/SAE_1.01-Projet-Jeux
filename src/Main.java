@@ -8,11 +8,7 @@ import static entity.Const.*;
 public class Main
 {
     public static KeyboardInput keyboardInput = new KeyboardInput();
-    public static ConsoleFrame consoleFrame = new ConsoleFrame();
     public static MapsEngine mapsEngine;
-    public static Player player;
-    // TODO: Seulement pour le test, a remplacer
-    public static Monster monster;
 
     public static boolean running = true;
 
@@ -29,12 +25,9 @@ public class Main
     public static void creates()
     {
         // Crée la taille de la carte et génère la carte
-        mapsEngine = new MapsEngine(10, 10);
+        mapsEngine = new MapsEngine(15, 10);
         mapsEngine.generateMap();
-        // Crée le joueur sur les cordonnées '1' en x et '1' en y avec une vitesse de 1
-        player = new Player(1, 1, 1);
-
-        monster = new Monster(3, 3, 1);
+        mapsEngine.generateObstacle();
     }
 
     /**
@@ -42,19 +35,20 @@ public class Main
      */
     public static void draws()
     {
-        // TODO: Ne fait rien pour l'instant :)
-        consoleFrame.draws();
+        Player player = mapsEngine.getPlayer();
+
         // Modifier la carte selon la position du joueur
         mapsEngine.setElementMap(player.getXPosition(), player.getYPosition(), PLAYER);
         // Clear la derniere "frame"
         mapsEngine.setElementMap(player.getXPreviousPosition(), player.getYPreviousPosition(), EMPTY);
 
-        // TODO: Pour le test ! Probleme clear
-        // Modifier la carte selon la position du monstre
-        mapsEngine.setElementMap(monster.getXPosition(), monster.getYPosition(), MONSTER);
-        // Clear la derniere "frame"
-        mapsEngine.setElementMap(monster.getXPreviousPosition(), monster.getYPreviousPosition(), EMPTY);
-
+        for (Monster monster : mapsEngine.getAllMonsters())
+        {
+            // Modifier la carte selon la position du monstre
+            mapsEngine.setElementMap(monster.getXPosition(), monster.getYPosition(), MONSTER);
+            // Clear la derniere "frame"
+            mapsEngine.setElementMap(monster.getXPreviousPosition(), monster.getYPreviousPosition(), EMPTY);
+        }
         mapsEngine.draw();
     }
 
@@ -63,10 +57,11 @@ public class Main
      */
     public static void updates()
     {
-        keyboardInput.getInput();
+        Player player = mapsEngine.getPlayer();
 
-        // TODO: Pour le test !
-        monster.randomMove(mapsEngine.getMap());
+        keyboardInput.getInput();
+        for (Monster monster : mapsEngine.getAllMonsters())
+            monster.randomMove(mapsEngine.getMap());
 
         // Gere les collisions et les déplacements du joueur
         boolean[] collide = player.checkCollision(mapsEngine.getMap());
