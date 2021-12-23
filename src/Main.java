@@ -27,7 +27,8 @@ public class Main
         // Crée la taille de la carte et génère la carte
         mapsEngine = new MapsEngine(15, 10);
         mapsEngine.generateMap();
-        mapsEngine.generateObstacle();
+        mapsEngine.generateObstacles();
+        mapsEngine.generateLoots();
     }
 
     /**

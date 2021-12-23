@@ -1,3 +1,4 @@
+import entity.Chest;
 import entity.Monster;
 import entity.Player;
 
@@ -8,6 +9,8 @@ public class MapsEngine
 {
     private Player player;
     private Monster[] allMonsters;
+    private Chest[] allChest;
+
     private char[][] map;
     private int width;
     private int height;
@@ -42,9 +45,27 @@ public class MapsEngine
         player = new Player(x, y, 1);
     }
 
+    public void generateLoots()
+    {
+        int x; int y;
+        allChest = new Chest[2];
+
+        for (int c = 0; c < allChest.length; c++)
+        {
+            do {
+                x = (int) (Math.random()*map[0].length-1);
+                y = (int) (Math.random()*map.length-1);
+            } while (map[y][x] == WALL);
+
+            allChest[c] = new Chest(LOOTS[(int) (Math.random()*LOOTS.length)], x, y);
+            map[y][x] = allChest[c].getDataImg();
+        }
+    }
+
     public char[][] getMap() { return map; }
     public Player getPlayer() { return player; }
     public Monster[] getAllMonsters() { return allMonsters; }
+
     public void setWidth(int newWidthSize) { width = newWidthSize; }
     public void setHeight(int newHeightSize) { height = newHeightSize; }
     public void setElementMap(int x, int y, char val) { map[y][x] = val; }
@@ -62,7 +83,7 @@ public class MapsEngine
         spawnEntity();
     }
 
-    public void generateObstacle()
+    public void generateObstacles()
     {
         // Determine le nombre d'obstacle a prevoir
         int nbObstacle = (int) (Math.random()*4)+1;
@@ -99,6 +120,7 @@ public class MapsEngine
                     case WALL -> System.out.print(WALL_IMG);
                     case MONSTER -> System.out.print(MONSTER_IMG);
                     case PLAYER -> System.out.print(PLAYER_IMG);
+                    case CHEST -> System.out.print(CHEST_IMG);
 
                     case EMPTY -> System.out.print(EMPTY_IMG);
                 }

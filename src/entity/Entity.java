@@ -29,21 +29,15 @@ public class Entity
     }
 
     public char getDataImg() { return dataImg; }
-
     public int[] getPosition() { return pos; }
-
     public int getXPosition() { return pos[0]; }
-
     public int getYPosition() { return pos[1]; }
-
     public int getXPreviousPosition() { return previousPos[0]; }
-
     public int getYPreviousPosition() { return previousPos[1]; }
-
     public int getHealth() { return health; }
 
+    public void setDataImg(char newDataImg) { dataImg = newDataImg; }
     public void setVelocity(int newVelocity) { velocity = newVelocity; }
-
     public void setHealth(int newHealth) { health = newHealth; }
 
     public void setXPosition(int newXPosition)
