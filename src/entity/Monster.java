@@ -9,12 +9,12 @@ public class Monster extends Entity
 
     /**
      * Bouge le monstre aléatoirement.
-     * @param maps Donnez la matrice de donnée de la Maps
+     * @param collideCalque Donnez la matrice de donnée de la Maps
      */
-    public void randomMove(char[][] maps)
+    public void randomMove(int[][] collideCalque)
     {
         int moveRandomly = (int) (Math.random()*RIGHT+1);
-        boolean[] collision = checkCollision(maps);     // {UP, DOWN, LEFT, RIGHT}
+        boolean[] collision = checkCollision(collideCalque);     // {UP, DOWN, LEFT, RIGHT}
 
         if (moveRandomly == UP && !collision[0])
             moveUp();

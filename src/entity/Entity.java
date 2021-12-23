@@ -52,19 +52,17 @@ public class Entity
         previousPos[1] = newYPosition;
     }
 
-    public boolean[] checkCollision(char[][] maps)
+    public boolean[] checkCollision(int[][] collideCalque)
     {
-        // TODO: Adapter le nouveau systeme
-
         if ((offsetWhereMoving == UP && pos[1]-1 >= 0) ||
-                (offsetWhereMoving == DOWN && pos[1]+1 < maps.length) ||
+                (offsetWhereMoving == DOWN && pos[1]+1 < collideCalque.length) ||
                 (offsetWhereMoving == LEFT && pos[0]-1 >= 0) ||
-                (offsetWhereMoving == RIGHT && pos[0]+1 < maps[pos[1]].length))
+                (offsetWhereMoving == RIGHT && pos[0]+1 < collideCalque[pos[1]].length))
             return new boolean[] {
-                    maps[pos[1]-1][pos[0]] == WALL,
-                    maps[pos[1]+1][pos[0]] == WALL,
-                    maps[pos[1]][pos[0]-1] == WALL,
-                    maps[pos[1]][pos[0]+1] == WALL
+                    collideCalque[pos[1]-1][pos[0]] == COLLIDE_OBJ,
+                    collideCalque[pos[1]+1][pos[0]] == COLLIDE_OBJ,
+                    collideCalque[pos[1]][pos[0]-1] == COLLIDE_OBJ,
+                    collideCalque[pos[1]][pos[0]+1] == COLLIDE_OBJ
                     };
         // Pas de collision
         return new boolean[] {false, false, false, false};

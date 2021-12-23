@@ -11,6 +11,7 @@ public class MapsEngine
     private Monster[] allMonsters;
     private Chest[] allChest;
 
+    private int[][] calqueCollide;
     private char[][] map;
     private int width;
     private int height;
@@ -21,6 +22,7 @@ public class MapsEngine
         this.width = width;
         this.height = height;
         map = new char[height][width];
+        calqueCollide = new int[height][width];
     }
 
     private void spawnEntity()
@@ -42,6 +44,7 @@ public class MapsEngine
             x = (int) (Math.random()*map[0].length-1);
             y = (int) (Math.random()*map.length-1);
         } while (map[y][x] == WALL);
+
         player = new Player(x, y, 1);
     }
 
@@ -59,10 +62,12 @@ public class MapsEngine
 
             allChest[c] = new Chest(LOOTS[(int) (Math.random()*LOOTS.length)], x, y);
             map[y][x] = allChest[c].getDataImg();
+            calqueCollide[y][x] = COLLIDE_OBJ;
         }
     }
 
     public char[][] getMap() { return map; }
+    public int[][] getCalqueCollide() { return calqueCollide; }
     public Player getPlayer() { return player; }
     public Monster[] getAllMonsters() { return allMonsters; }
 
@@ -78,8 +83,13 @@ public class MapsEngine
         for (int y = 0; y < height; y++)
             for (int x = 0; x < width; x++)
                 if ((y == 0 || y == height-1) || (x == 0 || x == width-1))
+                {
+                    calqueCollide[y][x] = COLLIDE_OBJ;
                     setElementMap(x, y, WALL);
-                else setElementMap(x, y, EMPTY);
+                } else {
+                    calqueCollide[y][x] = N0_COLLIDE_OBJ;
+                    setElementMap(x, y, EMPTY);
+                }
         spawnEntity();
     }
 
@@ -106,7 +116,10 @@ public class MapsEngine
             for (int yMap = 0; yMap < y; yMap++)
                 for (int xMap = 0; xMap < x; xMap++)
                     if (y+yMap < map.length && x+xMap < map[0].length)
+                    {
                         setElementMap(x+xMap, y+yMap, WALL);
+                        calqueCollide[y][x] = COLLIDE_OBJ;
+                    }
         }
     }
 

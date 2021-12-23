@@ -62,10 +62,10 @@ public class Main
 
         keyboardInput.getInput();
         for (Monster monster : mapsEngine.getAllMonsters())
-            monster.randomMove(mapsEngine.getMap());
+            monster.randomMove(mapsEngine.getCalqueCollide());
 
         // Gere les collisions et les déplacements du joueur
-        boolean[] collide = player.checkCollision(mapsEngine.getMap());
+        boolean[] collide = player.checkCollision(mapsEngine.getCalqueCollide());
         if (!collide[0] && keyboardInput.getMoveUp())
             player.moveUp();
         else if (!collide[1] && keyboardInput.getMoveDown())

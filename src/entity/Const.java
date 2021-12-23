@@ -21,6 +21,9 @@ public class Const
     public static final char PLAYER = '4';
     public static final char CHEST = '5';
 
+    public static final int COLLIDE_OBJ = 1;
+    public static final int N0_COLLIDE_OBJ = 0;
+
     public static final int UP = 0;
     public static final int DOWN = 1;
     public static final int LEFT = 2;
