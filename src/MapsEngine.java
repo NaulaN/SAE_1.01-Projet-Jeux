@@ -12,7 +12,7 @@ public class MapsEngine
     private Chest[] allChest;
 
     private int[][] calqueCollide;
-    private char[][] map;
+    private int[][] map;
     private int width;
     private int height;
 
@@ -21,7 +21,7 @@ public class MapsEngine
     {
         this.width = width;
         this.height = height;
-        map = new char[height][width];
+        map = new int[height][width];
         calqueCollide = new int[height][width];
     }
 
@@ -66,14 +66,14 @@ public class MapsEngine
         }
     }
 
-    public char[][] getMap() { return map; }
+    public int[][] getMap() { return map; }
     public int[][] getCalqueCollide() { return calqueCollide; }
     public Player getPlayer() { return player; }
     public Monster[] getAllMonsters() { return allMonsters; }
 
     public void setWidth(int newWidthSize) { width = newWidthSize; }
     public void setHeight(int newHeightSize) { height = newHeightSize; }
-    public void setElementMap(int x, int y, char val) { map[y][x] = val; }
+    public void setElementMap(int x, int y, int val) { map[y][x] = val; }
 
     /**
      * Genere une map selon la taille specifié lors de la cretion de l'instance de la classe
@@ -125,9 +125,9 @@ public class MapsEngine
 
     public void draw()
     {
-        for (char[] row : map) {
+        for (int[] row : map) {
             System.out.println();
-            for (char column : row)
+            for (int column : row)
                 switch (column)
                 {
                     case WALL -> System.out.print(WALL_IMG);

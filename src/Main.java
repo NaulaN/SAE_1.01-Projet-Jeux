@@ -19,9 +19,7 @@ public class Main
         loop();
     }
 
-    /**
-     * Crée les premieres resources essentiel du jeux
-     */
+    /** Crée les premieres resources essentiel au démarrage du jeux */
     public static void creates()
     {
         // Crée la taille de la carte et génère la carte
@@ -31,9 +29,7 @@ public class Main
         mapsEngine.generateLoots();
     }
 
-    /**
-     * Dessine les elements qui necessite a voir sur la console
-     */
+    /** Dessine les elements qui necessite a voir sur la console */
     public static void draws()
     {
         Player player = mapsEngine.getPlayer();
@@ -51,11 +47,14 @@ public class Main
             mapsEngine.setElementMap(monster.getXPreviousPosition(), monster.getYPreviousPosition(), EMPTY);
         }
         mapsEngine.draw();
+
+        System.out.println();
+        System.out.print("\t" + COIN_IMG + ": " + player.getCoins() + "   ");
+        for (int h = 1; h <= player.getHealth(); h++)
+            System.out.print(HEART_IMG + " ");
     }
 
-    /**
-     * Actualise les valeurs qui ont besoin d'etres actualisé a chaque passage de la boucle
-     */
+    /** Actualise les valeurs qui ont besoin d'etres actualisé a chaque passage de la boucle */
     public static void updates()
     {
         Player player = mapsEngine.getPlayer();
@@ -76,14 +75,10 @@ public class Main
             player.moveRight();
     }
 
-    /**
-     * Demarre la boucle principal du jeux
-     */
+    /** Demarre la boucle principal du jeux */
     public static void loop()
     {
-        // TODO: Faire une boucle while correct
-        while (running)
-        {
+        while (running) {
             draws();
             updates();
         }

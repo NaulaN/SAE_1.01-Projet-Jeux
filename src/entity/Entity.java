@@ -13,7 +13,7 @@ public class Entity
     private int velocity;
 
     private int offsetWhereMoving = -1;
-    private char dataImg = '/';
+    private int dataImg = -1;
 
 
     public Entity(String type, int x, int y, int velocity)
@@ -28,7 +28,7 @@ public class Entity
         this.velocity = velocity;
     }
 
-    public char getDataImg() { return dataImg; }
+    public int getDataImg() { return dataImg; }
     public int[] getPosition() { return pos; }
     public int getXPosition() { return pos[0]; }
     public int getYPosition() { return pos[1]; }
@@ -36,7 +36,7 @@ public class Entity
     public int getYPreviousPosition() { return previousPos[1]; }
     public int getHealth() { return health; }
 
-    public void setDataImg(char newDataImg) { dataImg = newDataImg; }
+    public void setDataImg(int newDataImg) { dataImg = newDataImg; }
     public void setVelocity(int newVelocity) { velocity = newVelocity; }
     public void setHealth(int newHealth) { health = newHealth; }
 

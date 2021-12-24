@@ -13,7 +13,7 @@ public class MapEngineTest
         // test si il fait bien la generation.
         MapsEngine mapEngine = new MapsEngine(5, 5);
 
-        char[][] mapAttendu = {
+        int[][] mapAttendu = {
                 {WALL, WALL, WALL, WALL, WALL},
                 {WALL,EMPTY,EMPTY,EMPTY, WALL},
                 {WALL,EMPTY,EMPTY,EMPTY, WALL},
@@ -23,10 +23,10 @@ public class MapEngineTest
         mapEngine.generateMap();
         assertArrayEquals(mapAttendu, mapEngine.getMap());
 
-        for (char[] y : mapEngine.getMap())
+        for (int[] y : mapEngine.getMap())
         {
             System.out.println();
-            for (char x : y)
+            for (int x : y)
                 System.out.print(x);
         }
     }
