@@ -17,4 +17,5 @@ L'affichage du jeu est uniquement sur la console, des emojis sera là pour faire
 Il faut suffit d'allez dans `Releases`. 
 Ensuite de télécharger le fichier `.jar` qui est un format compilé et portatif. 
 Et enfin, de lancé cette commande dans la console:
+
 `java -jar SAE_1.01-Projet-jeux_v{version}`
