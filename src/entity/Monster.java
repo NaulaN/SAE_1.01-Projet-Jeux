@@ -7,10 +7,8 @@ public class Monster extends Entity
 {
     public Monster(int x, int y, int velocity) { super("Monster", x, y, velocity); }
 
-    /**
-     * Bouge le monstre aléatoirement.
-     * @param collideCalque Donnez la matrice de donnée de la Maps
-     */
+    /** Bouge le monstre aléatoirement.
+     *  @param collideCalque Donnez la matrice de donnée de la Maps */
     public void randomMove(int[][] collideCalque)
     {
         int moveRandomly = (int) (Math.random()*RIGHT+1);

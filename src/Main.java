@@ -79,6 +79,9 @@ public class Main
     public static void loop()
     {
         while (running) {
+            System.out.print("\033[H\033[2J");
+            System.out.flush();
+
             draws();
             updates();
         }
