@@ -6,8 +6,9 @@ import static entity.Const.*;
 public class Entity
 {
     // x, y
-    private final int[] previousPos = new int[2];
+    private final int[] previousPos = {-1, -1};
     private final int[] pos = new int[2];
+    private final boolean[] collisions = {false, false, false, false};
 
     private int health = 3;
     private int velocity;
@@ -35,6 +36,11 @@ public class Entity
     public int getXPreviousPosition() { return previousPos[0]; }
     public int getYPreviousPosition() { return previousPos[1]; }
     public int getHealth() { return health; }
+    public boolean[] getWhereCollide() { return collisions; }
+    public boolean getCollideUp() { return collisions[0]; }
+    public boolean getCollideDown() { return collisions[1]; }
+    public boolean getCollideLeft() { return collisions[2]; }
+    public boolean getCollideRight() { return collisions[3]; }
 
     public void setDataImg(int newDataImg) { dataImg = newDataImg; }
     public void setVelocity(int newVelocity) { velocity = newVelocity; }
@@ -43,29 +49,25 @@ public class Entity
     public void setXPosition(int newXPosition)
     {
         pos[0] = newXPosition;
-        previousPos[0] = newXPosition;
+        previousPos[0] = -1;
     }
 
     public void setYPosition(int newYPosition)
     {
         pos[1] = newYPosition;
-        previousPos[1] = newYPosition;
+        previousPos[1] = -1;
     }
 
-    public boolean[] checkCollision(int[][] collideCalque)
+    public void checkCollision(int[][] collideCalque)
     {
-        if ((offsetWhereMoving == UP && pos[1]-1 >= 0) ||
-                (offsetWhereMoving == DOWN && pos[1]+1 < collideCalque.length) ||
-                (offsetWhereMoving == LEFT && pos[0]-1 >= 0) ||
-                (offsetWhereMoving == RIGHT && pos[0]+1 < collideCalque[pos[1]].length))
-            return new boolean[] {
-                    collideCalque[pos[1]-1][pos[0]] == COLLIDE_OBJ,
-                    collideCalque[pos[1]+1][pos[0]] == COLLIDE_OBJ,
-                    collideCalque[pos[1]][pos[0]-1] == COLLIDE_OBJ,
-                    collideCalque[pos[1]][pos[0]+1] == COLLIDE_OBJ
-                    };
-        // Pas de collision
-        return new boolean[] {false, false, false, false};
+        int y = (pos[1] == 0) ? 0 : pos[1]-1; int x = getXPosition();
+        collisions[0] = collideCalque[y][x] == COLLIDE_OBJ;
+        y = (pos[1] == 0) ? 0 : pos[1]+1;
+        collisions[1] = collideCalque[y][x] == COLLIDE_OBJ;
+        y = getYPosition(); x = (pos[0] == 0) ? 0 : pos[0]-1;
+        collisions[2] = collideCalque[y][x] == COLLIDE_OBJ;
+        x = (pos[0] == 0) ? 0 : pos[0]+1;
+        collisions[3] = collideCalque[y][x] == COLLIDE_OBJ;
     }
 
     public void moveUp()

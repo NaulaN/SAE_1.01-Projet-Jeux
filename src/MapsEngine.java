@@ -73,7 +73,11 @@ public class MapsEngine
 
     public void setWidth(int newWidthSize) { width = newWidthSize; }
     public void setHeight(int newHeightSize) { height = newHeightSize; }
-    public void setElementMap(int x, int y, int val) { map[y][x] = val; }
+    public void setElementMap(int x, int y, int val, boolean isCollideObject)
+    {
+        calqueCollide[y][x] = (isCollideObject) ? COLLIDE_OBJ : N0_COLLIDE_OBJ;
+        map[y][x] = val;
+    }
 
     /**
      * Genere une map selon la taille specifié lors de la cretion de l'instance de la classe
@@ -83,13 +87,8 @@ public class MapsEngine
         for (int y = 0; y < height; y++)
             for (int x = 0; x < width; x++)
                 if ((y == 0 || y == height-1) || (x == 0 || x == width-1))
-                {
-                    calqueCollide[y][x] = COLLIDE_OBJ;
-                    setElementMap(x, y, WALL);
-                } else {
-                    calqueCollide[y][x] = N0_COLLIDE_OBJ;
-                    setElementMap(x, y, EMPTY);
-                }
+                    setElementMap(x, y, WALL, true);
+                else setElementMap(x, y, EMPTY, false);
         spawnEntity();
     }
 
@@ -116,10 +115,7 @@ public class MapsEngine
             for (int yMap = 0; yMap < y; yMap++)
                 for (int xMap = 0; xMap < x; xMap++)
                     if (y+yMap < map.length && x+xMap < map[0].length)
-                    {
-                        setElementMap(x+xMap, y+yMap, WALL);
-                        calqueCollide[y][x] = COLLIDE_OBJ;
-                    }
+                        setElementMap(x+xMap, y+yMap, WALL, true);
         }
     }
 

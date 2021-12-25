@@ -18,6 +18,7 @@ public class Const
     public static final String CHEST_IMG = "\uD83E\uDDF0";
     public static final String COIN_IMG = "\uD83E\uDE99";
     public static final String HEART_IMG = "\u2764\uFE0F";
+    public static final String RECT_RED_IMG = "\uD83D\uDFE5";
 
     // Les données des objects.
     public static final int WALL = 1;

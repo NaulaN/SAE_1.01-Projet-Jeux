@@ -1,4 +1,4 @@
-// https://r12a.github.io/app-conversion/  Java char compatibility
+// https://r12a.github.io/app-conversion/   Java char compatibility
 import entity.Monster;
 import entity.Player;
 
@@ -35,16 +35,18 @@ public class Main
         Player player = mapsEngine.getPlayer();
 
         // Modifier la carte selon la position du joueur
-        mapsEngine.setElementMap(player.getXPosition(), player.getYPosition(), PLAYER);
-        // Clear la derniere "frame"
-        mapsEngine.setElementMap(player.getXPreviousPosition(), player.getYPreviousPosition(), EMPTY);
+        mapsEngine.setElementMap(player.getXPosition(), player.getYPosition(), PLAYER, true);
+        if (player.getXPreviousPosition() != -1)
+            // Clear la derniere "frame"
+            mapsEngine.setElementMap(player.getXPreviousPosition(), player.getYPreviousPosition(), EMPTY, false);
 
         for (Monster monster : mapsEngine.getAllMonsters())
         {
             // Modifier la carte selon la position du monstre
-            mapsEngine.setElementMap(monster.getXPosition(), monster.getYPosition(), MONSTER);
-            // Clear la derniere "frame"
-            mapsEngine.setElementMap(monster.getXPreviousPosition(), monster.getYPreviousPosition(), EMPTY);
+            mapsEngine.setElementMap(monster.getXPosition(), monster.getYPosition(), MONSTER, true);
+            if (monster.getXPreviousPosition() != -1)
+                // Clear la derniere "frame"
+                mapsEngine.setElementMap(monster.getXPreviousPosition(), monster.getYPreviousPosition(), EMPTY, false);
         }
         mapsEngine.draw();
 
@@ -57,28 +59,34 @@ public class Main
     /** Actualise les valeurs qui ont besoin d'etres actualisé a chaque passage de la boucle */
     public static void updates()
     {
-        Player player = mapsEngine.getPlayer();
-
         keyboardInput.getInput();
-        for (Monster monster : mapsEngine.getAllMonsters())
-            monster.randomMove(mapsEngine.getCalqueCollide());
 
-        // Gere les collisions et les déplacements du joueur
-        boolean[] collide = player.checkCollision(mapsEngine.getCalqueCollide());
-        if (!collide[0] && keyboardInput.getMoveUp())
+        Player player = mapsEngine.getPlayer();
+        player.checkCollision(mapsEngine.getCalqueCollide());
+
+        for (Monster monster : mapsEngine.getAllMonsters())
+        {
+            monster.checkCollision(mapsEngine.getCalqueCollide());
+            monster.randomMove();
+        }
+
+        // les déplacements du joueur
+        if (!player.getWhereCollide()[0] && keyboardInput.getMoveUp())
             player.moveUp();
-        else if (!collide[1] && keyboardInput.getMoveDown())
+        if (!player.getWhereCollide()[1] && keyboardInput.getMoveDown())
             player.moveDown();
-        else if (!collide[2] && keyboardInput.getMoveLeft())
+        if (!player.getWhereCollide()[2] && keyboardInput.getMoveLeft())
             player.moveLeft();
-        else if (!collide[3] && keyboardInput.getMoveRight())
+        if (!player.getWhereCollide()[3] && keyboardInput.getMoveRight())
             player.moveRight();
     }
 
     /** Demarre la boucle principal du jeux */
     public static void loop()
     {
-        while (running) {
+        while (running)
+        {
+            // Clear la console
             System.out.print("\033[H\033[2J");
             System.out.flush();
 
