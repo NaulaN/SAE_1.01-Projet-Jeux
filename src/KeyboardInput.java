@@ -1,4 +1,4 @@
-import static entity.Const.*;
+import static constantes.Const.*;
 
 import java.util.Scanner;
 

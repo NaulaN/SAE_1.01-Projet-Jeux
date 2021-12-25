@@ -2,7 +2,7 @@ import entity.Chest;
 import entity.Monster;
 import entity.Player;
 
-import static entity.Const.*;
+import static constantes.Const.*;
 
 
 public class MapsEngine

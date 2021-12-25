@@ -1,4 +1,4 @@
-import static entity.Const.*;
+import static constantes.Const.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import entity.Player;
@@ -11,8 +11,8 @@ public class PlayerTest
     public final void checkCollisionTest()
     {
         MapsEngine mapsEngine = new MapsEngine(6, 6);
-        mapsEngine.generateMap();
 
+        mapsEngine.generateMap();
         // Genere un obstacle manuellement
         mapsEngine.setElementMap(2, 2, WALL, true);
         mapsEngine.setElementMap(3, 2, WALL, true);
@@ -57,5 +57,19 @@ public class PlayerTest
         assertFalse(player.getCollideLeft());
         assertFalse(player.getCollideRight());
         assertTrue(player.getCollideDown());
+
+
+        player.setXPosition(4);
+        player.setYPosition(3);
+        mapsEngine.setElementMap(player.getXPosition(), player.getYPosition(), PLAYER, true);
+        mapsEngine.setElementMap(3, 1, EMPTY, false);
+        player.checkCollision(mapsEngine.getCalqueCollide());
+
+        mapsEngine.draw();
+
+        assertFalse(player.getCollideUp());
+        assertTrue(player.getCollideLeft());
+        assertTrue(player.getCollideRight());
+        assertFalse(player.getCollideDown());
     }
 }

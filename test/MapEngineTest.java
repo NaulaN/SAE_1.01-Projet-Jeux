@@ -1,5 +1,5 @@
-import static entity.Const.EMPTY;
-import static entity.Const.WALL;
+import static constantes.Const.EMPTY;
+import static constantes.Const.WALL;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;

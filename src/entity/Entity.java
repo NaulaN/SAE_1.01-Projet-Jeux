@@ -1,6 +1,6 @@
 package entity;
 
-import static entity.Const.*;
+import static constantes.Const.*;
 
 
 public class Entity
@@ -74,8 +74,7 @@ public class Entity
     {
         offsetWhereMoving = UP;
 
-        previousPos[1] = pos[1];
-        previousPos[0] = pos[0];
+        previousPos[1] = pos[1]; previousPos[0] = pos[0];
         pos[1] -= velocity;
     }
 
@@ -83,8 +82,7 @@ public class Entity
     {
         offsetWhereMoving = DOWN;
 
-        previousPos[1] = pos[1];
-        previousPos[0] = pos[0];
+        previousPos[1] = pos[1]; previousPos[0] = pos[0];
         pos[1] += velocity;
     }
 
@@ -92,8 +90,7 @@ public class Entity
     {
         offsetWhereMoving = LEFT;
 
-        previousPos[0] = pos[0];
-        previousPos[1] = pos[1];
+        previousPos[0] = pos[0]; previousPos[1] = pos[1];
         pos[0] -= velocity;
     }
 
@@ -101,8 +98,7 @@ public class Entity
     {
         offsetWhereMoving = RIGHT;
 
-        previousPos[0] = pos[0];
-        previousPos[1] = pos[1];
+        previousPos[0] = pos[0]; previousPos[1] = pos[1];
         pos[0] += velocity;
     }
 

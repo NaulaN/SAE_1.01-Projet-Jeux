@@ -1,6 +1,6 @@
 package entity;
 
-import static entity.Const.CHEST;
+import static constantes.Const.CHEST;
 
 
 public class Chest extends Entity

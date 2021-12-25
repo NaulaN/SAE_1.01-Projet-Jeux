@@ -1,10 +1,13 @@
 package entity;
 
-import static entity.Const.*;
+import static constantes.Const.*;
 
 
 public class Monster extends Entity
 {
+    private int offsetWhereShooting = -1;
+
+
     public Monster(int x, int y, int velocity) { super("Monster", x, y, velocity); }
 
     /** Bouge le monstre aléatoirement. */
@@ -20,5 +23,13 @@ public class Monster extends Entity
             moveLeft();
         if (moveRandomly == RIGHT && !getWhereCollide()[3])
             moveRight();
+    }
+
+    public void randomShoot()
+    {
+        int moveRandomly = (int) ((Math.random()*RIGHT+1)-Math.random()*-1);
+
+        if (moveRandomly != -1)
+            offsetWhereShooting = moveRandomly;
     }
 }

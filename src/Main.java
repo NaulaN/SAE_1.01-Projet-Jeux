@@ -2,7 +2,7 @@
 import entity.Monster;
 import entity.Player;
 
-import static entity.Const.*;
+import static constantes.Const.*;
 
 
 public class Main
@@ -71,13 +71,13 @@ public class Main
         }
 
         // les déplacements du joueur
-        if (!player.getWhereCollide()[0] && keyboardInput.getMoveUp())
+        if (!player.getCollideUp() && keyboardInput.getMoveUp())
             player.moveUp();
-        if (!player.getWhereCollide()[1] && keyboardInput.getMoveDown())
+        if (!player.getCollideDown() && keyboardInput.getMoveDown())
             player.moveDown();
-        if (!player.getWhereCollide()[2] && keyboardInput.getMoveLeft())
+        if (!player.getCollideLeft() && keyboardInput.getMoveLeft())
             player.moveLeft();
-        if (!player.getWhereCollide()[3] && keyboardInput.getMoveRight())
+        if (!player.getCollideRight() && keyboardInput.getMoveRight())
             player.moveRight();
     }
 
