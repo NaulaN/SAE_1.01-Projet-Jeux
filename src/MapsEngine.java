@@ -3,10 +3,12 @@ import entity.Monster;
 import entity.Player;
 
 import static constantes.Const.*;
+import java.util.Random;
 
 
 public class MapsEngine
 {
+    private final Random random = new Random();
     private Player player;
     private Monster[] allMonsters;
     private Chest[] allChest;
@@ -33,16 +35,16 @@ public class MapsEngine
         for (int m = 0; m < allMonsters.length; m++)
         {
             do {
-                x = (int) (Math.random()*map[0].length-1);
-                y = (int) (Math.random()*map.length-1);
+                x = random.nextInt(0, map[0].length);
+                y = random.nextInt(0, map.length);
             } while (map[y][x] == WALL);
 
             allMonsters[m] = new Monster(x, y, 1);
         }
 
         do {
-            x = (int) (Math.random()*map[0].length-1);
-            y = (int) (Math.random()*map.length-1);
+            x = random.nextInt(0, map[0].length);
+            y = random.nextInt(0, map.length);
         } while (map[y][x] == WALL);
 
         player = new Player(x, y, 1);
@@ -56,11 +58,11 @@ public class MapsEngine
         for (int c = 0; c < allChest.length; c++)
         {
             do {
-                x = (int) (Math.random()*map[0].length-1);
-                y = (int) (Math.random()*map.length-1);
+                x = random.nextInt(0, map[0].length);
+                y = random.nextInt(0, map.length);
             } while (map[y][x] == WALL);
 
-            allChest[c] = new Chest(LOOTS[(int) (Math.random()*LOOTS.length)], x, y);
+            allChest[c] = new Chest(LOOTS[random.nextInt(0, LOOTS.length)], x, y);
             map[y][x] = allChest[c].getDataImg();
             calqueCollide[y][x] = COLLIDE_OBJ;
         }
@@ -95,13 +97,13 @@ public class MapsEngine
     public void generateObstacles()
     {
         // Determine le nombre d'obstacle a prevoir
-        int nbObstacle = (int) (Math.random()*4)+1;
+        int nbObstacle = random.nextInt(1, 4);
 
         for (int o = 0; o <= nbObstacle; o++)
         {
             // Generation des obstacles
-            int h = (int) (Math.random()*5)+1;
-            int w = (int) (Math.random()*5)+1;
+            int h = random.nextInt(1, 5);
+            int w = random.nextInt(1, 5);
 
             char[][] obstacle = new char[h][w];
             for (int c = 0; c < h; c++)
@@ -109,8 +111,8 @@ public class MapsEngine
                     obstacle[c][r] = WALL;
 
             // Placement sur la Maps
-            int x = (int) Math.abs(((Math.random()*width)-(obstacle[0].length-1)));
-            int y = (int) Math.abs(((Math.random()*height)-(obstacle.length-1)));
+            int x = Math.abs(random.nextInt(0, width)-(obstacle[0].length-1));
+            int y = Math.abs(random.nextInt(0, height)-(obstacle.length-1));
 
             for (int yMap = 0; yMap < y; yMap++)
                 for (int xMap = 0; xMap < x; xMap++)

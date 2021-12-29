@@ -1,15 +1,16 @@
 package entity;
 
-import errors.AttacksListBadIndex;
-
 import static constantes.Const.CHARGE;
+import errors.AttacksListBadIndex;
 
 
 public class Player extends Entity
 {
-    private int[] attacks = {-1, -1, -1, -1};   // Les attaques spéciaux du joueur
+    // Les attaques spéciaux du joueur
+    private final int[] attacks = {-1, -1, -1, -1};
 
-    private boolean haveKey = false;    // Pour ouvrir les coffres sur la carte
+    // Pour ouvrir les coffres sur la carte
+    private boolean haveKey = false;
     private int coins = 0;
     private int lvl = 0;
     private int exp = 0;

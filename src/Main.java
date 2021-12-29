@@ -1,8 +1,7 @@
 // https://r12a.github.io/app-conversion/   Java char compatibility
+import static constantes.Const.*;
 import entity.Monster;
 import entity.Player;
-
-import static constantes.Const.*;
 
 
 public class Main
@@ -22,8 +21,9 @@ public class Main
     /** Crée les premieres resources essentiel au démarrage du jeux */
     public static void creates()
     {
-        // Crée la taille de la carte et génère la carte
+        // Crée la taille de la carte
         mapsEngine = new MapsEngine(15, 10);
+        // La generation
         mapsEngine.generateMap();
         mapsEngine.generateObstacles();
         mapsEngine.generateLoots();
@@ -51,9 +51,15 @@ public class Main
         mapsEngine.draw();
 
         System.out.println();
-        System.out.print("\t" + COIN_IMG + ": " + player.getCoins() + "   ");
+        StringBuilder msgHud = new StringBuilder().append('\t')
+                .append(COIN_IMG)
+                .append(": ")
+                .append(player.getCoins())
+                .append("   ");
         for (int h = 1; h <= player.getHealth(); h++)
-            System.out.print(HEART_IMG + " ");
+            msgHud.append(HEART_IMG)
+                    .append(" ");
+        System.out.print(msgHud.toString());
     }
 
     /** Actualise les valeurs qui ont besoin d'etres actualisé a chaque passage de la boucle */

@@ -1,10 +1,13 @@
 package entity;
 
 import static constantes.Const.*;
+import java.util.Random;
 
 
 public class Monster extends Entity
 {
+    private final Random random = new Random();
+
     private int offsetWhereShooting = -1;
 
 
@@ -13,7 +16,7 @@ public class Monster extends Entity
     /** Bouge le monstre aléatoirement. */
     public void randomMove()
     {
-        int moveRandomly = (int) (Math.random()*RIGHT+1);
+        int moveRandomly = random.nextInt(0, 4);
 
         if (moveRandomly == UP && !getWhereCollide()[0])
             moveUp();
@@ -27,9 +30,6 @@ public class Monster extends Entity
 
     public void randomShoot()
     {
-        int moveRandomly = (int) ((Math.random()*RIGHT+1)-Math.random()*-1);
-
-        if (moveRandomly != -1)
-            offsetWhereShooting = moveRandomly;
+        // TODO
     }
 }
