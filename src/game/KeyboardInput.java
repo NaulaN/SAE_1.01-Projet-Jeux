@@ -1,4 +1,6 @@
-import static constantes.Const.*;
+package game;
+
+import static game.constantes.Const.*;
 
 import java.util.Scanner;
 

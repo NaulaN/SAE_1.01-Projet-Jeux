@@ -1,7 +1,8 @@
-import static constantes.Const.EMPTY;
-import static constantes.Const.WALL;
+import static game.constantes.Const.EMPTY;
+import static game.constantes.Const.WALL;
 import static org.junit.jupiter.api.Assertions.*;
 
+import game.MapsEngine;
 import org.junit.jupiter.api.Test;
 
 

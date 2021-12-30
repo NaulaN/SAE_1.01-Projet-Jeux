@@ -1,4 +1,4 @@
-package constantes;
+package game.constantes;
 
 
 /** Je voulais utilisé un fichier ".json" mais il faut Gradle pour importer des libraries externe,

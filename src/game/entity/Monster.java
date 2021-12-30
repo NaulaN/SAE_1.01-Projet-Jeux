@@ -1,6 +1,6 @@
-package entity;
+package game.entity;
 
-import static constantes.Const.*;
+import static game.constantes.Const.*;
 import java.util.Random;
 
 

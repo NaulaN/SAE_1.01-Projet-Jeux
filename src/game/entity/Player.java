@@ -1,7 +1,7 @@
-package entity;
+package game.entity;
 
-import static constantes.Const.CHARGE;
-import errors.AttacksListBadIndex;
+import static game.constantes.Const.CHARGE;
+import game.errors.AttacksListBadIndex;
 
 
 public class Player extends Entity

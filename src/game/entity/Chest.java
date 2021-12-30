@@ -1,6 +1,6 @@
-package entity;
+package game.entity;
 
-import static constantes.Const.CHEST;
+import static game.constantes.Const.CHEST;
 
 
 public class Chest extends Entity

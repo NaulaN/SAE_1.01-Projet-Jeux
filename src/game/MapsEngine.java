@@ -1,8 +1,9 @@
-import entity.Chest;
-import entity.Monster;
-import entity.Player;
+package game;
 
-import static constantes.Const.*;
+import static game.constantes.Const.*;
+import game.entity.Chest;
+import game.entity.Monster;
+import game.entity.Player;
 import java.util.Random;
 
 

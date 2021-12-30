@@ -1,7 +1,8 @@
-import static constantes.Const.*;
+import static game.constantes.Const.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-import entity.Player;
+import game.entity.Player;
+import game.MapsEngine;
 import org.junit.jupiter.api.Test;
 
 

@@ -1,25 +1,23 @@
+package game;
 // https://r12a.github.io/app-conversion/   Java char compatibility
-import static constantes.Const.*;
-import entity.Monster;
-import entity.Player;
+
+import static game.constantes.Const.*;
+import game.entity.Monster;
+import game.entity.Player;
 
 
-public class Main
+public class Game
 {
-    public static KeyboardInput keyboardInput = new KeyboardInput();
-    public static MapsEngine mapsEngine;
+    private final KeyboardInput keyboardInput = new KeyboardInput();
+    private MapsEngine mapsEngine;
 
-    public static boolean running = true;
-    
+    private boolean running = true;
 
-    public static void main(String[] args)
-    {
-        creates();
-        loop();
-    }
+
+    public Game() { creates(); }
 
     /** Crée les premieres resources essentiel au démarrage du jeux */
-    public static void creates()
+    public void creates()
     {
         // Crée la taille de la carte
         mapsEngine = new MapsEngine(15, 10);
@@ -30,7 +28,7 @@ public class Main
     }
 
     /** Dessine les elements qui necessite a voir sur la console */
-    public static void draws()
+    public void draws()
     {
         Player player = mapsEngine.getPlayer();
 
@@ -63,7 +61,7 @@ public class Main
     }
 
     /** Actualise les valeurs qui ont besoin d'etres actualisé a chaque passage de la boucle */
-    public static void updates()
+    public void updates()
     {
         keyboardInput.getInput();
 
@@ -88,7 +86,7 @@ public class Main
     }
 
     /** Demarre la boucle principal du jeux */
-    public static void loop()
+    public void loop()
     {
         while (running)
         {
