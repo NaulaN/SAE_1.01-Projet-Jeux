@@ -1,4 +1,4 @@
-package fr.chrzdevelopment.game.entity;
+package fr.chrzdevelopment.game.entities;
 
 import fr.chrzdevelopment.game.constantes.Const;
 import fr.chrzdevelopment.game.errors.AttacksListBadIndex;

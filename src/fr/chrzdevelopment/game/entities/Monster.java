@@ -1,4 +1,4 @@
-package fr.chrzdevelopment.game.entity;
+package fr.chrzdevelopment.game.entities;
 
 import static fr.chrzdevelopment.game.constantes.Const.*;
 import java.util.Random;

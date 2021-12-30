@@ -3,8 +3,8 @@ package fr.chrzdevelopment.game;
 
 import static fr.chrzdevelopment.game.constantes.Const.*;
 
-import fr.chrzdevelopment.game.entity.Monster;
-import fr.chrzdevelopment.game.entity.Player;
+import fr.chrzdevelopment.game.entities.Monster;
+import fr.chrzdevelopment.game.entities.Player;
 
 
 public class Game

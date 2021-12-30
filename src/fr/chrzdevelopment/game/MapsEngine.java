@@ -2,10 +2,14 @@ package fr.chrzdevelopment.game;
 
 import static fr.chrzdevelopment.game.constantes.Const.*;
 
-import fr.chrzdevelopment.game.entity.Chest;
-import fr.chrzdevelopment.game.entity.Entity;
-import fr.chrzdevelopment.game.entity.Monster;
-import fr.chrzdevelopment.game.entity.Player;
+import fr.chrzdevelopment.game.entities.Chest;
+import fr.chrzdevelopment.game.entities.Entity;
+import fr.chrzdevelopment.game.entities.Monster;
+import fr.chrzdevelopment.game.entities.Player;
+import fr.chrzdevelopment.game.entities.Coin;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 
@@ -13,9 +17,11 @@ public class MapsEngine
 {
     private final Random random = new Random();
     // Entities
-    private Monster[] allMonsters;
-    private Player player;
+    private List<Monster> allMonsters = new ArrayList<>();
+    private List<Coin> allCoins = new ArrayList<>();
+    // private Monster[] allMonsters;
     private Chest[] allChest;
+    private Player player;
     // Calques
     private boolean[][] calqueCollide;
     private int[][] map;
@@ -49,15 +55,14 @@ public class MapsEngine
     private void spawnEntity()
     {
         int x; int y; int[] loc;
-        allMonsters = new Monster[3];   // 3 Monstre max
+        int nbMonster = random.nextInt(0, 6);
 
-        for (int m = 0; m < allMonsters.length; m++)
-        {
+        for (int m = 0; m < nbMonster; m++) {
             loc = findALocation();
             x = loc[0]; y = loc[1];
 
             // Crée le monstre et le range dans le tableau.
-            allMonsters[m] = new Monster(x, y, 1);
+            allMonsters.add(new Monster(x, y, 1));
         }
         loc = findALocation();
         x = loc[0]; y = loc[1];
@@ -80,7 +85,7 @@ public class MapsEngine
     /** getCalqueCollide() -> Donne une matrice de 0 et de 1 qui determine sur la map, qu'est-ce qui ont la fonction "collide" */
     public boolean[][] getCalqueCollide() { return calqueCollide; }
     public Player getPlayer() { return player; }
-    public Monster[] getAllMonsters() { return allMonsters; }
+    public List<Monster> getAllMonsters() { return allMonsters; }
 
     /* setter */
     public void setWidth(int newWidthSize) { width = newWidthSize; }
@@ -109,8 +114,7 @@ public class MapsEngine
         // Determine le nombre d'obstacle a prevoir
         int nbObstacle = random.nextInt(1, 4);
 
-        for (int o = 0; o <= nbObstacle; o++)
-        {
+        for (int o = 0; o <= nbObstacle; o++) {
             // Generation des obstacles
             int h = random.nextInt(1, 5);
             int w = random.nextInt(1, 5);
@@ -137,8 +141,7 @@ public class MapsEngine
         int x; int y; int[] loc;
         allChest = new Chest[2];    // 2 coffres max
 
-        for (int c = 0; c < allChest.length; c++)
-        {
+        for (int c = 0; c < allChest.length; c++) {
             loc = findALocation();
             x = loc[0]; y = loc[1];
 
@@ -170,7 +173,16 @@ public class MapsEngine
     {
         updateEntity(player);
 
-        for (Monster monster : allMonsters)
+        for (Monster monster : allMonsters) {
+            if (monster.getHealth() <= 0)   // Libere la mémoire si un monstre est died
+                allMonsters.remove(monster);
             updateEntity(monster);
+        }
+
+        /*
+        for (Coin coin : allCoins) {
+            if ()
+        }
+         */
     }
 }
