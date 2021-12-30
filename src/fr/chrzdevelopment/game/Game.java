@@ -31,24 +31,10 @@ public class Game
     /** Dessine les elements qui nécessite à voir sur la console */
     public void draws()
     {
-        Player player = mapsEngine.getPlayer();
-
-        // Modifier la carte selon la position du joueur
-        mapsEngine.setElementMap(player.getXPosition(), player.getYPosition(), PLAYER, true);
-        if (player.getXPreviousPosition() != -1)
-            // Clear la derniere "frame"
-            mapsEngine.setElementMap(player.getXPreviousPosition(), player.getYPreviousPosition(), EMPTY, false);
-
-        for (Monster monster : mapsEngine.getAllMonsters())
-        {
-            // Modifier la carte selon la position du monstre
-            mapsEngine.setElementMap(monster.getXPosition(), monster.getYPosition(), MONSTER, true);
-            if (monster.getXPreviousPosition() != -1)
-                // Clear la derniere "frame"
-                mapsEngine.setElementMap(monster.getXPreviousPosition(), monster.getYPreviousPosition(), EMPTY, false);
-        }
+        Player  player = mapsEngine.getPlayer();
         mapsEngine.draw();
 
+        // Affiche les pieces du joueur obtenu et sont nombre de point de vie total (Nombre de <3)
         System.out.println();
         StringBuilder msgHud = new StringBuilder().append('\t')
                 .append(COIN_IMG)
@@ -64,17 +50,14 @@ public class Game
     /** Actualise les valeurs qui ont besoin d'etre actualisé à chaque passage de la boucle */
     public void updates()
     {
-        keyboardInput.getInput();
-
-        Player player = mapsEngine.getPlayer();
-        player.checkCollision(mapsEngine.getCalqueCollide());
-
         for (Monster monster : mapsEngine.getAllMonsters())
         {
             monster.checkCollision(mapsEngine.getCalqueCollide());
             monster.randomMove();
         }
 
+        Player player = mapsEngine.getPlayer();
+        player.checkCollision(mapsEngine.getCalqueCollide());
         // les déplacements du joueur
         if (!player.getCollideUp() && keyboardInput.getMoveUp())
             player.moveUp();
@@ -84,6 +67,7 @@ public class Game
             player.moveLeft();
         if (!player.getCollideRight() && keyboardInput.getMoveRight())
             player.moveRight();
+        mapsEngine.updates();
     }
 
     /** Démarre la boucle principale du jeu */
@@ -95,8 +79,10 @@ public class Game
             System.out.print("\033[H\033[2J");
             System.out.flush();
 
-            draws();
             updates();
+            draws();
+
+            keyboardInput.getInput();
         }
     }
 }

@@ -13,16 +13,15 @@ public class Entity
     private int health = 3;
     private int velocity;
 
-    private int offsetWhereMoving = -1;
     private int dataImg = -1;
 
 
     public Entity(String type, int x, int y, int velocity)
     {
         if (type.equalsIgnoreCase("player"))
-            dataImg = MONSTER;
-        else if (type.equalsIgnoreCase("monster"))
             dataImg = PLAYER;
+        else if (type.equalsIgnoreCase("monster"))
+            dataImg = MONSTER;
 
         pos[0] = x;
         pos[1] = y;
@@ -72,32 +71,24 @@ public class Entity
 
     public void moveUp()
     {
-        offsetWhereMoving = UP;
-
         previousPos[1] = pos[1]; previousPos[0] = pos[0];
         pos[1] -= velocity;
     }
 
     public void moveDown()
     {
-        offsetWhereMoving = DOWN;
-
         previousPos[1] = pos[1]; previousPos[0] = pos[0];
         pos[1] += velocity;
     }
 
     public void moveLeft()
     {
-        offsetWhereMoving = LEFT;
-
         previousPos[0] = pos[0]; previousPos[1] = pos[1];
         pos[0] -= velocity;
     }
 
     public void moveRight()
     {
-        offsetWhereMoving = RIGHT;
-
         previousPos[0] = pos[0]; previousPos[1] = pos[1];
         pos[0] += velocity;
     }
