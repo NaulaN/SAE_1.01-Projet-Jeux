@@ -1,4 +1,4 @@
-package game.entity;
+package fr.chrzdevelopment.game.entity;
 
 public class Coin extends Entity
 {

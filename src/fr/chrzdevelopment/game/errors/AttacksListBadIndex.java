@@ -1,4 +1,4 @@
-package game.errors;
+package fr.chrzdevelopment.game.errors;
 
 
 public class AttacksListBadIndex extends Error

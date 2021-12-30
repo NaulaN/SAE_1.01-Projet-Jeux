@@ -1,4 +1,4 @@
-package game.constantes;
+package fr.chrzdevelopment.game.constantes;
 
 
 /** Je voulais utilisé un fichier ".json" mais il faut Gradle pour importer des libraries externe,
@@ -37,8 +37,8 @@ public class Const
     public static final int CHEST = 5;
 
     // Permet de savoir si un objet est un object qui doit avoir des collisions
-    public static final int COLLIDE_OBJ = 1;
-    public static final int N0_COLLIDE_OBJ = 0;
+    public static final boolean COLLIDE_OBJ = true;
+    public static final boolean N0_COLLIDE_OBJ = false;
 
     // Les valeurs qui determines les mouvements d'un objet
     public static final int UP = 0;

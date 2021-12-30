@@ -1,14 +1,14 @@
-package game.entity;
+package fr.chrzdevelopment.game.entity;
 
-import static game.constantes.Const.*;
+import static fr.chrzdevelopment.game.constantes.Const.*;
 
 
 public class Entity
 {
+    private final boolean[] collisions = {false, false, false, false};
     // x, y
     private final int[] previousPos = {-1, -1};
     private final int[] pos = new int[2];
-    private final boolean[] collisions = {false, false, false, false};
 
     private int health = 3;
     private int velocity;
@@ -58,16 +58,16 @@ public class Entity
         previousPos[1] = -1;
     }
 
-    public void checkCollision(int[][] collideCalque)
+    public void checkCollision(boolean[][] collideCalque)
     {
         int y = (pos[1] == 0) ? 0 : pos[1]-1; int x = getXPosition();
-        collisions[0] = collideCalque[y][x] == COLLIDE_OBJ;
+        collisions[0] = collideCalque[y][x];
         y = (pos[1] == 0) ? 0 : pos[1]+1;
-        collisions[1] = collideCalque[y][x] == COLLIDE_OBJ;
+        collisions[1] = collideCalque[y][x];
         y = getYPosition(); x = (pos[0] == 0) ? 0 : pos[0]-1;
-        collisions[2] = collideCalque[y][x] == COLLIDE_OBJ;
+        collisions[2] = collideCalque[y][x];
         x = (pos[0] == 0) ? 0 : pos[0]+1;
-        collisions[3] = collideCalque[y][x] == COLLIDE_OBJ;
+        collisions[3] = collideCalque[y][x];
     }
 
     public void moveUp()

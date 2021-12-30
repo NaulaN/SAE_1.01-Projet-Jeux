@@ -1,22 +1,23 @@
-package game;
+package fr.chrzdevelopment.game;
 // https://r12a.github.io/app-conversion/   Java char compatibility
 
-import static game.constantes.Const.*;
-import game.entity.Monster;
-import game.entity.Player;
+import static fr.chrzdevelopment.game.constantes.Const.*;
+
+import fr.chrzdevelopment.game.entity.Monster;
+import fr.chrzdevelopment.game.entity.Player;
 
 
 public class Game
 {
-    private final KeyboardInput keyboardInput = new KeyboardInput();
-    private MapsEngine mapsEngine;
+    public final KeyboardInput keyboardInput = new KeyboardInput();
+    public MapsEngine mapsEngine;
 
     private boolean running = true;
 
 
     public Game() { creates(); }
 
-    /** Crée les premieres resources essentiel au démarrage du jeux */
+    /** Crée les premieres resources essentiel au démarrage du jeu */
     public void creates()
     {
         // Crée la taille de la carte
@@ -27,7 +28,7 @@ public class Game
         mapsEngine.generateLoots();
     }
 
-    /** Dessine les elements qui necessite a voir sur la console */
+    /** Dessine les elements qui nécessite à voir sur la console */
     public void draws()
     {
         Player player = mapsEngine.getPlayer();
@@ -60,7 +61,7 @@ public class Game
         System.out.print(msgHud.toString());
     }
 
-    /** Actualise les valeurs qui ont besoin d'etres actualisé a chaque passage de la boucle */
+    /** Actualise les valeurs qui ont besoin d'etre actualisé à chaque passage de la boucle */
     public void updates()
     {
         keyboardInput.getInput();
@@ -85,7 +86,7 @@ public class Game
             player.moveRight();
     }
 
-    /** Demarre la boucle principal du jeux */
+    /** Démarre la boucle principale du jeu */
     public void loop()
     {
         while (running)

@@ -1,7 +1,7 @@
-package game.entity;
+package fr.chrzdevelopment.game.entity;
 
-import static game.constantes.Const.CHARGE;
-import game.errors.AttacksListBadIndex;
+import fr.chrzdevelopment.game.constantes.Const;
+import fr.chrzdevelopment.game.errors.AttacksListBadIndex;
 
 
 public class Player extends Entity
@@ -21,7 +21,7 @@ public class Player extends Entity
         super("Player", x, y, velocity);
 
         // Les capacités par défaut que possède le joueur.
-        attacks[0] = CHARGE;
+        attacks[0] = Const.CHARGE;
     }
 
     public int getCoins() { return coins; }

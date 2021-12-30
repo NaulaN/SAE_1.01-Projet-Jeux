@@ -1,6 +1,6 @@
-package game.entity;
+package fr.chrzdevelopment.game.entity;
 
-import static game.constantes.Const.CHEST;
+import static fr.chrzdevelopment.game.constantes.Const.CHEST;
 
 
 public class Chest extends Entity

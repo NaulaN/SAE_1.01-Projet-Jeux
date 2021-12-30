@@ -1,9 +1,10 @@
-package game;
+package fr.chrzdevelopment.game;
 
-import static game.constantes.Const.*;
-import game.entity.Chest;
-import game.entity.Monster;
-import game.entity.Player;
+import static fr.chrzdevelopment.game.constantes.Const.*;
+
+import fr.chrzdevelopment.game.entity.Chest;
+import fr.chrzdevelopment.game.entity.Monster;
+import fr.chrzdevelopment.game.entity.Player;
 import java.util.Random;
 
 
@@ -14,7 +15,7 @@ public class MapsEngine
     private Monster[] allMonsters;
     private Chest[] allChest;
 
-    private int[][] calqueCollide;
+    private boolean[][] calqueCollide;
     private int[][] map;
     private int width;
     private int height;
@@ -25,52 +26,63 @@ public class MapsEngine
         this.width = width;
         this.height = height;
         map = new int[height][width];
-        calqueCollide = new int[height][width];
+        calqueCollide = new boolean[height][width];
     }
 
+    /** Crée et place les monstres et le joueur sur la carte */
     private void spawnEntity()
     {
         int x; int y;
-        allMonsters = new Monster[3];
+        allMonsters = new Monster[3];   // 3 Monstre max
 
         for (int m = 0; m < allMonsters.length; m++)
         {
+            // Determine sa position.
             do {
                 x = random.nextInt(0, map[0].length);
                 y = random.nextInt(0, map.length);
             } while (map[y][x] == WALL);
 
+            // Crée le monstre et le range dans le tableau.
             allMonsters[m] = new Monster(x, y, 1);
         }
 
+        // Determine la position du joueur.
         do {
             x = random.nextInt(0, map[0].length);
             y = random.nextInt(0, map.length);
         } while (map[y][x] == WALL);
 
+        // Crée le joueur
         player = new Player(x, y, 1);
     }
 
+    /** Génère les coffres, les pieces et les/la clé(s) */
     public void generateLoots()
     {
         int x; int y;
-        allChest = new Chest[2];
+        allChest = new Chest[2];    // 2 coffres max
 
         for (int c = 0; c < allChest.length; c++)
         {
+            // Determine la position du coffre.
             do {
                 x = random.nextInt(0, map[0].length);
                 y = random.nextInt(0, map.length);
             } while (map[y][x] == WALL);
 
+            // Crée le coffre, on lui dit ce qu'il va loot et on le place dans le tableau
             allChest[c] = new Chest(LOOTS[random.nextInt(0, LOOTS.length)], x, y);
+            // Le placement sur la carte
             map[y][x] = allChest[c].getDataImg();
+            // On lui dit que c'est un obj de type "collide"
             calqueCollide[y][x] = COLLIDE_OBJ;
         }
     }
 
     public int[][] getMap() { return map; }
-    public int[][] getCalqueCollide() { return calqueCollide; }
+    /** getCalqueCollide() -> Donne une matrice de 0 et de 1 qui determine sur la map, qu'est-ce qui ont la fonction "collide" */
+    public boolean[][] getCalqueCollide() { return calqueCollide; }
     public Player getPlayer() { return player; }
     public Monster[] getAllMonsters() { return allMonsters; }
 

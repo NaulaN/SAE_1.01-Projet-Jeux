@@ -1,6 +1,6 @@
-package game;
+package fr.chrzdevelopment.game;
 
-import static game.constantes.Const.*;
+import static fr.chrzdevelopment.game.constantes.Const.*;
 
 import java.util.Scanner;
 
@@ -8,7 +8,7 @@ import java.util.Scanner;
 public class KeyboardInput
 {
     private final Scanner sc = new Scanner(System.in);
-    public int offset = -1;
+    private int offset = -1;
 
 
     public void getInput()
