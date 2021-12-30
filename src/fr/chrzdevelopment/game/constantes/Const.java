@@ -35,10 +35,11 @@ public class Const
     public static final int MONSTER = 3;
     public static final int PLAYER = 4;
     public static final int CHEST = 5;
+    public static final int COIN = 6;
 
     // Permet de savoir si un objet est un object qui doit avoir des collisions
-    public static final boolean COLLIDE_OBJ = true;
-    public static final boolean N0_COLLIDE_OBJ = false;
+    // public static final boolean COLLIDE_OBJ = true;
+    // public static final boolean N0_COLLIDE_OBJ = false;
 
     // Les valeurs qui determines les mouvements d'un objet
     public static final int UP = 0;

@@ -6,7 +6,7 @@ import fr.chrzdevelopment.game.errors.AttacksListBadIndex;
 
 public class Player extends Entity
 {
-    // Les attaques spéciaux du joueur
+    // Les attaques spéciales du joueur
     private final int[] attacks = {-1, -1, -1, -1};
 
     // Pour ouvrir les coffres sur la carte

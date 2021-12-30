@@ -12,12 +12,14 @@ import java.util.Random;
 public class MapsEngine
 {
     private final Random random = new Random();
-    private Player player;
+    // Entities
     private Monster[] allMonsters;
+    private Player player;
     private Chest[] allChest;
-
+    // Calques
     private boolean[][] calqueCollide;
     private int[][] map;
+    // Map size
     private int width;
     private int height;
 
@@ -83,6 +85,7 @@ public class MapsEngine
     /* setter */
     public void setWidth(int newWidthSize) { width = newWidthSize; }
     public void setHeight(int newHeightSize) { height = newHeightSize; }
+    /** Place un element sur la matrice de la carte puis determine sur le calque de collision, si c'est un object de type "collide" */
     public void setElementMap(int x, int y, int val, boolean isCollideObject)
     {
         calqueCollide[y][x] = isCollideObject;
@@ -141,10 +144,7 @@ public class MapsEngine
 
             // Crée le coffre, on lui dit ce qu'il va loot et on le place dans le tableau
             allChest[c] = new Chest(LOOTS[random.nextInt(0, LOOTS.length)], x, y);
-            // Le placement sur la carte
-            map[y][x] = allChest[c].getDataImg();
-            // On lui dit que c'est un obj de type "collide"
-            calqueCollide[y][x] = COLLIDE_OBJ;
+            setElementMap(x, y, allChest[c].getDataImg(), true);
         }
     }
 
@@ -159,6 +159,7 @@ public class MapsEngine
                     case MONSTER -> System.out.print(MONSTER_IMG);
                     case PLAYER -> System.out.print(PLAYER_IMG);
                     case CHEST -> System.out.print(CHEST_IMG);
+                    case COIN -> System.out.print(COIN_IMG);
 
                     case EMPTY -> System.out.print(EMPTY_IMG);
                 }
