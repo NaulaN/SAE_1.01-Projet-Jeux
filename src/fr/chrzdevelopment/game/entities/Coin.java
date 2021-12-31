@@ -1,13 +1,22 @@
 package fr.chrzdevelopment.game.entities;
 
+import java.util.List;
+
 
 public class Coin extends Entity
 {
     private boolean isPickup = false;
 
 
-    public Coin(int x, int y, int velocity)
+    public Coin(List<Entity> group, int x, int y, int velocity)
     {
-        super("Coin", x, y, velocity);
+        super(group, "Coin", x, y, velocity);
+    }
+
+    @Override
+    public void updates()
+    {
+        if (isPickup)
+            getGroup().remove(this);
     }
 }

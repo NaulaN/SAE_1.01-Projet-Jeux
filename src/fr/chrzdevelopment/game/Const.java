@@ -1,5 +1,8 @@
-package fr.chrzdevelopment.game.constantes;
+package fr.chrzdevelopment.game;
 
+
+import java.util.HashMap;
+import java.util.Map;
 
 /** Je voulais utilisé un fichier ".json" mais il faut Gradle pour importer des libraries externe,
  *      Par peur de pas pouvoir me faire noté, je le met dans une classe du nom de Const pour les Constantes */
@@ -25,21 +28,41 @@ public class Const
     public static final String MONSTER_IMG = "\uD83D\uDC7E";
     public static final String PLAYER_IMG = "\uD83E\uDD20";
     public static final String CHEST_IMG = "\uD83E\uDDF0";
+    public static final String CHEST_OPEN_IMG = "\uD83E\uDDF0";     // TODO
     public static final String COIN_IMG = "\uD83E\uDE99";
     public static final String HEART_IMG = "\u2764\uFE0F";
     public static final String RECT_RED_IMG = "\uD83D\uDFE5";   // Pour le debug
 
+    public static final Map<Integer, String> allDataObjImg = new HashMap<>()
+    {{
+        put(EMPTY, EMPTY_IMG);
+        put(WALL, WALL_IMG);
+        put(MONSTER, MONSTER_IMG);
+        put(PLAYER, PLAYER_IMG);
+        put(CHEST, CHEST_IMG);
+        put(CHEST_OPEN, CHEST_OPEN_IMG);
+        put(COIN, COIN_IMG);
+    }};
+
     // Les données des objects.
-    public static final int WALL = 1;
     public static final int EMPTY = 0;
+
+    public static final int WALL = 1;
     public static final int MONSTER = 3;
     public static final int PLAYER = 4;
     public static final int CHEST = 5;
-    public static final int COIN = 6;
+    public static final int CHEST_OPEN = 6;
+    public static final int COIN = 7;
 
-    // Permet de savoir si un objet est un object qui doit avoir des collisions
-    // public static final boolean COLLIDE_OBJ = true;
-    // public static final boolean N0_COLLIDE_OBJ = false;
+    public static final Map<String, Integer> allDataObj = new HashMap<>()
+    {{
+        put("wall", WALL);
+        put("monster", MONSTER);
+        put("player", PLAYER);
+        put("chest", CHEST);
+        put("chest_open", CHEST_OPEN);
+        put("coin", COIN);
+    }};
 
     // Les valeurs qui determines les mouvements d'un objet
     public static final int UP = 0;

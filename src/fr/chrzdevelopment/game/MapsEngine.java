@@ -1,12 +1,11 @@
 package fr.chrzdevelopment.game;
 
-import static fr.chrzdevelopment.game.constantes.Const.*;
+import static fr.chrzdevelopment.game.Const.*;
 
 import fr.chrzdevelopment.game.entities.Chest;
 import fr.chrzdevelopment.game.entities.Entity;
 import fr.chrzdevelopment.game.entities.Monster;
 import fr.chrzdevelopment.game.entities.Player;
-import fr.chrzdevelopment.game.entities.Coin;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,9 +15,7 @@ import java.util.Random;
 public class MapsEngine
 {
     private final Random random = new Random();
-    // Entities
-    private List<Monster> allMonsters = new ArrayList<>();
-    private List<Coin> allCoins = new ArrayList<>();
+    private final List<Entity> allSprites = new ArrayList<>();
     // private Monster[] allMonsters;
     private Chest[] allChest;
     private Player player;
@@ -62,13 +59,13 @@ public class MapsEngine
             x = loc[0]; y = loc[1];
 
             // Crée le monstre et le range dans le tableau.
-            allMonsters.add(new Monster(x, y, 1));
+           new Monster(allSprites, x, y, 1);
         }
         loc = findALocation();
         x = loc[0]; y = loc[1];
 
         // Crée le joueur
-        player = new Player(x, y, 1);
+        player = new Player(allSprites, x, y, 1);
     }
 
     private void updateEntity(Entity entity)
@@ -85,7 +82,7 @@ public class MapsEngine
     /** getCalqueCollide() -> Donne une matrice de 0 et de 1 qui determine sur la map, qu'est-ce qui ont la fonction "collide" */
     public boolean[][] getCalqueCollide() { return calqueCollide; }
     public Player getPlayer() { return player; }
-    public List<Monster> getAllMonsters() { return allMonsters; }
+    public List<Entity> getAllSpritesGroup() { return allSprites; }
 
     /* setter */
     public void setWidth(int newWidthSize) { width = newWidthSize; }
@@ -146,42 +143,43 @@ public class MapsEngine
             x = loc[0]; y = loc[1];
 
             // Crée le coffre, on lui dit ce qu'il va loot et on le place dans le tableau
-            allChest[c] = new Chest(LOOTS[random.nextInt(0, LOOTS.length)], x, y);
+            allChest[c] = new Chest(allSprites, LOOTS[random.nextInt(0, LOOTS.length)], x, y);
             setElementMap(x, y, allChest[c].getDataImg(), true);
         }
     }
 
     public void draw()
     {
-        for (int[] row : map) {
-            System.out.println();
+        for (int[] row : map)
+        {
+            // TODO: Demander a l'enseignant si c'est de faire comme ca ou bien ou bien plusieurs System.out.print()
+            StringBuilder line = new StringBuilder();
             for (int column : row)
-                switch (column)
-                {
-                    case WALL -> System.out.print(WALL_IMG);
-                    case MONSTER -> System.out.print(MONSTER_IMG);
-                    case PLAYER -> System.out.print(PLAYER_IMG);
-                    case CHEST -> System.out.print(CHEST_IMG);
-                    case COIN -> System.out.print(COIN_IMG);
-
-                    case EMPTY -> System.out.print(EMPTY_IMG);
-                }
+                // TODO: Demander a l'enseignant si c'est opti, ou mauvaise pratique.
+                allDataObjImg.computeIfPresent(column, (a, b) -> { line.append(b); return b; });
+            System.out.println(line.toString());
         }
     }
 
     public void updates()
     {
-        updateEntity(player);
-
-        for (Monster monster : allMonsters) {
-            if (monster.getHealth() <= 0)   // Libere la mémoire si un monstre est died
-                allMonsters.remove(monster);
-            updateEntity(monster);
+        for (Entity sprite : allSprites) {
+            sprite.checkCollision(getCalqueCollide());
+            sprite.updates();
+            updateEntity(sprite);
         }
+        // updateEntity(player);
 
         /*
+        for (Monster monster : allMonsters) {
+            // updateEntity(monster);
+            if (monster.getHealth() <= 0)   // Libere la mémoire si un monstre est died
+                allMonsters.remove(monster);
+        }
+
         for (Coin coin : allCoins) {
-            if ()
+            if (coin.getIsPickup())
+                continue;
         }
          */
     }

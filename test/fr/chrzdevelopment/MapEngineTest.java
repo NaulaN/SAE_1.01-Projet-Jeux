@@ -1,7 +1,7 @@
 package fr.chrzdevelopment;
 
-import static fr.chrzdevelopment.game.constantes.Const.EMPTY;
-import static fr.chrzdevelopment.game.constantes.Const.WALL;
+import static fr.chrzdevelopment.game.Const.EMPTY;
+import static fr.chrzdevelopment.game.Const.WALL;
 import static org.junit.jupiter.api.Assertions.*;
 
 import fr.chrzdevelopment.game.MapsEngine;

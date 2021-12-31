@@ -1,10 +1,13 @@
 package fr.chrzdevelopment.game.entities;
 
-import static fr.chrzdevelopment.game.constantes.Const.*;
+import static fr.chrzdevelopment.game.Const.*;
+
+import java.util.List;
 
 
 public class Entity
 {
+    private final List<Entity> group;
     private final boolean[] collisions = {false, false, false, false};
     // x, y
     private final int[] previousPos = {-1, -1};
@@ -16,18 +19,19 @@ public class Entity
     private int dataImg = -1;
 
 
-    public Entity(String type, int x, int y, int velocity)
+    public Entity(List<Entity> spriteGroup, String type, int x, int y, int velocity)
     {
-        if (type.equalsIgnoreCase("player"))
-            dataImg = PLAYER;
-        else if (type.equalsIgnoreCase("monster"))
-            dataImg = MONSTER;
+        group = spriteGroup;
+        spriteGroup.add(this);
+
+        dataImg = allDataObj.get(type.toLowerCase());
 
         pos[0] = x;
         pos[1] = y;
         this.velocity = velocity;
     }
 
+    protected List<Entity> getGroup() { return group; }
     public int getDataImg() { return dataImg; }
     public int[] getPosition() { return pos; }
     public int getXPosition() { return pos[0]; }
@@ -94,4 +98,6 @@ public class Entity
     }
 
     public void hit() { health--; }
+
+    public void updates() {}
 }

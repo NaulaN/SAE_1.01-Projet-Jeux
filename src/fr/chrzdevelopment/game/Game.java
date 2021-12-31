@@ -1,9 +1,8 @@
 package fr.chrzdevelopment.game;
 // https://r12a.github.io/app-conversion/   Java char compatibility
 
-import static fr.chrzdevelopment.game.constantes.Const.*;
+import static fr.chrzdevelopment.game.Const.*;
 
-import fr.chrzdevelopment.game.entities.Monster;
 import fr.chrzdevelopment.game.entities.Player;
 
 
@@ -11,11 +10,24 @@ public class Game
 {
     public final KeyboardInput keyboardInput = new KeyboardInput();
     public MapsEngine mapsEngine;
+    public final String OS = System.getProperty("os.name");
+    public final ProcessBuilder processBuilder = (OS.equalsIgnoreCase("windows")) ? new ProcessBuilder("cmd", "/c", "cls") : new ProcessBuilder("clear");
 
     private boolean running = true;
 
 
     public Game() { creates(); }
+
+    private void clearConsole()
+    {
+        try {
+            Process process = processBuilder.inheritIO().start();
+            process.waitFor();
+        } catch (Exception e) {
+            System.out.print("\033[H\033[2J");
+            System.out.flush();
+        }
+    }
 
     /** Crée les premieres resources essentiel au démarrage du jeu */
     public void creates()
@@ -31,12 +43,13 @@ public class Game
     /** Dessine les elements qui nécessite à voir sur la console */
     public void draws()
     {
+        clearConsole();
+
         Player  player = mapsEngine.getPlayer();
         mapsEngine.draw();
 
         // Affiche les pieces du joueur obtenu et sont nombre de point de vie total (Nombre de <3)
-        System.out.println();
-        StringBuilder msgHud = new StringBuilder().append('\t')
+        StringBuilder msgHud = new StringBuilder().append("\t")
                 .append(COIN_IMG)
                 .append(": ")
                 .append(player.getCoins())
@@ -50,14 +63,7 @@ public class Game
     /** Actualise les valeurs qui ont besoin d'etre actualisé à chaque passage de la boucle */
     public void updates()
     {
-        for (Monster monster : mapsEngine.getAllMonsters())
-        {
-            monster.checkCollision(mapsEngine.getCalqueCollide());
-            monster.randomMove();
-        }
-
         Player player = mapsEngine.getPlayer();
-        player.checkCollision(mapsEngine.getCalqueCollide());
         // les déplacements du joueur
         if (!player.getCollideUp() && keyboardInput.getMoveUp())
             player.moveUp();
@@ -67,18 +73,14 @@ public class Game
             player.moveLeft();
         if (!player.getCollideRight() && keyboardInput.getMoveRight())
             player.moveRight();
+
         mapsEngine.updates();
     }
 
     /** Démarre la boucle principale du jeu */
     public void loop()
     {
-        while (running)
-        {
-            // Clear la console
-            System.out.print("\033[H\033[2J");
-            System.out.flush();
-
+        while (running) {
             updates();
             draws();
 

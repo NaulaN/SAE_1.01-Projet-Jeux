@@ -1,7 +1,9 @@
 package fr.chrzdevelopment.game.entities;
 
-import fr.chrzdevelopment.game.constantes.Const;
+import fr.chrzdevelopment.game.Const;
 import fr.chrzdevelopment.game.errors.AttacksListBadIndex;
+
+import java.util.List;
 
 
 public class Player extends Entity
@@ -16,9 +18,9 @@ public class Player extends Entity
     private int exp = 0;
 
 
-    public Player(int x, int y, int velocity)
+    public Player(List<Entity> group, int x, int y, int velocity)
     {
-        super("Player", x, y, velocity);
+        super(group, "Player", x, y, velocity);
 
         // Les capacités par défaut que possède le joueur.
         attacks[0] = Const.CHARGE;
@@ -47,4 +49,10 @@ public class Player extends Entity
     public void addLvls(int addNewLvl) { lvl += addNewLvl; }
     public void addExps(int addNewExp) { exp += addNewExp; }
     public void addCoin() { coins++; }
+
+    @Override
+    public void updates()
+    {
+
+    }
 }
