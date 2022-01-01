@@ -5,12 +5,19 @@ import static fr.chrzdevelopment.game.Const.*;
 
 import fr.chrzdevelopment.game.entities.Player;
 
+import java.io.IOException;
 
+
+/**
+ * <p>Permet le bon fonctionnement du jeu</p>
+ * <p>Rassemble tous !</p>
+ */
 public class Game
 {
     public final KeyboardInput keyboardInput = new KeyboardInput();
     public MapsEngine mapsEngine;
     public final String OS = System.getProperty("os.name");
+    // clear terminal commands
     public final ProcessBuilder processBuilder = (OS.equalsIgnoreCase("windows")) ? new ProcessBuilder("cmd", "/c", "cls") : new ProcessBuilder("clear");
 
     private boolean running = true;
@@ -18,14 +25,38 @@ public class Game
 
     public Game() { creates(); }
 
+    /**
+     * Nettoie tout ce qui est present et afficher sur le terminal.
+     * @exception IOException Essaye avec une deuxième méthode pour nettoyer la console
+     * @exception InterruptedException Essaye encore une fois tout le processus
+     */
     private void clearConsole()
     {
-        try {
-            Process process = processBuilder.inheritIO().start();
-            process.waitFor();
-        } catch (Exception e) {
-            System.out.print("\033[H\033[2J");
-            System.out.flush();
+        // TODO: Demander a l'enseignant si cela est correct. J'ai essayé de bien faire pour qu'il est deux essaie au cas où
+        // Essaye encore une fois si le premier essaie ne marche pas sinon il casse la boucle.
+        for (int r = 0; r < 2; r++)
+        {
+            Process process = null;
+            try {
+                process = processBuilder.inheritIO().start();
+            } catch (IOException IOe) {
+                IOe.printStackTrace();
+                if (!OS.equalsIgnoreCase("windows")) {
+                    // la deuxième méthode qui permet de nettoyer la console...
+                    System.out.print("\033[H\033[2J");
+                    System.out.flush();
+                }
+            }
+
+            if (process != null)
+                try {
+                    process.waitFor();
+                    if (process.exitValue() == 0)
+                        return;
+                } catch (InterruptedException ignored) {
+                    if (process.isAlive())
+                        process.destroyForcibly();
+                }
         }
     }
 
@@ -38,6 +69,12 @@ public class Game
         mapsEngine.generateMap();
         mapsEngine.generateObstacles();
         mapsEngine.generateLoots();
+
+        // Applique l'UTF-8 sur le CMD de Windows
+        if (OS.equalsIgnoreCase("windows"))
+            try {
+                new ProcessBuilder("cmd", "/c", "chcp 65001").inheritIO().start().waitFor();
+            } catch (Exception ignored) { }
     }
 
     /** Dessine les elements qui nécessite à voir sur la console */
@@ -49,7 +86,7 @@ public class Game
         mapsEngine.draw();
 
         // Affiche les pieces du joueur obtenu et sont nombre de point de vie total (Nombre de <3)
-        StringBuilder msgHud = new StringBuilder().append("\t")
+        StringBuilder msgHud = new StringBuilder()
                 .append(COIN_IMG)
                 .append(": ")
                 .append(player.getCoins())

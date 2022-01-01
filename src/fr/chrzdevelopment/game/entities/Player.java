@@ -6,6 +6,9 @@ import fr.chrzdevelopment.game.errors.AttacksListBadIndex;
 import java.util.List;
 
 
+/**
+ *
+ */
 public class Player extends Entity
 {
     // Les attaques spéciales du joueur
@@ -18,6 +21,12 @@ public class Player extends Entity
     private int exp = 0;
 
 
+    /**
+     * @param group
+     * @param x
+     * @param y
+     * @param velocity
+     */
     public Player(List<Entity> group, int x, int y, int velocity)
     {
         super(group, "Player", x, y, velocity);

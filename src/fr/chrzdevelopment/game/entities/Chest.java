@@ -6,6 +6,9 @@ import static fr.chrzdevelopment.game.Const.CHEST;
 import static fr.chrzdevelopment.game.Const.CHEST_OPEN;
 
 
+/**
+ *
+ */
 public class Chest extends Entity
 {
     private String whatInside;
@@ -13,6 +16,12 @@ public class Chest extends Entity
     private boolean isOpen = false;
 
 
+    /**
+     * @param group
+     * @param whatInside
+     * @param x
+     * @param y
+     */
     public Chest(List<Entity> group, String whatInside, int x, int y)
     {
         super(group, "Chest", x, y, 0);

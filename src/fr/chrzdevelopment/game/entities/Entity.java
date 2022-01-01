@@ -5,9 +5,19 @@ import static fr.chrzdevelopment.game.Const.*;
 import java.util.List;
 
 
+/**
+ *
+ * @see fr.chrzdevelopment.game.entities.Chest
+ * @see fr.chrzdevelopment.game.entities.Coin
+ * @see fr.chrzdevelopment.game.entities.Monster
+ * @see fr.chrzdevelopment.game.entities.Player
+ * @since v1.0
+ * @author CHRZASZCZ Naulan
+ */
 public class Entity
 {
     private final List<Entity> group;
+
     private final boolean[] collisions = {false, false, false, false};
     // x, y
     private final int[] previousPos = {-1, -1};
@@ -19,6 +29,13 @@ public class Entity
     private int dataImg = -1;
 
 
+    /**
+     * @param spriteGroup
+     * @param type
+     * @param x
+     * @param y
+     * @param velocity
+     */
     public Entity(List<Entity> spriteGroup, String type, int x, int y, int velocity)
     {
         group = spriteGroup;
@@ -32,18 +49,19 @@ public class Entity
     }
 
     protected List<Entity> getGroup() { return group; }
+
     public int getDataImg() { return dataImg; }
-    public int[] getPosition() { return pos; }
+    public int getHealth() { return health; }
     public int getXPosition() { return pos[0]; }
     public int getYPosition() { return pos[1]; }
     public int getXPreviousPosition() { return previousPos[0]; }
     public int getYPreviousPosition() { return previousPos[1]; }
-    public int getHealth() { return health; }
-    public boolean[] getWhereCollide() { return collisions; }
+    public int[] getPosition() { return pos; }
     public boolean getCollideUp() { return collisions[0]; }
     public boolean getCollideDown() { return collisions[1]; }
     public boolean getCollideLeft() { return collisions[2]; }
     public boolean getCollideRight() { return collisions[3]; }
+    public boolean[] getWhereCollide() { return collisions; }
 
     public void setDataImg(int newDataImg) { dataImg = newDataImg; }
     public void setVelocity(int newVelocity) { velocity = newVelocity; }
@@ -97,7 +115,9 @@ public class Entity
         pos[0] += velocity;
     }
 
-    public void hit() { health--; }
+    public void hit() {
+        health--;
+    }
 
     public void updates() {}
 }
