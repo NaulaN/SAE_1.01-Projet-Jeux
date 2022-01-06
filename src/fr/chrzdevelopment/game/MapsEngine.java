@@ -30,7 +30,6 @@ import java.util.Random;
  */
 public class MapsEngine
 {
-    private final Random random = new Random();
     // Entities
     private final List<Entity> allSprites = new ArrayList<>();
     private Chest[] allChest;
@@ -61,8 +60,8 @@ public class MapsEngine
     {
         int[] loc = new int[2];
         do {
-            loc[0] = random.nextInt(0, map[0].length);
-            loc[1] = random.nextInt(0, map.length);
+            loc[0] = RANDOM.nextInt(0, map[0].length);
+            loc[1] = RANDOM.nextInt(0, map.length);
         } while (map[loc[1]][loc[0]] == WALL);
 
         return loc;
@@ -72,7 +71,7 @@ public class MapsEngine
     private void spawnEntity()
     {
         int x; int y; int[] loc;
-        int nbMonster = random.nextInt(0, 6);
+        int nbMonster = RANDOM.nextInt(0, 6);
 
         for (int m = 0; m < nbMonster; m++) {
             loc = findALocation();
@@ -134,14 +133,14 @@ public class MapsEngine
     public void generateObstacles()
     {
         // Determine le nombre d'obstacle a prevoir
-        int nbObstacle = random.nextInt(1, 4);
+        int nbObstacle = RANDOM.nextInt(1, 4);
 
         // Generation des obstacles
         for (int o = 0; o <= nbObstacle; o++)
         {
             // Détermine la taille
-            int h = random.nextInt(1, 5);
-            int w = random.nextInt(1, 5);
+            int h = RANDOM.nextInt(1, 5);
+            int w = RANDOM.nextInt(1, 5);
             // Creation de l'obstacle
             char[][] obstacle = new char[h][w];
             for (int c = 0; c < h; c++)
@@ -149,8 +148,8 @@ public class MapsEngine
                     obstacle[c][r] = WALL;
 
             // Placement sur la Map
-            int x = Math.abs(random.nextInt(0, width)-(obstacle[0].length-1));
-            int y = Math.abs(random.nextInt(0, height)-(obstacle.length-1));
+            int x = Math.abs(RANDOM.nextInt(0, width)-(obstacle[0].length-1));
+            int y = Math.abs(RANDOM.nextInt(0, height)-(obstacle.length-1));
             // Ecriture sur la Map
             for (int yMap = 0; yMap < y; yMap++)
                 for (int xMap = 0; xMap < x; xMap++)
@@ -171,7 +170,7 @@ public class MapsEngine
             x = loc[0]; y = loc[1];
 
             // Crée le coffre, on lui dit ce qu'il va loot et on le place dans le tableau
-            new Chest(allSprites, LOOTS[random.nextInt(0, LOOTS.length)], x, y);
+            new Chest(allSprites, LOOTS[RANDOM.nextInt(0, LOOTS.length)], x, y);
         }
     }
 
@@ -179,10 +178,8 @@ public class MapsEngine
     {
         for (int[] row : map)
         {
-            // TODO: Demander a l'enseignant si c'est de faire comme ca ou bien ou bien plusieurs System.out.print()
             StringBuilder line = new StringBuilder();
             for (int column : row)
-                // TODO: Demander a l'enseignant si c'est opti, ou mauvaise pratique.
                 allDataObjImg.computeIfPresent(column, (a, b) -> { line.append(b); return b; });
             System.out.println(line.toString());
         }

@@ -23,7 +23,19 @@ public class Game
     private boolean running = true;
 
 
-    public Game() { creates(); }
+    public Game()
+    {
+        if (OS.equalsIgnoreCase("windows") || OS.equalsIgnoreCase("windows 10"))
+            windowsGraphics();
+        else linuxGraphics();
+
+        // Crée la taille de la carte
+        mapsEngine = new MapsEngine(15, 10);
+        // La generation.
+        mapsEngine.generateMap();
+        mapsEngine.generateObstacles();
+        mapsEngine.generateLoots();
+    }
 
     /**
      * Nettoie tout ce qui est present et afficher sur le terminal.
@@ -41,7 +53,7 @@ public class Game
                 process = processBuilder.inheritIO().start();
             } catch (IOException IOe) {
                 IOe.printStackTrace();
-                if (!OS.equalsIgnoreCase("windows")) {
+                if (!OS.equalsIgnoreCase("windows") || !OS.equalsIgnoreCase("windows 10")) {
                     // la deuxième méthode qui permet de nettoyer la console...
                     System.out.print("\033[H\033[2J");
                     System.out.flush();
@@ -58,23 +70,6 @@ public class Game
                         process.destroyForcibly();
                 }
         }
-    }
-
-    /** Crée les premieres resources essentiel au démarrage du jeu */
-    public void creates()
-    {
-        // Crée la taille de la carte
-        mapsEngine = new MapsEngine(15, 10);
-        // La generation
-        mapsEngine.generateMap();
-        mapsEngine.generateObstacles();
-        mapsEngine.generateLoots();
-
-        // Applique l'UTF-8 sur le CMD de Windows
-        if (OS.equalsIgnoreCase("windows"))
-            try {
-                new ProcessBuilder("cmd", "/c", "chcp 65001").inheritIO().start().waitFor();
-            } catch (Exception ignored) { }
     }
 
     /** Dessine les elements qui nécessite à voir sur la console */

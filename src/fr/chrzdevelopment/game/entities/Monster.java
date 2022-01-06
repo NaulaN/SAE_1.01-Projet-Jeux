@@ -3,7 +3,6 @@ package fr.chrzdevelopment.game.entities;
 import static fr.chrzdevelopment.game.Const.*;
 
 import java.util.List;
-import java.util.Random;
 
 
 /**
@@ -22,9 +21,10 @@ import java.util.Random;
  */
 public class Monster extends Entity
 {
-    private final Random random = new Random();
+    private int offShootDirection = -1;
+    private boolean launchLaser = false;
 
-    private int offsetWhereShooting = -1;   // TODO: Codé la fonction "randomShoot()" grâce a cette variable
+    private int[] locLaser = new int[2];
 
 
     /**
@@ -38,9 +38,9 @@ public class Monster extends Entity
     }
 
     /** Bouge le monstre aléatoirement sur les 4 directions possible. */
-    public void randomMove()
+    private void randomMove()
     {
-        int moveRandomly = random.nextInt(0, 4);
+        int moveRandomly = RANDOM.nextInt(0, 4);
 
         if (moveRandomly == UP && !getWhereCollide()[0])
             moveUp();
@@ -53,8 +53,29 @@ public class Monster extends Entity
     }
 
     /** Fait tirée un rayon laser aléatoirement au monstre sur 4 directions possible. */
-    public void randomShoot() {
-        // TODO: Codé les rayons laser.
+    private void randomShoot() {
+        int shoot = RANDOM.nextInt(0, 5);
+
+        switch (shoot)
+        {
+            case 0 -> launchLaser = false;
+            case 1 -> {
+                launchLaser = true;
+                offShootDirection = 0;
+            }
+            case 2 -> {
+                launchLaser = true;
+                offShootDirection = 1;
+            }
+            case 3 -> {
+                launchLaser = true;
+                offShootDirection = 2;
+            }
+            case 4 -> {
+                launchLaser = true;
+                offShootDirection = 3;
+            }
+        }
     }
 
     /** Fait apparaitre un laser rouge sur la carte. */
@@ -65,9 +86,9 @@ public class Monster extends Entity
     @Override
     public void updates()
     {
+        randomShoot();
         randomMove();
 
-        // TODO: Demander a l'enseignant si ceci clear bien l'objet de la mémoire.
         if (getHealth() <= 0)
             getGroup().remove(this);
     }

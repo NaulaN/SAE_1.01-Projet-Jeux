@@ -3,46 +3,41 @@ package fr.chrzdevelopment.game;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 /** Je voulais utilisé un fichier ".json" mais il faut Gradle pour importer des libraries externe,
  *      Par peur de pas pouvoir me faire noté, je le met dans une classe du nom de Const pour les Constantes */
 public class Const
 {
-    // Les attaques spéciales
-    // TODO: Traduire les variables en anglais de preference dans le code.
-    public static final int CHARGE = 0;
-    public static final int VIVE_ATTAQUE = 1;
-    public static final int ULTRALASER = 2;
-    public static final int ABRIS = 3;
-    public static final int LUMICANON = 4;
-    public static final int COUP_DE_BOULE = 5;
-    public static final int STACKOVERFLOW = 6;
+    public static final Random RANDOM = new Random();
+
+
+    private static final String ANSI_RESET = "\u001B[0m";
+    private static final String ANSI_BLACK = "\u001B[30m";
+    private static final String ANSI_RED = "\u001B[31m";
+    private static final String ANSI_GREEN = "\u001B[32m";
+    private static final String ANSI_YELLOW = "\u001B[33m";
+    private static final String ANSI_BLUE = "\u001B[34m";
+    private static final String ANSI_PURPLE = "\u001B[35m";
+    private static final String ANSI_CYAN = "\u001B[36m";
+    private static final String ANSI_WHITE = "\u001B[37m";
+
+    // Les choses qui vont être dessiné à l'écran.
+    public static String EMPTY_IMG;
+    public static String WALL_IMG;
+    public static String MONSTER_IMG;
+    public static String PLAYER_IMG;
+    public static String CHEST_IMG;
+    public static String CHEST_OPEN_IMG;
+    public static String COIN_IMG;
+    public static String HEART_IMG;
+    public static String RECT_RED_IMG;   // Pour le debug des collisions
+
+    public static Map<Integer, String> allDataObjImg;
+    public static Map<String, Integer> allDataObj;
 
     // Une liste qui determine qu'est-ce qu'un objet vas drop (loot)
     public static final String[] LOOTS = {"coins", "nothing", "health", "cp"};
-    public static final int[] LOOTS_CP = {ULTRALASER, LUMICANON, STACKOVERFLOW};
-
-    // Les choses qui vont être dessiné à l'écran.
-    public static final String EMPTY_IMG = "  ";
-    public static final String WALL_IMG = "\uD83E\uDDF1";
-    public static final String MONSTER_IMG = "\uD83D\uDC7E";
-    public static final String PLAYER_IMG = "\uD83E\uDD20";
-    public static final String CHEST_IMG = "\uD83E\uDDF0";
-    public static final String CHEST_OPEN_IMG = "\uD83E\uDDF0";     // TODO
-    public static final String COIN_IMG = "\uD83E\uDE99";
-    public static final String HEART_IMG = "\u2764\uFE0F";
-    public static final String RECT_RED_IMG = "\uD83D\uDFE5";   // Pour le debug
-
-    public static final Map<Integer, String> allDataObjImg = new HashMap<>()
-    {{
-        put(EMPTY, EMPTY_IMG);
-        put(WALL, WALL_IMG);
-        put(MONSTER, MONSTER_IMG);
-        put(PLAYER, PLAYER_IMG);
-        put(CHEST, CHEST_IMG);
-        put(CHEST_OPEN, CHEST_OPEN_IMG);
-        put(COIN, COIN_IMG);
-    }};
 
     // Les données des objects.
     public static final int EMPTY = 0;
@@ -54,16 +49,6 @@ public class Const
     public static final int CHEST_OPEN = 6;
     public static final int COIN = 7;
 
-    public static final Map<String, Integer> allDataObj = new HashMap<>()
-    {{
-        put("wall", WALL);
-        put("monster", MONSTER);
-        put("player", PLAYER);
-        put("chest", CHEST);
-        put("chest_open", CHEST_OPEN);
-        put("coin", COIN);
-    }};
-
     // Les valeurs qui determines les mouvements d'un objet
     public static final int UP = 0;
     public static final int DOWN = 1;
@@ -71,4 +56,66 @@ public class Const
     public static final int RIGHT = 3;
     // Les valeurs qui determines une interaction.
     public static final int SELECT = 10;
+
+
+    private static void initGraphics()
+    {
+        allDataObjImg = new HashMap<>() {{
+            put(EMPTY, EMPTY_IMG);
+            put(WALL, WALL_IMG);
+            put(MONSTER, MONSTER_IMG);
+            put(PLAYER, PLAYER_IMG);
+            put(CHEST, CHEST_IMG);
+            put(CHEST_OPEN, CHEST_OPEN_IMG);
+            put(COIN, COIN_IMG);
+        }};
+
+        allDataObj = new HashMap<>() {{
+            put("wall", WALL);
+            put("monster", MONSTER);
+            put("player", PLAYER);
+            put("chest", CHEST);
+            put("chest_open", CHEST_OPEN);
+            put("coin", COIN);
+        }};
+    }
+
+    /** Charge les graphismes compatible pour un terminal et un kernel Linux */
+    public static void linuxGraphics()
+    {
+        EMPTY_IMG = "  ";
+        WALL_IMG = "\uD83E\uDDF1";
+        MONSTER_IMG = "\uD83D\uDC7E";
+        PLAYER_IMG = "\uD83E\uDD20";
+        CHEST_IMG = "\uD83E\uDDF0";
+        CHEST_OPEN_IMG = "\uD83E\uDDF0";
+        COIN_IMG = "\uD83E\uDE99";
+        HEART_IMG = "\u2764\uFE0F";
+        RECT_RED_IMG = "\uD83D\uDFE5";
+
+        initGraphics();
+    }
+
+    /** Charge les graphismes compatible pour une console Windows */
+    public static void windowsGraphics()
+    {
+        EMPTY_IMG = " ";
+        WALL_IMG = "\u2588";
+        MONSTER_IMG.concat(ANSI_RED)
+                .concat("\u25A0");
+        PLAYER_IMG.concat(ANSI_PURPLE)
+                .concat("\u25A0");
+        CHEST_IMG.concat(ANSI_CYAN)
+                .concat("\u25A0");
+        CHEST_OPEN_IMG.concat(ANSI_GREEN)
+                .concat("\u25A0");
+        COIN_IMG.concat(ANSI_YELLOW)
+                .concat("\u25A0");
+        HEART_IMG.concat(ANSI_RED)
+                .concat("\u2665");
+        RECT_RED_IMG = "C";
+
+        initGraphics();
+        allDataObjImg.forEach((integer, s) -> s.concat(ANSI_RESET));
+    }
 }
