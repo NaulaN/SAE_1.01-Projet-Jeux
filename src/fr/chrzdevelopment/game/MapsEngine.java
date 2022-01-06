@@ -2,14 +2,10 @@ package fr.chrzdevelopment.game;
 
 import static fr.chrzdevelopment.game.Const.*;
 
-import fr.chrzdevelopment.game.entities.Chest;
-import fr.chrzdevelopment.game.entities.Entity;
-import fr.chrzdevelopment.game.entities.Monster;
-import fr.chrzdevelopment.game.entities.Player;
+import fr.chrzdevelopment.game.entities.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 
 /**
@@ -32,7 +28,8 @@ public class MapsEngine
 {
     // Entities
     private final List<Entity> allSprites = new ArrayList<>();
-    private Chest[] allChest;
+
+    private Chest[] allChest; // TODO
     private Player player;
     // Calques
     private boolean[][] calqueCollide;
@@ -40,6 +37,9 @@ public class MapsEngine
     // Map size
     private int width;
     private int height;
+
+    private int determinateCoins;
+    private int mapLvl = 1;
 
 
     /**
@@ -95,10 +95,10 @@ public class MapsEngine
      * </ul>
      * @param entity Un Sprite (ou une entité) qui doit avoir un clear de la frame precedent.
      */
-    private void updateEntity(Entity entity)
+    private void updateEntity(Entity entity, boolean collide)
     {
         // Modifier la carte selon la position du joueur
-        setElementMap(entity.getXPosition(), entity.getYPosition(), entity.getDataImg(), true);
+        setElementMap(entity.getXPosition(), entity.getYPosition(), entity.getDataImg(), collide);
         if (entity.getXPreviousPosition() != -1)    // Dans le cas où, le joueur ne se serait pas déplacé
             // Clear la dernière "frame"
             setElementMap(entity.getXPreviousPosition(), entity.getYPreviousPosition(), EMPTY, false);
@@ -109,6 +109,8 @@ public class MapsEngine
     public boolean[][] getCalqueCollide() { return calqueCollide; }
     public Player getPlayer() { return player; }
     public List<Entity> getAllSpritesGroup() { return allSprites; }
+    public int getDeterminateCoins() { return determinateCoins; }
+    public int getMapLvl() { return mapLvl; }
 
     public void setWidth(int newWidthSize) { width = newWidthSize; }
     public void setHeight(int newHeightSize) { height = newHeightSize; }
@@ -118,6 +120,8 @@ public class MapsEngine
         calqueCollide[y][x] = isCollideObject;
         map[y][x] = val;
     }
+
+    public void addMapLvl() { mapLvl++; }
 
     /** Genere une map selon la taille specifié lors de l'initialisation de la classe */
     public void generateMap()
@@ -165,12 +169,23 @@ public class MapsEngine
         // TODO: Clean c'te fonction
         allChest = new Chest[2];    // 2 coffres max
 
-        for (int c = 0; c < allChest.length; c++) {
+        for (int c = 0; c < allChest.length; c++)
+        {
             loc = findALocation();
             x = loc[0]; y = loc[1];
 
             // Crée le coffre, on lui dit ce qu'il va loot et on le place dans le tableau
             new Chest(allSprites, LOOTS[RANDOM.nextInt(0, LOOTS.length)], x, y);
+        }
+
+        // TODO: Faire un truc plus complet avec des formes et des chemins de piéce
+        determinateCoins = RANDOM.nextInt(1, 11);
+        for (int c = 0; c <= determinateCoins; c++)
+        {
+            loc = findALocation();
+            x = loc[0]; y = loc[1];
+
+            new Coin(allSprites, x, y);
         }
     }
 
@@ -187,10 +202,35 @@ public class MapsEngine
 
     public void updates()
     {
-        for (Entity sprite : allSprites) {
-            sprite.checkCollision(getCalqueCollide());
+        // TODO: La c'est nimp
+        List<Entity> atDelete = new ArrayList<>();
+
+        allSprites.forEach(sprite -> {
+            if (sprite.getDataImg() != COIN) {
+                sprite.checkCollision(getCalqueCollide());
+                updateEntity(sprite, true);
+            } else
+            if (map[player.getYPosition()][player.getXPosition()] == COIN)
+                atDelete.add(sprite);
+            else updateEntity(sprite, false);
             sprite.updates();
-            updateEntity(sprite);
-        }
+        });
+
+        atDelete.forEach(spriteAtDelete ->  {
+            Entity s = null;
+            for (Entity sprite : allSprites) {
+                if (spriteAtDelete.getXPosition() == player.getXPosition() && spriteAtDelete.getYPosition() == player.getYPosition())
+                {
+                    player.addCoin();
+                    s = sprite;
+                    break;
+                }
+            }
+
+            if (s != null) {
+                map[s.getYPosition()][s.getXPosition()] = EMPTY;
+                allSprites.remove(s);
+            }
+        });
     }
 }

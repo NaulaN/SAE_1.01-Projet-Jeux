@@ -26,20 +26,23 @@ public class Entity
     private int health = 3;
     private int velocity;
 
-    private int dataImg = -1;
+    private int dataImg;
 
 
     /**
-     * @param spriteGroup
-     * @param type
-     * @param x
-     * @param y
-     * @param velocity
+     * @param spriteGroup Un endroit où on place tous les Sprites (Les entités).
+     * @param type Pour savoir de quel type d'entité qu'on va crée.
+     * @param x Les coordonnées en x pour l'entité.
+     * @param y Les coordonnées en y pour l'entité.
+     * @param velocity La vitesse de deplacement.
      */
     public Entity(List<Entity> spriteGroup, String type, int x, int y, int velocity)
     {
+        // TODO: Changement effectué, regarde les éventuels erreur
         group = spriteGroup;
-        spriteGroup.add(this);
+        if (!type.equalsIgnoreCase("player"))
+            spriteGroup.add(0, this);
+        else spriteGroup.add(this);
 
         dataImg = allDataObj.get(type.toLowerCase());
 

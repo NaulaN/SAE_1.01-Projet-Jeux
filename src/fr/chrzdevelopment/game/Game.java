@@ -77,7 +77,10 @@ public class Game
     {
         clearConsole();
 
-        Player  player = mapsEngine.getPlayer();
+        Player player = mapsEngine.getPlayer();
+
+        System.out.println("\t" + ANSI_RED + "NIVEAUX: " + mapsEngine.getMapLvl());
+        System.out.println(ANSI_GREEN + "Vous devez avoir " + mapsEngine.getDeterminateCoins() + " " + COIN_IMG + " pour pouvoir gagner le niveau" + ANSI_RESET);
         mapsEngine.draw();
 
         // Affiche les pieces du joueur obtenu et sont nombre de point de vie total (Nombre de <3)
@@ -89,7 +92,7 @@ public class Game
         for (int h = 1; h <= player.getHealth(); h++)
             msgHud.append(HEART_IMG)
                     .append(" ");
-        System.out.print(msgHud.toString());
+        System.out.print("\t" + msgHud.toString());
     }
 
     /** Actualise les valeurs qui ont besoin d'etre actualisé à chaque passage de la boucle */
@@ -107,6 +110,13 @@ public class Game
             player.moveRight();
 
         mapsEngine.updates();
+
+        // TODO: faire un truc plus propre pour les changements de niveau
+        if (player.getCoins() == mapsEngine.getDeterminateCoins())
+        {
+            mapsEngine.addMapLvl();
+            running = false;
+        }
     }
 
     /** Démarre la boucle principale du jeu */

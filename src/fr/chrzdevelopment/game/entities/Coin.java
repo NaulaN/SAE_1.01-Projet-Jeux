@@ -8,23 +8,16 @@ import java.util.List;
  */
 public class Coin extends Entity
 {
-    private boolean isPickup = false;
-
-
     /**
-     * @param group
-     * @param x
-     * @param y
-     * @param velocity
+     * @param group Un endroit où on place tous les Sprites (Les entités).
+     * @param x La localisation en x du Sprite.
+     * @param y La localisation en y du Sprite.
      */
-    public Coin(List<Entity> group, int x, int y, int velocity) {
-        super(group, "Coin", x, y, velocity);
+    public Coin(List<Entity> group, int x, int y)
+    {
+        super(group, "Coin", x, y, 0);
     }
 
     @Override
-    public void updates()
-    {
-        if (isPickup)
-            getGroup().remove(this);
-    }
+    public void updates() { }
 }
