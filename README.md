@@ -6,14 +6,17 @@ Ce repository Github est consacré pour la `SAE_1.01` et la `SAE_1.02` qui est u
 * Le jeu est un jeu de type aventure dans un sorte de donjon où il y vas avoir des monstres qui vas vous embêter lors de collecte de nombreuse pieces qui sera sur votre chemin ou dans les coffres qui sera générer aléatoirement sur la carte.
 * Ce jeu possede beaucoup de RNG (Aléatoire) comme par exemple la generation supplementaire des obstacles, le spawn du joueur et des monstres (Aussi les clé, coffres ect)
 * L'affichage du jeu est uniquement sur la console, des emojis sera là pour faire plus joli dans la console (Au lieux d'avoir des chiffres ou des lettres qui sera illisible).
+* Il faut récolter toutes les pieces pour gagner un niveau !
 
 ![titleScreen](https://eapi.pcloud.com/getpubthumb?code=XZo2nFZUojd9tO3JSyUVNKtgPqibhbjnQcy&linkpassword=undefined&size=1127x281&crop=0&type=auto)
-### Comment y joué ?
+### Comment le lancé et où l'obtenir ?
 Il faut suffit d'aller dans `Releases`. Et de choisir un `tag` _(Alpha de preference)_. 
 Ensuite de télécharger le fichier `.jar` qui est un format compilé et portatif. 
 Et enfin, de lancé cette commande dans la console:
 
 `java -jar SAE_1.01-Projet-jeux_v{version}`
+
+### Comment y joué ?
 #### Que représente quoi ?
 Les choses représenté sur le terminal lors du lancement du jeu est different selon l'OS !
 Windows aura un affichage ASCII alors que Linux aura un affichage beaucoup plus beau en UTF-8
@@ -30,3 +33,16 @@ Windows aura un affichage ASCII alors que Linux aura un affichage beaucoup plus 
 * 👾 **>** Désigne un monstre.
 * 🧰 **>** Désigne un coffre.
 * 💰 **>** Désigne la moula, les pieces sur le niveau.
+
+#### Les contrôles
+Les touches nécessaires sont les suivants → `z`, `q`, `s`, `d`, `a`.
+* `z` **>** Permet de bougé vers le haut.
+* `s` **>** Permet de bougé vers le bas.
+* `q` **>** Permet de bougé vers la gauche.
+* `d` **>** Permet de bougé vers la droite.
+* `a` **>** Permet de d'actionné un element.
+
+Une fois que vous avez entrée votre touche dans `Que faire > `, appuyé sur `enter` de votre clavier.
+
+**Tips:** Si vous voulez vous déplacé constament vers la droite, il vous suffit de rentré qu'une fois votre touche de 
+déplacement et de spam votre touche entré de votre clavier
