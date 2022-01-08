@@ -84,13 +84,15 @@ public class Entity
 
     public void checkCollision(boolean[][] collideCalque)
     {
-        int y = (pos[1] == 0) ? 0 : pos[1]-1; int x = getXPosition();
+        int y = (pos[1] == 0) ? 0 : pos[1]-1;
+        int x = getXPosition();
         collisions[0] = collideCalque[y][x];
-        y = (pos[1] == 0) ? 0 : Math.min(pos[1]+1, pos[1]);
+        y = (pos[1] == 0) ? 0 : pos[1]+1;
         collisions[1] = collideCalque[y][x];
-        y = getYPosition(); x = (pos[0] == 0) ? 0 : pos[0]-1;
+        y = getYPosition();
+        x = (pos[0] == 0) ? 0 : pos[0]-1;
         collisions[2] = collideCalque[y][x];
-        x = (pos[0] == 0) ? 0 : Math.min(pos[0]+1, pos[0]);
+        x = (pos[0] == 0) ? 0 : pos[0]+1;
         collisions[3] = collideCalque[y][x];
     }
 
