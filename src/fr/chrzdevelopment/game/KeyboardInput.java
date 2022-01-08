@@ -36,6 +36,8 @@ public class KeyboardInput
         }
     }
 
+    public String getStringInput() { return sc.nextLine(); }
+
     public boolean getQuitAction() { return offset == QUIT; }
     public boolean getMoveUp() { return offset == UP; }
     public boolean getMoveDown() { return offset == DOWN; }
