@@ -8,6 +8,11 @@ import fr.chrzdevelopment.game.entities.Player;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
+
 import java.io.*;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -67,6 +72,43 @@ public class Game
         mapsEngine.generateLoots(allSprites);
     }
 
+    /** Démarre la boucle principale du jeu */
+    public void loop()
+    {
+        playSound("music.wav", -1);
+        clearConsole();
+
+        System.out.println();
+        // Title screen
+        System.out.println("\t" + ANSI_RED + "                 ▄       ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄       ▄                 ");
+        System.out.println("\t" + "                ▐░▌     ▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌     ▐░▌                ");
+        System.out.println("\t" + "               ▐░▌       ▀▀▀▀█░█▀▀▀▀ ▐░█▀▀▀▀▀▀▀█░▌▐░█▀▀▀▀▀▀▀█░▌ ▀▀▀▀█░█▀▀▀▀  ▀▀▀▀▀█░█▀▀▀       ▐░▌               ");
+        System.out.println("\t" + "              ▐░▌            ▐░▌     ▐░▌       ▐░▌▐░▌       ▐░▌     ▐░▌           ▐░▌           ▐░▌              ");
+        System.out.println("\t" + " ▄▄▄▄▄▄▄▄▄▄▄ ▐░▌             ▐░▌     ▐░█▄▄▄▄▄▄▄█░▌▐░█▄▄▄▄▄▄▄█░▌     ▐░▌           ▐░▌            ▐░▌ ▄▄▄▄▄▄▄▄▄▄▄ ");
+        System.out.println("\t" + "▐░░░░░░░░░░░▌▐░▌             ▐░▌     ▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌     ▐░▌           ▐░▌            ▐░▌▐░░░░░░░░░░░▌");
+        System.out.println("\t" + " ▀▀▀▀▀▀▀▀▀▀▀ ▐░▌             ▐░▌     ▐░█▀▀▀▀█░█▀▀ ▐░█▀▀▀▀▀▀▀▀▀      ▐░▌           ▐░▌            ▐░▌ ▀▀▀▀▀▀▀▀▀▀▀ ");
+        System.out.println("\t" + "              ▐░▌            ▐░▌     ▐░▌     ▐░▌  ▐░▌               ▐░▌           ▐░▌           ▐░▌              ");
+        System.out.println("\t" + "               ▐░▌       ▄▄▄▄█░█▄▄▄▄ ▐░▌      ▐░▌ ▐░▌           ▄▄▄▄█░█▄▄▄▄  ▄▄▄▄▄█░▌          ▐░▌               ");
+        System.out.println("\t" + "                ▐░▌     ▐░░░░░░░░░░░▌▐░▌       ▐░▌▐░▌          ▐░░░░░░░░░░░▌▐░░░░░░░▌         ▐░▌                ");
+        System.out.println("\t" + "                  ▀      ▀▀▀▀▀▀▀▀▀▀▀  ▀         ▀  ▀            ▀▀▀▀▀▀▀▀▀▀▀  ▀▀▀▀▀▀▀           ▀                 " + ANSI_RESET);
+        System.out.println();
+
+        System.out.println();
+        System.out.println("Bienvenue chèr(e) aventurièr(e) ! Ici, multiple aventure vous attend, entre les monstres, les coffres, les obstacles... Il a de quoi faire !");
+        System.out.println(ANSI_RED + "============================================================================================================================================" + ANSI_RESET);
+        System.out.print("\t" + ANSI_GREEN + "Entrez votre nom > ");
+        playerName = keyboardInput.getStringInput();
+
+        // Game loops
+        while (running)
+        {
+            updates();
+            draws();
+
+            keyboardInput.getInput();
+        }
+    }
+
     /**
      * Nettoie tout ce qui est present et afficher sur le terminal.
      * @exception IOException Essaye avec une deuxième méthode pour nettoyer la console
@@ -91,6 +133,29 @@ public class Game
             try {
                 process.waitFor();
             } catch (InterruptedException ignored) { }
+    }
+
+    /** Joue une music, un bruitage, ... */
+    private void playSound(final String fileName, int loopCount)
+    {
+        Clip clip;
+        File wavFile = new File("res/" + fileName);
+        if (!wavFile.canRead()) {
+            BufferedInputStream in = new BufferedInputStream(getClass().getResourceAsStream("/" + fileName));
+            try {
+                clip = AudioSystem.getClip();
+                clip.open(AudioSystem.getAudioInputStream(in));
+                clip.loop(loopCount);
+                clip.start();
+            } catch (LineUnavailableException | IOException | UnsupportedAudioFileException e) { e.printStackTrace(); }
+        } else {
+            try {
+                clip = AudioSystem.getClip();
+                clip.open(AudioSystem.getAudioInputStream(wavFile));
+                clip.loop(loopCount);
+                clip.start();
+            } catch (LineUnavailableException | IOException | UnsupportedAudioFileException e) { e.printStackTrace(); }
+        }
     }
 
     /** Dessine les elements qui nécessite à voir sur la console */
@@ -148,42 +213,6 @@ public class Game
             player = mapsEngine.spawnEntity(allSprites);
             mapsEngine.generateObstacles();
             mapsEngine.generateLoots(allSprites);
-        }
-    }
-
-    /** Démarre la boucle principale du jeu */
-    public void loop()
-    {
-        clearConsole();
-
-        System.out.println();
-        // Title screen
-        System.out.println("\t" + ANSI_RED + "                 ▄       ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄       ▄                 ");
-        System.out.println("\t" + "                ▐░▌     ▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌     ▐░▌                ");
-        System.out.println("\t" + "               ▐░▌       ▀▀▀▀█░█▀▀▀▀ ▐░█▀▀▀▀▀▀▀█░▌▐░█▀▀▀▀▀▀▀█░▌ ▀▀▀▀█░█▀▀▀▀  ▀▀▀▀▀█░█▀▀▀       ▐░▌               ");
-        System.out.println("\t" + "              ▐░▌            ▐░▌     ▐░▌       ▐░▌▐░▌       ▐░▌     ▐░▌           ▐░▌           ▐░▌              ");
-        System.out.println("\t" + " ▄▄▄▄▄▄▄▄▄▄▄ ▐░▌             ▐░▌     ▐░█▄▄▄▄▄▄▄█░▌▐░█▄▄▄▄▄▄▄█░▌     ▐░▌           ▐░▌            ▐░▌ ▄▄▄▄▄▄▄▄▄▄▄ ");
-        System.out.println("\t" + "▐░░░░░░░░░░░▌▐░▌             ▐░▌     ▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌     ▐░▌           ▐░▌            ▐░▌▐░░░░░░░░░░░▌");
-        System.out.println("\t" + " ▀▀▀▀▀▀▀▀▀▀▀ ▐░▌             ▐░▌     ▐░█▀▀▀▀█░█▀▀ ▐░█▀▀▀▀▀▀▀▀▀      ▐░▌           ▐░▌            ▐░▌ ▀▀▀▀▀▀▀▀▀▀▀ ");
-        System.out.println("\t" + "              ▐░▌            ▐░▌     ▐░▌     ▐░▌  ▐░▌               ▐░▌           ▐░▌           ▐░▌              ");
-        System.out.println("\t" + "               ▐░▌       ▄▄▄▄█░█▄▄▄▄ ▐░▌      ▐░▌ ▐░▌           ▄▄▄▄█░█▄▄▄▄  ▄▄▄▄▄█░▌          ▐░▌               ");
-        System.out.println("\t" + "                ▐░▌     ▐░░░░░░░░░░░▌▐░▌       ▐░▌▐░▌          ▐░░░░░░░░░░░▌▐░░░░░░░▌         ▐░▌                ");
-        System.out.println("\t" + "                  ▀      ▀▀▀▀▀▀▀▀▀▀▀  ▀         ▀  ▀            ▀▀▀▀▀▀▀▀▀▀▀  ▀▀▀▀▀▀▀           ▀                 " + ANSI_RESET);
-        System.out.println();
-
-        System.out.println();
-        System.out.println("Bienvenue chèr(e) aventurièr(e) ! Ici, multiple aventure vous attend, entre les monstres, les coffres, les obstacles... Il a de quoi faire !");
-        System.out.println(ANSI_RED + "============================================================================================================================================" + ANSI_RESET);
-        System.out.print("\t" + ANSI_GREEN + "Entrez votre nom > ");
-        playerName = keyboardInput.getStringInput();
-
-        // Game loops
-        while (running)
-        {
-            updates();
-            draws();
-
-            keyboardInput.getInput();
         }
     }
 }
