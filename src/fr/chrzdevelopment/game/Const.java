@@ -56,6 +56,7 @@ public class Const
     public static final int RIGHT = 3;
     // Les valeurs qui determines une interaction.
     public static final int SELECT = 10;
+    public static final int QUIT = 11;
 
 
     private static void initGraphics()
@@ -99,23 +100,16 @@ public class Const
     /** Charge les graphismes compatible pour une console Windows */
     public static void windowsGraphics()
     {
-        EMPTY_IMG = " ";
-        WALL_IMG = "\u2588";
-        MONSTER_IMG.concat(ANSI_RED)
-                .concat("\u25A0");
-        PLAYER_IMG.concat(ANSI_PURPLE)
-                .concat("\u25A0");
-        CHEST_IMG.concat(ANSI_CYAN)
-                .concat("\u25A0");
-        CHEST_OPEN_IMG.concat(ANSI_GREEN)
-                .concat("\u25A0");
-        COIN_IMG.concat(ANSI_YELLOW)
-                .concat("\u25A0");
-        HEART_IMG.concat(ANSI_RED)
-                .concat("\u2665");
-        RECT_RED_IMG = "C";
+        EMPTY_IMG = " " + ANSI_RESET;
+        WALL_IMG = "\u2588" + ANSI_RESET;
+        MONSTER_IMG = ANSI_RED + "\u25A0" + ANSI_RESET;
+        PLAYER_IMG = ANSI_PURPLE + "\u25A0" + ANSI_RESET;
+        CHEST_IMG = ANSI_CYAN + "\u25A0" + ANSI_RESET;
+        CHEST_OPEN_IMG = ANSI_GREEN + "\u25A0" + ANSI_RESET;
+        COIN_IMG = ANSI_YELLOW + "\u25A0" + ANSI_RESET;
+        HEART_IMG = ANSI_RED + "\u2665" + ANSI_RESET;
+        RECT_RED_IMG = "C" + ANSI_RESET;
 
         initGraphics();
-        allDataObjImg.forEach((integer, s) -> s.concat(ANSI_RESET));
     }
 }

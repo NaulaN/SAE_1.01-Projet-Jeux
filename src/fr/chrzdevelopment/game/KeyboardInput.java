@@ -19,19 +19,24 @@ public class KeyboardInput
         // Evite une erreur
         if (input.length() != 0)
         {
-            char key = input.toLowerCase().charAt(0);
-            switch (key)
-            {
-                case 'z' -> offset = UP;
-                case 's' -> offset = DOWN;
-                case 'q' -> offset = LEFT;
-                case 'd' -> offset = RIGHT;
-                case 'a' -> offset = SELECT;
-                default ->  offset = -1;
+            if (input.equalsIgnoreCase("quit"))
+                offset = QUIT;
+            else {
+                char key = input.toLowerCase().charAt(0);
+                switch (key)
+                {
+                    case 'z' -> offset = UP;
+                    case 's' -> offset = DOWN;
+                    case 'q' -> offset = LEFT;
+                    case 'd' -> offset = RIGHT;
+                    case 'a' -> offset = SELECT;
+                    default ->  offset = -1;
+                }
             }
         }
     }
 
+    public boolean getQuitAction() { return offset == QUIT; }
     public boolean getMoveUp() { return offset == UP; }
     public boolean getMoveDown() { return offset == DOWN; }
     public boolean getMoveLeft() { return offset == LEFT; }

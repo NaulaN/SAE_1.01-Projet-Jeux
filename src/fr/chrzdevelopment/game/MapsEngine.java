@@ -4,7 +4,6 @@ import static fr.chrzdevelopment.game.Const.*;
 
 import fr.chrzdevelopment.game.entities.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -26,11 +25,6 @@ import java.util.List;
  */
 public class MapsEngine
 {
-    // Entities
-    private final List<Entity> allSprites = new ArrayList<>();
-
-    private Chest[] allChest; // TODO
-    private Player player;
     // Calques
     private boolean[][] calqueCollide;
     private int[][] map;
@@ -41,6 +35,8 @@ public class MapsEngine
     private int determinateCoins;
     private int mapLvl = 1;
 
+    private boolean isGenerate = false;
+
 
     /**
      * @param width La taille initiale de la carte en largeur
@@ -50,9 +46,6 @@ public class MapsEngine
     {
         this.width = width;
         this.height = height;
-
-        map = new int[height][width];
-        calqueCollide = new boolean[height][width];
     }
 
     /** Determine une position et fait en sorte que ne soit pas dans un mur. */
@@ -62,13 +55,13 @@ public class MapsEngine
         do {
             loc[0] = RANDOM.nextInt(0, map[0].length);
             loc[1] = RANDOM.nextInt(0, map.length);
-        } while (map[loc[1]][loc[0]] == WALL);
+        } while (map[loc[1]][loc[0]] == WALL && map[loc[1]][loc[0]] == MONSTER && map[loc[1]][loc[0]] == CHEST && map[loc[1]][loc[0]] == COIN);
 
         return loc;
     }
 
     /** Crée et place les monstres et le joueur sur la carte */
-    private void spawnEntity()
+    public Player spawnEntity(List<Entity> allSprites)
     {
         int x; int y; int[] loc;
         int nbMonster = RANDOM.nextInt(0, 6);
@@ -84,7 +77,7 @@ public class MapsEngine
         x = loc[0]; y = loc[1];
 
         // Crée le joueur
-        player = new Player(allSprites, x, y, 1);
+        return new Player(allSprites, x, y, 1);
     }
 
     /**
@@ -95,7 +88,7 @@ public class MapsEngine
      * </ul>
      * @param entity Un Sprite (ou une entité) qui doit avoir un clear de la frame precedent.
      */
-    private void updateEntity(Entity entity, boolean collide)
+    public void updateEntity(Entity entity, boolean collide)
     {
         // Modifier la carte selon la position du joueur
         setElementMap(entity.getXPosition(), entity.getYPosition(), entity.getDataImg(), collide);
@@ -105,10 +98,9 @@ public class MapsEngine
     }
 
     public int[][] getMap() { return map; }
+    public boolean getIsGenerate() { return isGenerate; }
     /** Donne une matrice de 0 et de 1 qui determine sur la map, qu'est-ce qui ont la fonction "collide" */
     public boolean[][] getCalqueCollide() { return calqueCollide; }
-    public Player getPlayer() { return player; }
-    public List<Entity> getAllSpritesGroup() { return allSprites; }
     public int getDeterminateCoins() { return determinateCoins; }
     public int getMapLvl() { return mapLvl; }
 
@@ -121,17 +113,24 @@ public class MapsEngine
         map[y][x] = val;
     }
 
-    public void addMapLvl() { mapLvl++; }
+    public void addMapLvl()
+    {
+        isGenerate = false;
+        mapLvl++;
+    }
 
     /** Genere une map selon la taille specifié lors de l'initialisation de la classe */
     public void generateMap()
     {
+        map = new int[height][width];
+        calqueCollide = new boolean[height][width];
+
         for (int y = 0; y < height; y++)
             for (int x = 0; x < width; x++)
                 if ((y == 0 || y == height-1) || (x == 0 || x == width-1))
                     setElementMap(x, y, WALL, true);
                 else setElementMap(x, y, EMPTY, false);
-        spawnEntity();
+        isGenerate = true;
     }
 
     public void generateObstacles()
@@ -163,13 +162,12 @@ public class MapsEngine
     }
 
     /** Génère les coffres, les pieces et les/la clé(s) */
-    public void generateLoots()
+    public void generateLoots(List<Entity> allSprites)
     {
         int x; int y; int[] loc;
         // TODO: Clean c'te fonction
-        allChest = new Chest[2];    // 2 coffres max
 
-        for (int c = 0; c < allChest.length; c++)
+        for (int c = 0; c < 2; c++)
         {
             loc = findALocation();
             x = loc[0]; y = loc[1];
@@ -198,39 +196,5 @@ public class MapsEngine
                 allDataObjImg.computeIfPresent(column, (a, b) -> { line.append(b); return b; });
             System.out.println(line.toString());
         }
-    }
-
-    public void updates()
-    {
-        // TODO: La c'est nimp
-        List<Entity> atDelete = new ArrayList<>();
-
-        allSprites.forEach(sprite -> {
-            if (sprite.getDataImg() != COIN) {
-                sprite.checkCollision(getCalqueCollide());
-                updateEntity(sprite, true);
-            } else
-            if (map[player.getYPosition()][player.getXPosition()] == COIN)
-                atDelete.add(sprite);
-            else updateEntity(sprite, false);
-            sprite.updates();
-        });
-
-        atDelete.forEach(spriteAtDelete ->  {
-            Entity s = null;
-            for (Entity sprite : allSprites) {
-                if (spriteAtDelete.getXPosition() == player.getXPosition() && spriteAtDelete.getYPosition() == player.getYPosition())
-                {
-                    player.addCoin();
-                    s = sprite;
-                    break;
-                }
-            }
-
-            if (s != null) {
-                map[s.getYPosition()][s.getXPosition()] = EMPTY;
-                allSprites.remove(s);
-            }
-        });
     }
 }

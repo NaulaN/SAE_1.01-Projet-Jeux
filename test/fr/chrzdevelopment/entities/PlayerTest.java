@@ -3,9 +3,13 @@ package fr.chrzdevelopment.entities;
 import static org.junit.jupiter.api.Assertions.*;
 import static fr.chrzdevelopment.game.Const.*;
 
-import fr.chrzdevelopment.game.entities.Player;
+import fr.chrzdevelopment.game.entities.Entity;
 import fr.chrzdevelopment.game.MapsEngine;
+import fr.chrzdevelopment.game.entities.Player;
+
 import org.junit.jupiter.api.Test;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class PlayerTest
@@ -13,6 +17,8 @@ public class PlayerTest
     @Test
     public final void checkCollisionTest()
     {
+        List<Entity> allSprites = new ArrayList<>();
+
         MapsEngine mapsEngine = new MapsEngine(6, 6);
 
         mapsEngine.generateMap();
@@ -22,7 +28,8 @@ public class PlayerTest
         mapsEngine.setElementMap(3, 3, WALL, true);
         mapsEngine.setElementMap(2, 3, WALL, true);
 
-        Player player = mapsEngine.getPlayer();
+        Player player = mapsEngine.spawnEntity(allSprites);
+
         player.setXPosition(1);
         player.setYPosition(1);
 
