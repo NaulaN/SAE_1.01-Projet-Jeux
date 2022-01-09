@@ -33,6 +33,8 @@ public class Const
     public static String HEART_IMG;
     public static String KEY_IMG;
     public static String RECT_RED_IMG;   // Pour le debug des collisions
+    public static String LASER_VERTICAL_IMG;
+    public static String LASER_HORIZONTAL_IMG;
 
     public static Map<Integer, String> allDataObjImg;
     public static Map<String, Integer> allDataObj;
@@ -50,6 +52,8 @@ public class Const
     public static final int CHEST_OPEN = 6;
     public static final int COIN = 7;
     public static final int KEY = 8;
+    public static final int LASER_VERTICAL = 20;
+    public static final int LASER_HORIZONTAL = 21;
 
     // Les valeurs qui determines les mouvements d'un objet
     public static final int UP = 0;
@@ -72,6 +76,8 @@ public class Const
             put(CHEST_OPEN, CHEST_OPEN_IMG);
             put(COIN, COIN_IMG);
             put(KEY, KEY_IMG);
+            put(LASER_VERTICAL, LASER_VERTICAL_IMG);
+            put(LASER_HORIZONTAL, LASER_HORIZONTAL_IMG);
         }};
 
         allDataObj = new HashMap<>() {{
@@ -115,6 +121,8 @@ public class Const
         HEART_IMG = ANSI_RED + "\u2665" + ANSI_RESET;
         RECT_RED_IMG = "C" + ANSI_RESET;
         KEY_IMG = ANSI_YELLOW + "*" + ANSI_RESET;
+        LASER_VERTICAL_IMG = ANSI_BLUE + "\u25A0" + ANSI_RESET;
+        LASER_HORIZONTAL_IMG = ANSI_BLUE +  "\u25A0" + ANSI_RESET;
 
         initGraphics();
     }

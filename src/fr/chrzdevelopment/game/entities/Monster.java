@@ -21,21 +21,13 @@ import java.util.List;
  */
 public class Monster extends Entity
 {
-    private int offShootDirection = -1;
-    private boolean launchLaser = false;
-
-    private int[] locLaser = new int[2];
-
-
     /**
      * @param group Un endroit où on place tous les Sprites (Les entités).
      * @param x La localisation en x du Sprite.
      * @param y La localisation en y du Sprite.
      * @param velocity La vitesse du Monstre.
      */
-    public Monster(List<Entity> group, int x, int y, int velocity) {
-        super(group, "Monster", x, y, velocity);
-    }
+    public Monster(List<Entity> group, int x, int y, int velocity) { super(group, "Monster", x, y, velocity); }
 
     /** Bouge le monstre aléatoirement sur les 4 directions possible. */
     private void randomMove()
@@ -53,34 +45,12 @@ public class Monster extends Entity
     }
 
     /** Fait tirée un rayon laser aléatoirement au monstre sur 4 directions possible. */
-    private void randomShoot() {
-        int shoot = RANDOM.nextInt(0, 5);
+    private void randomShoot()
+    {
+        int shoot = RANDOM.nextInt(0, 20);
 
-        switch (shoot)
-        {
-            case 0 -> launchLaser = false;
-            case 1 -> {
-                launchLaser = true;
-                offShootDirection = 0;
-            }
-            case 2 -> {
-                launchLaser = true;
-                offShootDirection = 1;
-            }
-            case 3 -> {
-                launchLaser = true;
-                offShootDirection = 2;
-            }
-            case 4 -> {
-                launchLaser = true;
-                offShootDirection = 3;
-            }
-        }
-    }
-
-    /** Fait apparaitre un laser rouge sur la carte. */
-    public void laserAnimation(int[][] map) {
-        // TODO: Réflechir et codé la fonction qui permet de faire l'animation du rayon laser
+        if (shoot == 0 || shoot == 1 || shoot == 2 || shoot == 3)
+            getGroup().add(new Laser(getGroup(), getXPosition(), getYPosition(), shoot));
     }
 
     @Override

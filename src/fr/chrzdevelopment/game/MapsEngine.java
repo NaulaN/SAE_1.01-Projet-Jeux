@@ -73,7 +73,7 @@ public class MapsEngine
         return new Player(allSprites, x, y, 1);
     }
 
-    public Monster[] spawnMonster(List<Entity> allSprites)
+    public void spawnMonster(List<Entity> allSprites)
     {
         int nbMonster = RANDOM.nextInt(0, 6);
         Monster[] monsters = new Monster[nbMonster];
@@ -87,11 +87,9 @@ public class MapsEngine
             // Crée le monstre et le range dans le tableau.
             monsters[m] = new Monster(allSprites, x, y, 1);
         }
-
-        return monsters;
     }
 
-    public Coin[] spawnCoin(List<Entity> allSprites)
+    public void spawnCoin(List<Entity> allSprites)
     {
         determinateCoins = RANDOM.nextInt(1, 11);
         Coin[] coins = new Coin[determinateCoins];
@@ -104,11 +102,9 @@ public class MapsEngine
 
             coins[c] = new Coin(allSprites, x, y);
         }
-
-        return coins;
     }
 
-    public Chest[] spawnChest(List<Entity> allSprites)
+    public void spawnChest(List<Entity> allSprites)
     {
         int nbChest = 2;
         Chest[] chests = new Chest[nbChest];
@@ -124,11 +120,9 @@ public class MapsEngine
                 determinateCoins++;
             chests[c] = new Chest(allSprites, loot, x, y);
         }
-
-        return chests;
     }
 
-    public Key[] spawnKey(List<Entity> allSprites)
+    public void spawnKey(List<Entity> allSprites)
     {
         int nbKey = 2;
         Key[] keys = new Key[nbKey];
@@ -140,8 +134,6 @@ public class MapsEngine
 
             keys[k] = new Key(allSprites, x, y);
         }
-
-        return keys;
     }
 
     /**

@@ -80,10 +80,6 @@ public class Game
 
     // Entities
     private final List<Entity> allSprites = new CopyOnWriteArrayList<>();
-    private Monster[] monsters;
-    private Chest[] chests;
-    private Coin[] coins;
-    private Key[] keys;
     private Player player;
 
     private int totalCoins;
@@ -193,10 +189,10 @@ public class Game
     {
         allSprites.clear();
         player = mapsEngine.spawnPlayer(allSprites);
-        monsters = mapsEngine.spawnMonster(allSprites);
-        coins = mapsEngine.spawnCoin(allSprites);
-        chests = mapsEngine.spawnChest(allSprites);
-        keys = mapsEngine.spawnKey(allSprites);
+        mapsEngine.spawnMonster(allSprites);
+        mapsEngine.spawnCoin(allSprites);
+        mapsEngine.spawnChest(allSprites);
+        mapsEngine.spawnKey(allSprites);
     }
 
     /** Dessine les elements qui nécessite à voir sur la console */
@@ -248,42 +244,55 @@ public class Game
 
         for (Entity sprite : allSprites)
         {
-            for (Coin coin : coins)
-                if (sprite.equals(coin))
-                    if (sprite.getXPosition() == player.getXPosition() && sprite.getYPosition() == player.getYPosition()) {
-                        player.addCoin();
-                        coin.isPickup();
-                    }
-
-            for (Chest chest : chests)
-               if (sprite.equals(chest))
-                   if (keyboardInput.getSelect())
-                       if ((sprite.getXPosition() == player.getXPosition()-1 || sprite.getXPosition() == player.getXPosition()+1)
-                               || (sprite.getYPosition() == player.getYPosition()-1 || sprite.getYPosition() == player.getYPosition()+1))
-                           if (player.getHaveAKey()) {
-                               if (chest.getWhatInside().equalsIgnoreCase("coin"))
-                                   player.addCoin();
-                               else if (chest.getWhatInside().equalsIgnoreCase("health"))
-                                   player.setHealth(player.getHealth()+1);
-
-                               chest.hit();
-                               player.haventKey();
-                           }
-
-            for (Key key : keys)
-                if (sprite.equals(key))
-                    if (keyboardInput.getSelect())
-                        if ((sprite.getXPosition() == player.getXPosition()-1 || sprite.getXPosition() == player.getXPosition()+1)
-                                || (sprite.getYPosition() == player.getYPosition()-1 || sprite.getYPosition() == player.getYPosition()+1))
-                            if (!player.getHaveAKey()) {
-                                player.haveKey();
-                                key.hit();
-                            }
-
-
             sprite.checkCollision(mapsEngine.getCalqueCollide());
+            mapsEngine.updateEntity(sprite, sprite.getDataImg() != COIN && sprite.getDataImg() != KEY && sprite.getDataImg() != LASER_VERTICAL && sprite.getDataImg() != LASER_HORIZONTAL);
             sprite.updates();
-            mapsEngine.updateEntity(sprite, sprite.getDataImg() != COIN && sprite.getDataImg() != KEY);
+
+            if (sprite instanceof Coin coin)
+                if (sprite.getXPosition() == player.getXPosition() && sprite.getYPosition() == player.getYPosition()) {
+                    player.addCoin();
+                    mapsEngine.setElementMap(coin.getXPosition(), coin.getYPosition(), EMPTY, false);
+                    allSprites.remove(coin);
+                }
+
+            if (sprite instanceof Chest chest)
+               if (keyboardInput.getSelect())
+                   if ((sprite.getXPosition() == player.getXPosition()-1 || sprite.getXPosition() == player.getXPosition()+1)
+                           || (sprite.getYPosition() == player.getYPosition()-1 || sprite.getYPosition() == player.getYPosition()+1))
+                       if (player.getHaveAKey()) {
+                           if (chest.getWhatInside().equalsIgnoreCase("coin"))
+                               player.addCoin();
+                           else if (chest.getWhatInside().equalsIgnoreCase("health"))
+                               player.setHealth(player.getHealth()+1);
+
+                           chest.hit();
+                           player.haventKey();
+                       }
+
+            if (sprite instanceof Key key)
+                if (keyboardInput.getSelect())
+                    if ((sprite.getXPosition() == player.getXPosition()-1 || sprite.getXPosition() == player.getXPosition()+1)
+                            || (sprite.getYPosition() == player.getYPosition()-1 || sprite.getYPosition() == player.getYPosition()+1))
+                        if (!player.getHaveAKey()) {
+                            player.haveKey();
+                            key.hit();
+                        }
+
+            if (sprite instanceof Laser laser) {
+                if (!laser.getCollideUp() && laser.getDirection() == 0)
+                    laser.moveUp();
+                if (!laser.getCollideDown() && laser.getDirection() == 3)
+                    laser.moveDown();
+                if (!laser.getCollideRight() && laser.getDirection() == 1)
+                    laser.moveRight();
+                if (!laser.getCollideLeft() && laser.getDirection() == 2)
+                    laser.moveLeft();
+                else {
+                    mapsEngine.setElementMap(laser.getXPosition(), laser.getYPosition(), EMPTY, false);
+                    mapsEngine.setElementMap(laser.getXPreviousPosition(), laser.getYPreviousPosition(), EMPTY, false);
+                    allSprites.remove(laser);
+                }
+            }
         }
     }
 }
