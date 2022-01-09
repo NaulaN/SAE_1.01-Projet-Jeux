@@ -21,18 +21,22 @@ Et enfin, de lancé cette commande dans la console:
 Les choses représenté sur le terminal lors du lancement du jeu est different selon l'OS !
 Windows aura un affichage ASCII alors que Linux aura un affichage beaucoup plus beau en UTF-8
 ##### Sur windows:
+![illustrationMapOnWindows](https://eapi.pcloud.com/getpubthumb?code=XZMq9FZ4N5iPPInMp8xQ9MUJXXqCjH1gRgk&linkpassword=undefined&size=300x300&crop=0&type=auto)
 * ![player](https://eapi.pcloud.com/getpubthumb?code=XZHWnFZk3IXz5H7jFudThzH32e6Qf8nFtR7&linkpassword=undefined&size=20x20&crop=0&type=auto) **>** Ce joli petit pixel représente le joueur.
 * ![monster](https://eapi.pcloud.com/getpubthumb?code=XZ8WnFZ6dUw4UjdSbB83xVtnPOaNQpkATeX&linkpassword=undefined&size=20x20&crop=0&type=auto) **>** Oooh ! Qu'est-ce qu'il est beau ce pixel toute rouge menacent, il représente un monstre.
 * ![coin](https://eapi.pcloud.com/getpubthumb?code=XZmWnFZkrHqbGdEdrQtjHuoTOhQEQx42uhy&linkpassword=undefined&size=20x20&crop=0&type=auto) **>** Cette element représente une piece, le seul moyen de gagné un niveau.
-* ![chest](https://eapi.pcloud.com/getpubthumb?code=XZSWnFZKLL7gmEeqQmIfv6IYORNikV5EMYX&linkpassword=undefined&size=20x20&crop=0&type=auto) **>** Ce truc vert est un coffre... J'ai pas trouvé mieux 🙁
+* ![chest](https://eapi.pcloud.com/getpubthumb?code=XZSWnFZKLL7gmEeqQmIfv6IYORNikV5EMYX&linkpassword=undefined&size=20x20&crop=0&type=auto) **>** Ce truc vert est un coffre... J'ai pas trouvé mieux 🙁 Une fois ouvert, il devient bleu.
 * ![wall](https://eapi.pcloud.com/getpubthumb?code=XZjWnFZoITQkBECz0hLHcEHeiBfWHzKY0Vk&linkpassword=undefined&size=20x20&crop=0&type=auto) **>** Un mur, juste un mur.
+* ![key](https://eapi.pcloud.com/getpubthumb?code=XZft9FZHwcGC1shg2kab63IONGqYJ6Y3Bc7&linkpassword=undefined&size=20x20&crop=0&type=auto) **>** Représente une clé qui permet d'ouvrir les coffres.
 
 ##### Sur Linux:
+![illustrationMapOnLinux]()
 * 🤠 **>** Désigne le joueur, un joli cowboy !
 * 🧱 **>** Désigne un mur.
 * 👾 **>** Désigne un monstre.
 * 🧰 **>** Désigne un coffre.
-* 💰 **>** Désigne la moula, les pieces sur le niveau.
+* 💰 **>** Désigne la moula, les pieces sur le niveau, seul moyen de gagné le niveau.
+* 🔑 **>** Désigne une clé qui permet d'ouvrir les coffres.
 
 #### Les contrôles
 Les touches nécessaires sont les suivants → `z`, `q`, `s`, `d`, `a`.
@@ -40,9 +44,9 @@ Les touches nécessaires sont les suivants → `z`, `q`, `s`, `d`, `a`.
 * `s` **>** Permet de bougé vers le bas.
 * `q` **>** Permet de bougé vers la gauche.
 * `d` **>** Permet de bougé vers la droite.
-* `a` **>** Permet de d'actionné un element.
+* `a` **>** Permet de d'actionné un element autours de vous.
 
 Une fois que vous avez entrée votre touche dans `Que faire > `, appuyé sur `enter` de votre clavier.
 
 **Tips:** Si vous voulez vous déplacé constament vers la droite, il vous suffit de rentré qu'une fois votre touche de 
-déplacement et de spam votre touche entré de votre clavier
+déplacement et de spam votre touche entrer de votre clavier
