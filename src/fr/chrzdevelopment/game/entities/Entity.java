@@ -87,12 +87,12 @@ public class Entity
         int y = (pos[1] == 0) ? 0 : pos[1]-1;
         int x = getXPosition();
         collisions[0] = collideCalque[y][x];
-        y = (pos[1] == 0) ? 0 : (pos[1] == collideCalque.length-1) ? pos[1] : pos[1]+1;
+        y = (pos[1] == 0) ? 0 : (pos[1] < collideCalque.length-1) ? pos[1]+1 : pos[1];
         collisions[1] = collideCalque[y][x];
         y = getYPosition();
         x = (pos[0] == 0) ? 0 : pos[0]-1;
         collisions[2] = collideCalque[y][x];
-        x = (pos[0] == 0) ? 0 : (pos[0] == collideCalque.length-1) ? pos[0] : pos[0]+1;
+        x = (pos[0] == 0) ? 0 : (pos[0] < collideCalque[0].length-1) ? pos[0]+1 : pos[0];
         collisions[3] = collideCalque[y][x];
     }
 

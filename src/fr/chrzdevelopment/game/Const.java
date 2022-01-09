@@ -38,7 +38,7 @@ public class Const
     public static Map<String, Integer> allDataObj;
 
     // Une liste qui determine qu'est-ce qu'un objet vas drop (loot)
-    public static final String[] LOOTS = {"coin", "nothing", "health", "cp"};
+    public static final String[] LOOTS = {"coin", "nothing", "health"};
 
     // Les données des objects.
     public static final int EMPTY = 0;

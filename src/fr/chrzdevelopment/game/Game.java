@@ -71,6 +71,7 @@ public class Game
 
     private void spawnEntity()
     {
+        allSprites.clear();
         player = mapsEngine.spawnPlayer(allSprites);
         monsters = mapsEngine.spawnMonster(allSprites);
         coins = mapsEngine.spawnCoin(allSprites);
@@ -155,6 +156,7 @@ public class Game
         StringBuilder msgHud = new StringBuilder().append(COIN_IMG).append(": ").append(player.getCoins()).append("   ");
         for (int h = 1; h <= player.getHealth(); h++)
             msgHud.append(HEART_IMG).append(" ");
+        msgHud.append("   ").append(KEY_IMG).append(": ").append((player.getHaveAKey()) ? "oui" : "non");
         System.out.print("\t" + msgHud.toString());
     }
 
@@ -186,16 +188,44 @@ public class Game
             spawnEntity();
         }
 
-        for (Entity sprite : allSprites) {
+        for (Entity sprite : allSprites)
+        {
             for (Coin coin : coins)
                 if (sprite.equals(coin))
                     if (sprite.getXPosition() == player.getXPosition() && sprite.getYPosition() == player.getYPosition()) {
                         player.addCoin();
                         coin.isPickup();
                     }
+
+            for (Chest chest : chests)
+               if (sprite.equals(chest))
+                   if (keyboardInput.getSelect())
+                       if ((sprite.getXPosition() == player.getXPosition()-1 || sprite.getXPosition() == player.getXPosition()+1)
+                               || (sprite.getYPosition() == player.getYPosition()-1 || sprite.getYPosition() == player.getYPosition()+1))
+                           if (player.getHaveAKey()) {
+                               if (chest.getWhatInside().equalsIgnoreCase("coin"))
+                                   player.addCoin();
+                               else if (chest.getWhatInside().equalsIgnoreCase("health"))
+                                   player.setHealth(player.getHealth()+1);
+
+                               chest.hit();
+                               player.haventKey();
+                           }
+
+            for (Key key : keys)
+                if (sprite.equals(key))
+                    if (keyboardInput.getSelect())
+                        if ((sprite.getXPosition() == player.getXPosition()-1 || sprite.getXPosition() == player.getXPosition()+1)
+                                || (sprite.getYPosition() == player.getYPosition()-1 || sprite.getYPosition() == player.getYPosition()+1))
+                            if (!player.getHaveAKey()) {
+                                player.haveKey();
+                                key.hit();
+                            }
+
+
             sprite.checkCollision(mapsEngine.getCalqueCollide());
             sprite.updates();
-            mapsEngine.updateEntity(sprite, sprite.getDataImg() != COIN);
+            mapsEngine.updateEntity(sprite, sprite.getDataImg() != COIN && sprite.getDataImg() != KEY);
         }
     }
 }

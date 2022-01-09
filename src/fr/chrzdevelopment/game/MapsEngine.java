@@ -53,9 +53,9 @@ public class MapsEngine
     {
         int[] loc = new int[2];
         do {
-            loc[0] = RANDOM.nextInt(0, map[0].length);
-            loc[1] = RANDOM.nextInt(0, map.length);
-        } while (map[loc[1]][loc[0]] == WALL && map[loc[1]][loc[0]] == MONSTER && map[loc[1]][loc[0]] == CHEST && map[loc[1]][loc[0]] == COIN);
+            loc[0] = RANDOM.nextInt(1, map[0].length-1);
+            loc[1] = RANDOM.nextInt(1, map.length-1);
+        } while (map[loc[1]][loc[0]] == WALL || map[loc[1]][loc[0]] == MONSTER || map[loc[1]][loc[0]] == CHEST || map[loc[1]][loc[0]] == COIN);
 
         return loc;
     }
@@ -67,6 +67,8 @@ public class MapsEngine
         loc = findALocation();
         x = loc[0]; y = loc[1];
 
+        if (allSprites.size() != 0 && allSprites.get(0).getDataImg() == PLAYER)
+            System.out.println("dfgkl,dfgnjklmergklpùer^flmopêrfrkopergkopegkortpejkoergjierjietjioe'tjioertjiortejioer");
         // Crée le joueur
         return new Player(allSprites, x, y, 1);
     }
@@ -131,9 +133,13 @@ public class MapsEngine
         int nbKey = 2;
         Key[] keys = new Key[nbKey];
 
-        // TODO
-        for (int k = 0; k < keys.length; k++)
-            continue;
+        int x; int y; int[] loc;
+        for (int k = 0; k < keys.length; k++) {
+            loc = findALocation();
+            x = loc[0]; y = loc[1];
+
+            keys[k] = new Key(allSprites, x, y);
+        }
 
         return keys;
     }

@@ -31,6 +31,8 @@ public class Chest extends Entity
         setDataImg(CHEST);
     }
 
+    public String getWhatInside() { return whatInside; }
+
     @Override
     public void updates()
     {
