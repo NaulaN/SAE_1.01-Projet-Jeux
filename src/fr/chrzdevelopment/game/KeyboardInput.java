@@ -11,7 +11,7 @@ public class KeyboardInput
     private int offset = -1;
 
 
-    public void getInput()
+    public synchronized void getInput()
     {
         System.out.println();
         System.out.print("Que faire > ");

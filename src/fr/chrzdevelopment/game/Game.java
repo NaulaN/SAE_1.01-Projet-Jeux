@@ -12,6 +12,57 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import static fr.chrzdevelopment.game.Const.*;
 
 
+class MyThread1 extends Thread
+{
+    private KeyboardInput keyboardInput;
+    private Game game;
+
+
+    public MyThread1(Game game, KeyboardInput keyboardInput) {
+        this.keyboardInput = keyboardInput;
+        this.game = game;
+    }
+
+    @Override
+    public void run() {
+        synchronized (this) {
+            while (game.running) {
+                keyboardInput.getInput();
+
+                try {
+                    this.wait(100);
+                } catch (InterruptedException e) { e.printStackTrace(); }
+            }
+        }
+    }
+}
+
+class MyThread2 extends Thread
+{
+    private Game game;
+
+
+    MyThread2(Game game) {
+        this.game = game;
+    }
+
+    @Override
+    public void run() {
+        synchronized (this) {
+            while (game.running) {
+                game.updates();
+                game.draws();
+
+                try {
+                    this.wait(100);
+                } catch (InterruptedException e) { e.printStackTrace(); }
+            }
+        }
+    }
+}
+
+
+
 /**
  * <p>Permet le bon fonctionnement du jeu</p>
  * <p>Rassemble tous !</p>
@@ -32,13 +83,13 @@ public class Game
     private int maxLvl;
     private String playerName;
 
-    public final KeyboardInput keyboardInput = new KeyboardInput();
-    public MapsEngine mapsEngine;
-    public final String OS = System.getProperty("os.name");
+    private final KeyboardInput keyboardInput = new KeyboardInput();
+    private MapsEngine mapsEngine;
+    private final String OS = System.getProperty("os.name");
     // clear terminal commands
-    public final ProcessBuilder processBuilder = (OS.equalsIgnoreCase("windows") || OS.equalsIgnoreCase("windows 10")) ? new ProcessBuilder("cmd", "/c", "cls") : new ProcessBuilder("clear");
+    private final ProcessBuilder processBuilder = (OS.equalsIgnoreCase("windows") || OS.equalsIgnoreCase("windows 10")) ? new ProcessBuilder("cmd", "/c", "cls") : new ProcessBuilder("clear");
 
-    private boolean running = true;
+    protected boolean running = true;
 
 
     public Game()
@@ -107,13 +158,12 @@ public class Game
         playerName = keyboardInput.getStringInput();
 
         // Game loops
-        while (running)
-        {
-            updates();
-            draws();
+        Thread myThread2 = new MyThread2(this);
+        Thread myThread1 = new MyThread1(this, keyboardInput);
 
-            keyboardInput.getInput();
-        }
+        myThread2.start();
+        myThread1.setPriority(Thread.MAX_PRIORITY);
+        myThread1.start();
     }
 
     /**
@@ -143,7 +193,7 @@ public class Game
     }
 
     /** Dessine les elements qui nécessite à voir sur la console */
-    public void draws()
+    public synchronized void draws()
     {
         clearConsole();
 
@@ -158,10 +208,11 @@ public class Game
             msgHud.append(HEART_IMG).append(" ");
         msgHud.append("   ").append(KEY_IMG).append(": ").append((player.getHaveAKey()) ? "oui" : "non");
         System.out.print("\t" + msgHud.toString());
+        System.out.println();
     }
 
     /** Actualise les valeurs qui ont besoin d'etre actualisé à chaque passage de la boucle */
-    public void updates()
+    public synchronized void updates()
     {
         if (keyboardInput.getQuitAction())
             running = false;
