@@ -31,7 +31,7 @@ class MyThread1 extends Thread
     public void run()
     {
         synchronized (this) {
-            while (game.running) {
+            while (game.getRunning()) {
                 keyboardInput.getInput();
 
                 try {
@@ -57,7 +57,7 @@ class MyThread2 extends Thread
     public void run()
     {
         synchronized (this) {
-            while (game.running) {
+            while (game.getRunning()) {
                 game.updates();
                 game.draws();
 
@@ -94,6 +94,9 @@ public class Game
 
     protected boolean running = true;
 
+    private Thread myThread2 = new MyThread2(this);
+    private Thread myThread1 = new MyThread1(this, keyboardInput);
+
 
     public Game()
     {
@@ -123,6 +126,8 @@ public class Game
         spawnEntity();
     }
 
+    public boolean getRunning() { return running; }
+
     /** Démarre la boucle principale du jeu */
     public void loop()
     {
@@ -151,9 +156,6 @@ public class Game
         playerName = keyboardInput.getStringInput();
 
         // Game loops
-        Thread myThread2 = new MyThread2(this);
-        Thread myThread1 = new MyThread1(this, keyboardInput);
-
         myThread2.start();
         myThread1.setPriority(Thread.MAX_PRIORITY);
         myThread1.start();
@@ -200,35 +202,53 @@ public class Game
     {
         clearConsole();
 
-        // Information relative au nombre de piece necessaire pour gagner le niveau
-        System.out.println("\t" + ANSI_RED + "NIVEAUX: " + mapsEngine.getMapLvl() + ANSI_RESET);
-        System.out.println(ANSI_GREEN + playerName + " ! Vous devez avoir " + mapsEngine.getDeterminateCoins() + " " + COIN_IMG + ANSI_GREEN + " pour pouvoir gagner le niveau" + ANSI_RESET);
-        mapsEngine.draw();
+        if (player.getHealth() <= 0) {
+            // Game over
+            System.out.println("\t" + ANSI_RED + "                 ▄       ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄▄       ▄▄  ▄▄▄▄▄▄▄▄▄▄▄       ▄▄▄▄▄▄▄▄▄▄▄  ▄               ▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄       ▄                 ");
+            System.out.println("\t" + "                ▐░▌     ▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░░▌     ▐░░▌▐░░░░░░░░░░░▌     ▐░░░░░░░░░░░▌▐░▌             ▐░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌     ▐░▌                ");
+            System.out.println("\t" + "               ▐░▌      ▐░█▀▀▀▀▀▀▀▀▀ ▐░█▀▀▀▀▀▀▀█░▌▐░▌░▌   ▐░▐░▌▐░█▀▀▀▀▀▀▀▀▀      ▐░█▀▀▀▀▀▀▀█░▌ ▐░▌           ▐░▌ ▐░█▀▀▀▀▀▀▀▀▀ ▐░█▀▀▀▀▀▀▀█░▌      ▐░▌               ");
+            System.out.println("\t" + "              ▐░▌       ▐░▌          ▐░▌       ▐░▌▐░▌▐░▌ ▐░▌▐░▌▐░▌               ▐░▌       ▐░▌  ▐░▌         ▐░▌  ▐░▌          ▐░▌       ▐░▌       ▐░▌              ");
+            System.out.println("\t" + " ▄▄▄▄▄▄▄▄▄▄▄ ▐░▌        ▐░▌ ▄▄▄▄▄▄▄▄ ▐░█▄▄▄▄▄▄▄█░▌▐░▌ ▐░▐░▌ ▐░▌▐░█▄▄▄▄▄▄▄▄▄      ▐░▌       ▐░▌   ▐░▌       ▐░▌   ▐░█▄▄▄▄▄▄▄▄▄ ▐░█▄▄▄▄▄▄▄█░▌        ▐░▌ ▄▄▄▄▄▄▄▄▄▄▄ ");
+            System.out.println("\t" + "▐░░░░░░░░░░░▌▐░▌        ▐░▌▐░░░░░░░░▌▐░░░░░░░░░░░▌▐░▌  ▐░▌  ▐░▌▐░░░░░░░░░░░▌     ▐░▌       ▐░▌    ▐░▌     ▐░▌    ▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌        ▐░▌▐░░░░░░░░░░░▌");
+            System.out.println("\t" + " ▀▀▀▀▀▀▀▀▀▀▀ ▐░▌        ▐░▌ ▀▀▀▀▀▀█░▌▐░█▀▀▀▀▀▀▀█░▌▐░▌   ▀   ▐░▌▐░█▀▀▀▀▀▀▀▀▀      ▐░▌       ▐░▌     ▐░▌   ▐░▌     ▐░█▀▀▀▀▀▀▀▀▀ ▐░█▀▀▀▀█░█▀▀         ▐░▌ ▀▀▀▀▀▀▀▀▀▀▀ ");
+            System.out.println("\t" + "              ▐░▌       ▐░▌       ▐░▌▐░▌       ▐░▌▐░▌       ▐░▌▐░▌               ▐░▌       ▐░▌      ▐░▌ ▐░▌      ▐░▌          ▐░▌     ▐░▌         ▐░▌              ");
+            System.out.println("\t" + "               ▐░▌      ▐░█▄▄▄▄▄▄▄█░▌▐░▌       ▐░▌▐░▌       ▐░▌▐░█▄▄▄▄▄▄▄▄▄      ▐░█▄▄▄▄▄▄▄█░▌       ▐░▐░▌       ▐░█▄▄▄▄▄▄▄▄▄ ▐░▌      ▐░▌       ▐░▌               ");
+            System.out.println("\t" + "                ▐░▌     ▐░░░░░░░░░░░▌▐░▌       ▐░▌▐░▌       ▐░▌▐░░░░░░░░░░░▌     ▐░░░░░░░░░░░▌        ▐░▌        ▐░░░░░░░░░░░▌▐░▌       ▐░▌     ▐░▌                ");
+            System.out.println("\t" + "                  ▀      ▀▀▀▀▀▀▀▀▀▀▀  ▀         ▀  ▀         ▀  ▀▀▀▀▀▀▀▀▀▀▀       ▀▀▀▀▀▀▀▀▀▀▀          ▀          ▀▀▀▀▀▀▀▀▀▀▀  ▀         ▀       ▀                 " + ANSI_RESET);
 
-        // Affiche les pieces du joueur obtenu et son nombre de point de vie total (Nombre de <3)
-        StringBuilder msgHud = new StringBuilder().append(COIN_IMG).append(": ").append(player.getCoins()).append("   ");
-        for (int h = 1; h <= player.getHealth(); h++)
-            msgHud.append(HEART_IMG).append(" ");
-        msgHud.append("   ").append(KEY_IMG).append(": ").append((player.getHaveAKey()) ? "oui" : "non");
-        System.out.print("\t" + msgHud.toString());
-        System.out.println();
+            running = false;
+        } else {
+            // Information relative au nombre de piece necessaire pour gagner le niveau
+            System.out.println("\t" + ANSI_RED + "NIVEAUX: " + mapsEngine.getMapLvl() + ANSI_RESET);
+            System.out.println(ANSI_GREEN + playerName + " ! Vous devez avoir " + mapsEngine.getDeterminateCoins() + " " + COIN_IMG + ANSI_GREEN + " pour pouvoir gagner le niveau" + ANSI_RESET);
+            mapsEngine.draw();
+
+            // Affiche les pieces du joueur obtenu et son nombre de point de vie total (Nombre de <3)
+            StringBuilder msgHud = new StringBuilder().append(COIN_IMG).append(": ").append(player.getCoins()).append("   ");
+            for (int h = 1; h <= player.getHealth(); h++)
+                msgHud.append(HEART_IMG).append(" ");
+            msgHud.append("   ").append(KEY_IMG).append(": ").append((player.getHaveAKey()) ? "oui" : "non");
+            System.out.print("\t" + msgHud.toString());
+            System.out.println();
+        }
     }
 
     /** Actualise les valeurs qui ont besoin d'etre actualisé à chaque passage de la boucle */
     public synchronized void updates()
     {
+
         if (keyboardInput.getQuitAction())
             running = false;
         else
             // les déplacements du joueur
             if (!player.getCollideUp() && keyboardInput.getMoveUp())
                 player.moveUp();
-            if (!player.getCollideDown() && keyboardInput.getMoveDown())
-                player.moveDown();
-            if (!player.getCollideLeft() && keyboardInput.getMoveLeft())
-                player.moveLeft();
-            if (!player.getCollideRight() && keyboardInput.getMoveRight())
-                player.moveRight();
+        if (!player.getCollideDown() && keyboardInput.getMoveDown())
+            player.moveDown();
+        if (!player.getCollideLeft() && keyboardInput.getMoveLeft())
+            player.moveLeft();
+        if (!player.getCollideRight() && keyboardInput.getMoveRight())
+            player.moveRight();
 
         // TODO: faire un truc plus propre pour les changements de niveau
         if (player.getCoins() == mapsEngine.getDeterminateCoins())
@@ -256,18 +276,18 @@ public class Game
                 }
 
             if (sprite instanceof Chest chest)
-               if (keyboardInput.getSelect())
-                   if ((sprite.getXPosition() == player.getXPosition()-1 || sprite.getXPosition() == player.getXPosition()+1)
-                           || (sprite.getYPosition() == player.getYPosition()-1 || sprite.getYPosition() == player.getYPosition()+1))
-                       if (player.getHaveAKey()) {
-                           if (chest.getWhatInside().equalsIgnoreCase("coin"))
-                               player.addCoin();
-                           else if (chest.getWhatInside().equalsIgnoreCase("health"))
-                               player.setHealth(player.getHealth()+1);
+                if (keyboardInput.getSelect())
+                    if ((sprite.getXPosition() == player.getXPosition()-1 || sprite.getXPosition() == player.getXPosition()+1)
+                            || (sprite.getYPosition() == player.getYPosition()-1 || sprite.getYPosition() == player.getYPosition()+1))
+                        if (player.getHaveAKey()) {
+                            if (chest.getWhatInside().equalsIgnoreCase("coin"))
+                                player.addCoin();
+                            else if (chest.getWhatInside().equalsIgnoreCase("health"))
+                                player.setHealth(player.getHealth()+1);
 
-                           chest.hit();
-                           player.haventKey();
-                       }
+                            chest.hit();
+                            player.haventKey();
+                        }
 
             if (sprite instanceof Key key)
                 if (keyboardInput.getSelect())
@@ -275,24 +295,37 @@ public class Game
                             || (sprite.getYPosition() == player.getYPosition()-1 || sprite.getYPosition() == player.getYPosition()+1))
                         if (!player.getHaveAKey()) {
                             player.haveKey();
-                            key.hit();
+
+                            mapsEngine.setElementMap(key.getXPosition(), key.getYPosition(), EMPTY, false);
+                            allSprites.remove(key);
                         }
 
             if (sprite instanceof Laser laser) {
-                if (!laser.getCollideUp() && laser.getDirection() == 0)
-                    laser.moveUp();
-                if (!laser.getCollideDown() && laser.getDirection() == 3)
-                    laser.moveDown();
-                if (!laser.getCollideRight() && laser.getDirection() == 1)
-                    laser.moveRight();
-                if (!laser.getCollideLeft() && laser.getDirection() == 2)
-                    laser.moveLeft();
-                else {
+                if (laser.getXPosition() == player.getXPosition() && laser.getYPosition() == player.getYPosition()) {
+                    player.hit();
+
                     mapsEngine.setElementMap(laser.getXPosition(), laser.getYPosition(), EMPTY, false);
-                    mapsEngine.setElementMap(laser.getXPreviousPosition(), laser.getYPreviousPosition(), EMPTY, false);
+                    if (laser.getXPreviousPosition() != -1 && laser.getYPreviousPosition() != -1)
+                        mapsEngine.setElementMap(laser.getXPreviousPosition(), laser.getYPreviousPosition(), EMPTY, false);
                     allSprites.remove(laser);
+                } else {
+                    if (!laser.getCollideUp() && laser.getDirection() == 0)
+                        laser.moveUp();
+                    else if (!laser.getCollideDown() && laser.getDirection() == 3)
+                        laser.moveDown();
+                    else if (!laser.getCollideRight() && laser.getDirection() == 1)
+                        laser.moveRight();
+                    else if (!laser.getCollideLeft() && laser.getDirection() == 2)
+                        laser.moveLeft();
+                    else {
+                        mapsEngine.setElementMap(laser.getXPosition(), laser.getYPosition(), EMPTY, false);
+                        if (laser.getXPreviousPosition() != -1 && laser.getYPreviousPosition() != -1)
+                            mapsEngine.setElementMap(laser.getXPreviousPosition(), laser.getYPreviousPosition(), EMPTY, false);
+                        allSprites.remove(laser);
+                    }
                 }
             }
         }
     }
 }
+

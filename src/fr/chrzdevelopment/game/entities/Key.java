@@ -13,13 +13,5 @@ public class Key extends Entity
     {
         super(allSprites, "key", x, y, 0);
         setDataImg(KEY);
-        setHealth(1);
-    }
-
-    @Override
-    public void updates()
-    {
-        if (getHealth() <= 0)
-            getGroup().remove(this);
     }
 }
