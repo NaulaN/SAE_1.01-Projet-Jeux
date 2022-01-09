@@ -1,21 +1,15 @@
 package fr.chrzdevelopment.game;
 // https://r12a.github.io/app-conversion/   Java char compatibility
 
-import static fr.chrzdevelopment.game.Const.*;
-
-import fr.chrzdevelopment.game.entities.Entity;
-import fr.chrzdevelopment.game.entities.Player;
+import fr.chrzdevelopment.game.entities.*;
 import org.json.JSONObject;
 import org.json.JSONTokener;
-
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
 
 import java.io.*;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import static fr.chrzdevelopment.game.Const.*;
 
 
 /**
@@ -28,6 +22,10 @@ public class Game
 
     // Entities
     private final List<Entity> allSprites = new CopyOnWriteArrayList<>();
+    private Monster[] monsters;
+    private Chest[] chests;
+    private Coin[] coins;
+    private Key[] keys;
     private Player player;
 
     private int totalCoins;
@@ -65,17 +63,25 @@ public class Game
 
         // Crée la taille de la carte
         mapsEngine = new MapsEngine(30, 20);
+
         // La generation.
         mapsEngine.generateMap();
-        player = mapsEngine.spawnEntity(allSprites);
-        // mapsEngine.generateObstacles();
-        mapsEngine.generateLoots(allSprites);
+        spawnEntity();
+    }
+
+    private void spawnEntity()
+    {
+        player = mapsEngine.spawnPlayer(allSprites);
+        monsters = mapsEngine.spawnMonster(allSprites);
+        coins = mapsEngine.spawnCoin(allSprites);
+        chests = mapsEngine.spawnChest(allSprites);
+        keys = mapsEngine.spawnKey(allSprites);
     }
 
     /** Démarre la boucle principale du jeu */
     public void loop()
     {
-        playSound("music.wav", -1);
+        Sound.play("music.wav", -1);
         clearConsole();
 
         System.out.println();
@@ -135,29 +141,6 @@ public class Game
             } catch (InterruptedException ignored) { }
     }
 
-    /** Joue une music, un bruitage, ... */
-    private void playSound(final String fileName, int loopCount)
-    {
-        Clip clip;
-        File wavFile = new File("res/" + fileName);
-        if (!wavFile.canRead()) {
-            BufferedInputStream in = new BufferedInputStream(getClass().getResourceAsStream("/" + fileName));
-            try {
-                clip = AudioSystem.getClip();
-                clip.open(AudioSystem.getAudioInputStream(in));
-                clip.loop(loopCount);
-                clip.start();
-            } catch (LineUnavailableException | IOException | UnsupportedAudioFileException e) { e.printStackTrace(); }
-        } else {
-            try {
-                clip = AudioSystem.getClip();
-                clip.open(AudioSystem.getAudioInputStream(wavFile));
-                clip.loop(loopCount);
-                clip.start();
-            } catch (LineUnavailableException | IOException | UnsupportedAudioFileException e) { e.printStackTrace(); }
-        }
-    }
-
     /** Dessine les elements qui nécessite à voir sur la console */
     public void draws()
     {
@@ -168,14 +151,10 @@ public class Game
         System.out.println(ANSI_GREEN + playerName + " ! Vous devez avoir " + mapsEngine.getDeterminateCoins() + " " + COIN_IMG + ANSI_GREEN + " pour pouvoir gagner le niveau" + ANSI_RESET);
         mapsEngine.draw();
 
-        // Affiche les pieces du joueur obtenu et sont nombre de point de vie total (Nombre de <3)
-        StringBuilder msgHud = new StringBuilder().append(COIN_IMG)
-                .append(": ")
-                .append(player.getCoins())
-                .append("   ");
+        // Affiche les pieces du joueur obtenu et son nombre de point de vie total (Nombre de <3)
+        StringBuilder msgHud = new StringBuilder().append(COIN_IMG).append(": ").append(player.getCoins()).append("   ");
         for (int h = 1; h <= player.getHealth(); h++)
-            msgHud.append(HEART_IMG)
-                    .append(" ");
+            msgHud.append(HEART_IMG).append(" ");
         System.out.print("\t" + msgHud.toString());
     }
 
@@ -195,24 +174,28 @@ public class Game
             if (!player.getCollideRight() && keyboardInput.getMoveRight())
                 player.moveRight();
 
-        for (Entity sprite : allSprites) {
-            sprite.checkCollision(mapsEngine.getCalqueCollide());
-            sprite.updates();
-            mapsEngine.updateEntity(sprite, sprite.getDataImg() != COIN);
-        }
-
         // TODO: faire un truc plus propre pour les changements de niveau
         if (player.getCoins() == mapsEngine.getDeterminateCoins())
             mapsEngine.addMapLvl();
 
-        if (mapsEngine.getMapLvl() > 1 && !mapsEngine.getIsGenerate())
-        {
+        if (mapsEngine.getMapLvl() > 1 && !mapsEngine.getIsGenerate()) {
             mapsEngine.setHeight(RANDOM.nextInt(20, 60));
             mapsEngine.setWidth(RANDOM.nextInt(20, 60));
             mapsEngine.generateMap();
-            player = mapsEngine.spawnEntity(allSprites);
             mapsEngine.generateObstacles();
-            mapsEngine.generateLoots(allSprites);
+            spawnEntity();
+        }
+
+        for (Entity sprite : allSprites) {
+            for (Coin coin : coins)
+                if (sprite.equals(coin))
+                    if (sprite.getXPosition() == player.getXPosition() && sprite.getYPosition() == player.getYPosition()) {
+                        player.addCoin();
+                        coin.isPickup();
+                    }
+            sprite.checkCollision(mapsEngine.getCalqueCollide());
+            sprite.updates();
+            mapsEngine.updateEntity(sprite, sprite.getDataImg() != COIN);
         }
     }
 }

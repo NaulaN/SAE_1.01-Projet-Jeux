@@ -31,13 +31,14 @@ public class Const
     public static String CHEST_OPEN_IMG;
     public static String COIN_IMG;
     public static String HEART_IMG;
+    public static String KEY_IMG;
     public static String RECT_RED_IMG;   // Pour le debug des collisions
 
     public static Map<Integer, String> allDataObjImg;
     public static Map<String, Integer> allDataObj;
 
     // Une liste qui determine qu'est-ce qu'un objet vas drop (loot)
-    public static final String[] LOOTS = {"coins", "nothing", "health", "cp"};
+    public static final String[] LOOTS = {"coin", "nothing", "health", "cp"};
 
     // Les données des objects.
     public static final int EMPTY = 0;
@@ -48,6 +49,7 @@ public class Const
     public static final int CHEST = 5;
     public static final int CHEST_OPEN = 6;
     public static final int COIN = 7;
+    public static final int KEY = 8;
 
     // Les valeurs qui determines les mouvements d'un objet
     public static final int UP = 0;
@@ -69,6 +71,7 @@ public class Const
             put(CHEST, CHEST_IMG);
             put(CHEST_OPEN, CHEST_OPEN_IMG);
             put(COIN, COIN_IMG);
+            put(KEY, KEY_IMG);
         }};
 
         allDataObj = new HashMap<>() {{
@@ -78,6 +81,7 @@ public class Const
             put("chest", CHEST);
             put("chest_open", CHEST_OPEN);
             put("coin", COIN);
+            put("key", KEY);
         }};
     }
 
@@ -93,6 +97,7 @@ public class Const
         COIN_IMG = "\uD83D\uDCB0";
         HEART_IMG = "\u2764\uFE0F";
         RECT_RED_IMG = "\uD83D\uDFE5";
+        KEY_IMG = "\uD83D\uDD11";
 
         initGraphics();
     }
@@ -109,6 +114,7 @@ public class Const
         COIN_IMG = ANSI_YELLOW + "\u25A0" + ANSI_RESET;
         HEART_IMG = ANSI_RED + "\u2665" + ANSI_RESET;
         RECT_RED_IMG = "C" + ANSI_RESET;
+        KEY_IMG = ANSI_YELLOW + "*" + ANSI_RESET;
 
         initGraphics();
     }

@@ -61,23 +61,81 @@ public class MapsEngine
     }
 
     /** Crée et place les monstres et le joueur sur la carte */
-    public Player spawnEntity(List<Entity> allSprites)
+    public Player spawnPlayer(List<Entity> allSprites)
     {
         int x; int y; int[] loc;
-        int nbMonster = RANDOM.nextInt(0, 6);
-
-        for (int m = 0; m < nbMonster; m++) {
-            loc = findALocation();
-            x = loc[0]; y = loc[1];
-
-            // Crée le monstre et le range dans le tableau.
-           new Monster(allSprites, x, y, 1);
-        }
         loc = findALocation();
         x = loc[0]; y = loc[1];
 
         // Crée le joueur
         return new Player(allSprites, x, y, 1);
+    }
+
+    public Monster[] spawnMonster(List<Entity> allSprites)
+    {
+        int nbMonster = RANDOM.nextInt(0, 6);
+        Monster[] monsters = new Monster[nbMonster];
+
+        int x; int y; int[] loc;
+        for (int m = 0; m < nbMonster; m++) {
+            loc = findALocation();
+            x = loc[0];
+            y = loc[1];
+
+            // Crée le monstre et le range dans le tableau.
+            monsters[m] = new Monster(allSprites, x, y, 1);
+        }
+
+        return monsters;
+    }
+
+    public Coin[] spawnCoin(List<Entity> allSprites)
+    {
+        determinateCoins = RANDOM.nextInt(1, 11);
+        Coin[] coins = new Coin[determinateCoins];
+
+        int x; int y; int[] loc;
+        // TODO: Faire un truc plus complet avec des formes et des chemins de piece
+        for (int c = 0; c < determinateCoins; c++) {
+            loc = findALocation();
+            x = loc[0]; y = loc[1];
+
+            coins[c] = new Coin(allSprites, x, y);
+        }
+
+        return coins;
+    }
+
+    public Chest[] spawnChest(List<Entity> allSprites)
+    {
+        int nbChest = 2;
+        Chest[] chests = new Chest[nbChest];
+
+        int x; int y; int[] loc;
+        for (int c = 0; c < chests.length; c++) {
+            loc = findALocation();
+            x = loc[0]; y = loc[1];
+
+            // Crée le coffre, on lui dit ce qu'il va loot et on le place dans le tableau
+            String loot = LOOTS[RANDOM.nextInt(0, LOOTS.length)];
+            if (loot.equalsIgnoreCase("coin"))
+                determinateCoins++;
+            chests[c] = new Chest(allSprites, loot, x, y);
+        }
+
+        return chests;
+    }
+
+    public Key[] spawnKey(List<Entity> allSprites)
+    {
+        int nbKey = 2;
+        Key[] keys = new Key[nbKey];
+
+        // TODO
+        for (int k = 0; k < keys.length; k++)
+            continue;
+
+        return keys;
     }
 
     /**
@@ -139,8 +197,7 @@ public class MapsEngine
         int nbObstacle = RANDOM.nextInt(1, 4);
 
         // Generation des obstacles
-        for (int o = 0; o <= nbObstacle; o++)
-        {
+        for (int o = 0; o <= nbObstacle; o++) {
             // Détermine la taille
             int h = RANDOM.nextInt(1, 5);
             int w = RANDOM.nextInt(1, 5);
@@ -161,40 +218,13 @@ public class MapsEngine
         }
     }
 
-    /** Génère les coffres, les pieces et les/la clé(s) */
-    public void generateLoots(List<Entity> allSprites)
-    {
-        int x; int y; int[] loc;
-        // TODO: Clean c'te fonction
-
-        for (int c = 0; c < 2; c++)
-        {
-            loc = findALocation();
-            x = loc[0]; y = loc[1];
-
-            // Crée le coffre, on lui dit ce qu'il va loot et on le place dans le tableau
-            new Chest(allSprites, LOOTS[RANDOM.nextInt(0, LOOTS.length)], x, y);
-        }
-
-        // TODO: Faire un truc plus complet avec des formes et des chemins de piéce
-        determinateCoins = RANDOM.nextInt(1, 11);
-        for (int c = 0; c <= determinateCoins; c++)
-        {
-            loc = findALocation();
-            x = loc[0]; y = loc[1];
-
-            new Coin(allSprites, x, y);
-        }
-    }
-
     public void draw()
     {
-        for (int[] row : map)
-        {
+        for (int[] row : map) {
             StringBuilder line = new StringBuilder();
             for (int column : row)
                 allDataObjImg.computeIfPresent(column, (a, b) -> { line.append(b); return b; });
-            System.out.println(line.toString());
+            System.out.println(line);
         }
     }
 }

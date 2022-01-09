@@ -28,7 +28,7 @@ public class PlayerTest
         mapsEngine.setElementMap(3, 3, WALL, true);
         mapsEngine.setElementMap(2, 3, WALL, true);
 
-        Player player = mapsEngine.spawnEntity(allSprites);
+        Player player = mapsEngine.spawnPlayer(allSprites);
 
         player.setXPosition(1);
         player.setYPosition(1);
