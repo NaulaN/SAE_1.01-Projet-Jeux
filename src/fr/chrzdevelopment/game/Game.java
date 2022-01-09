@@ -1,7 +1,9 @@
 package fr.chrzdevelopment.game;
 // https://r12a.github.io/app-conversion/   Java char compatibility
 
+import static fr.chrzdevelopment.game.Const.*;
 import fr.chrzdevelopment.game.entities.*;
+
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
@@ -9,22 +11,25 @@ import java.io.*;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import static fr.chrzdevelopment.game.Const.*;
 
-
+/**
+ * Ce Thread représente un processus parallel qui se charge des inputs au clavier
+ */
 class MyThread1 extends Thread
 {
     private KeyboardInput keyboardInput;
     private Game game;
 
 
-    public MyThread1(Game game, KeyboardInput keyboardInput) {
+    public MyThread1(Game game, KeyboardInput keyboardInput)
+    {
         this.keyboardInput = keyboardInput;
         this.game = game;
     }
 
     @Override
-    public void run() {
+    public void run()
+    {
         synchronized (this) {
             while (game.running) {
                 keyboardInput.getInput();
@@ -37,17 +42,20 @@ class MyThread1 extends Thread
     }
 }
 
+
+/**
+ * Ce Thread représente un processus parallel qui se charge de l'actualisation et l'affichage du jeu
+ */
 class MyThread2 extends Thread
 {
     private Game game;
 
 
-    MyThread2(Game game) {
-        this.game = game;
-    }
+    MyThread2(Game game) { this.game = game; }
 
     @Override
-    public void run() {
+    public void run()
+    {
         synchronized (this) {
             while (game.running) {
                 game.updates();
@@ -60,7 +68,6 @@ class MyThread2 extends Thread
         }
     }
 }
-
 
 
 /**
@@ -118,16 +125,6 @@ public class Game
         // La generation.
         mapsEngine.generateMap();
         spawnEntity();
-    }
-
-    private void spawnEntity()
-    {
-        allSprites.clear();
-        player = mapsEngine.spawnPlayer(allSprites);
-        monsters = mapsEngine.spawnMonster(allSprites);
-        coins = mapsEngine.spawnCoin(allSprites);
-        chests = mapsEngine.spawnChest(allSprites);
-        keys = mapsEngine.spawnKey(allSprites);
     }
 
     /** Démarre la boucle principale du jeu */
@@ -190,6 +187,16 @@ public class Game
             try {
                 process.waitFor();
             } catch (InterruptedException ignored) { }
+    }
+
+    private void spawnEntity()
+    {
+        allSprites.clear();
+        player = mapsEngine.spawnPlayer(allSprites);
+        monsters = mapsEngine.spawnMonster(allSprites);
+        coins = mapsEngine.spawnCoin(allSprites);
+        chests = mapsEngine.spawnChest(allSprites);
+        keys = mapsEngine.spawnKey(allSprites);
     }
 
     /** Dessine les elements qui nécessite à voir sur la console */
