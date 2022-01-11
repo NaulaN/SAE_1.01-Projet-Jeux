@@ -13,8 +13,6 @@ public class KeyboardInput
 
     public synchronized void getInput()
     {
-        System.out.println();
-        System.out.print("Que faire > ");
         String input = sc.nextLine();
         // Evite une erreur
         if (input.length() != 0)

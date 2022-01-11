@@ -15,13 +15,13 @@ import java.util.concurrent.CopyOnWriteArrayList;
 /**
  * Ce Thread représente un processus parallel qui se charge des inputs au clavier
  */
-class MyThread1 extends Thread
+class KeyboardInputThread extends Thread
 {
     private KeyboardInput keyboardInput;
     private Game game;
 
 
-    public MyThread1(Game game, KeyboardInput keyboardInput)
+    public KeyboardInputThread(Game game, KeyboardInput keyboardInput)
     {
         this.keyboardInput = keyboardInput;
         this.game = game;
@@ -31,12 +31,12 @@ class MyThread1 extends Thread
     public void run()
     {
         synchronized (this) {
-            while (game.getRunning()) {
+            while (game.getRunning() && !this.isInterrupted()) {
                 keyboardInput.getInput();
 
                 try {
                     this.wait(100);
-                } catch (InterruptedException e) { e.printStackTrace(); }
+                } catch (InterruptedException ignored) { return; }
             }
         }
     }
@@ -46,24 +46,24 @@ class MyThread1 extends Thread
 /**
  * Ce Thread représente un processus parallel qui se charge de l'actualisation et l'affichage du jeu
  */
-class MyThread2 extends Thread
+class RefreshAndDisplayThread extends Thread
 {
     private Game game;
 
 
-    MyThread2(Game game) { this.game = game; }
+    RefreshAndDisplayThread(Game game) { this.game = game; }
 
     @Override
     public void run()
     {
         synchronized (this) {
-            while (game.getRunning()) {
+            while (game.getRunning() && !this.isInterrupted()) {
                 game.updates();
                 game.draws();
 
                 try {
                     this.wait(100);
-                } catch (InterruptedException e) { e.printStackTrace(); }
+                } catch (InterruptedException ignored) { return; }
             }
         }
     }
@@ -92,10 +92,10 @@ public class Game
     // clear terminal commands
     private final ProcessBuilder processBuilder = (OS.equalsIgnoreCase("windows") || OS.equalsIgnoreCase("windows 10")) ? new ProcessBuilder("cmd", "/c", "cls") : new ProcessBuilder("clear");
 
-    protected boolean running = true;
+    private boolean running = true;
 
-    private Thread myThread2 = new MyThread2(this);
-    private Thread myThread1 = new MyThread1(this, keyboardInput);
+    private Thread refreshAndDisplayThread = new RefreshAndDisplayThread(this);
+    private Thread keyboardInputThread = new KeyboardInputThread(this, keyboardInput);
 
 
     public Game()
@@ -156,9 +156,9 @@ public class Game
         playerName = keyboardInput.getStringInput();
 
         // Game loops
-        myThread2.start();
-        myThread1.setPriority(Thread.MAX_PRIORITY);
-        myThread1.start();
+        refreshAndDisplayThread.start();
+        keyboardInputThread.setPriority(Thread.MAX_PRIORITY);
+        keyboardInputThread.start();
     }
 
     /**
@@ -204,19 +204,21 @@ public class Game
 
         if (player.getHealth() <= 0) {
             // Game over
-            System.out.println("\t" + ANSI_RED + "                 ▄       ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄▄       ▄▄  ▄▄▄▄▄▄▄▄▄▄▄       ▄▄▄▄▄▄▄▄▄▄▄  ▄               ▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄       ▄                 ");
-            System.out.println("\t" + "                ▐░▌     ▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░░▌     ▐░░▌▐░░░░░░░░░░░▌     ▐░░░░░░░░░░░▌▐░▌             ▐░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌     ▐░▌                ");
-            System.out.println("\t" + "               ▐░▌      ▐░█▀▀▀▀▀▀▀▀▀ ▐░█▀▀▀▀▀▀▀█░▌▐░▌░▌   ▐░▐░▌▐░█▀▀▀▀▀▀▀▀▀      ▐░█▀▀▀▀▀▀▀█░▌ ▐░▌           ▐░▌ ▐░█▀▀▀▀▀▀▀▀▀ ▐░█▀▀▀▀▀▀▀█░▌      ▐░▌               ");
-            System.out.println("\t" + "              ▐░▌       ▐░▌          ▐░▌       ▐░▌▐░▌▐░▌ ▐░▌▐░▌▐░▌               ▐░▌       ▐░▌  ▐░▌         ▐░▌  ▐░▌          ▐░▌       ▐░▌       ▐░▌              ");
-            System.out.println("\t" + " ▄▄▄▄▄▄▄▄▄▄▄ ▐░▌        ▐░▌ ▄▄▄▄▄▄▄▄ ▐░█▄▄▄▄▄▄▄█░▌▐░▌ ▐░▐░▌ ▐░▌▐░█▄▄▄▄▄▄▄▄▄      ▐░▌       ▐░▌   ▐░▌       ▐░▌   ▐░█▄▄▄▄▄▄▄▄▄ ▐░█▄▄▄▄▄▄▄█░▌        ▐░▌ ▄▄▄▄▄▄▄▄▄▄▄ ");
-            System.out.println("\t" + "▐░░░░░░░░░░░▌▐░▌        ▐░▌▐░░░░░░░░▌▐░░░░░░░░░░░▌▐░▌  ▐░▌  ▐░▌▐░░░░░░░░░░░▌     ▐░▌       ▐░▌    ▐░▌     ▐░▌    ▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌        ▐░▌▐░░░░░░░░░░░▌");
-            System.out.println("\t" + " ▀▀▀▀▀▀▀▀▀▀▀ ▐░▌        ▐░▌ ▀▀▀▀▀▀█░▌▐░█▀▀▀▀▀▀▀█░▌▐░▌   ▀   ▐░▌▐░█▀▀▀▀▀▀▀▀▀      ▐░▌       ▐░▌     ▐░▌   ▐░▌     ▐░█▀▀▀▀▀▀▀▀▀ ▐░█▀▀▀▀█░█▀▀         ▐░▌ ▀▀▀▀▀▀▀▀▀▀▀ ");
-            System.out.println("\t" + "              ▐░▌       ▐░▌       ▐░▌▐░▌       ▐░▌▐░▌       ▐░▌▐░▌               ▐░▌       ▐░▌      ▐░▌ ▐░▌      ▐░▌          ▐░▌     ▐░▌         ▐░▌              ");
-            System.out.println("\t" + "               ▐░▌      ▐░█▄▄▄▄▄▄▄█░▌▐░▌       ▐░▌▐░▌       ▐░▌▐░█▄▄▄▄▄▄▄▄▄      ▐░█▄▄▄▄▄▄▄█░▌       ▐░▐░▌       ▐░█▄▄▄▄▄▄▄▄▄ ▐░▌      ▐░▌       ▐░▌               ");
-            System.out.println("\t" + "                ▐░▌     ▐░░░░░░░░░░░▌▐░▌       ▐░▌▐░▌       ▐░▌▐░░░░░░░░░░░▌     ▐░░░░░░░░░░░▌        ▐░▌        ▐░░░░░░░░░░░▌▐░▌       ▐░▌     ▐░▌                ");
-            System.out.println("\t" + "                  ▀      ▀▀▀▀▀▀▀▀▀▀▀  ▀         ▀  ▀         ▀  ▀▀▀▀▀▀▀▀▀▀▀       ▀▀▀▀▀▀▀▀▀▀▀          ▀          ▀▀▀▀▀▀▀▀▀▀▀  ▀         ▀       ▀                 " + ANSI_RESET);
+            System.out.println(ANSI_RED + "                 ▄       ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄▄       ▄▄  ▄▄▄▄▄▄▄▄▄▄▄       ▄▄▄▄▄▄▄▄▄▄▄  ▄               ▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄       ▄                 ");
+            System.out.println("                ▐░▌     ▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░░▌     ▐░░▌▐░░░░░░░░░░░▌     ▐░░░░░░░░░░░▌▐░▌             ▐░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌     ▐░▌                ");
+            System.out.println("               ▐░▌      ▐░█▀▀▀▀▀▀▀▀▀ ▐░█▀▀▀▀▀▀▀█░▌▐░▌░▌   ▐░▐░▌▐░█▀▀▀▀▀▀▀▀▀      ▐░█▀▀▀▀▀▀▀█░▌ ▐░▌           ▐░▌ ▐░█▀▀▀▀▀▀▀▀▀ ▐░█▀▀▀▀▀▀▀█░▌      ▐░▌               ");
+            System.out.println("              ▐░▌       ▐░▌          ▐░▌       ▐░▌▐░▌▐░▌ ▐░▌▐░▌▐░▌               ▐░▌       ▐░▌  ▐░▌         ▐░▌  ▐░▌          ▐░▌       ▐░▌       ▐░▌              ");
+            System.out.println(" ▄▄▄▄▄▄▄▄▄▄▄ ▐░▌        ▐░▌ ▄▄▄▄▄▄▄▄ ▐░█▄▄▄▄▄▄▄█░▌▐░▌ ▐░▐░▌ ▐░▌▐░█▄▄▄▄▄▄▄▄▄      ▐░▌       ▐░▌   ▐░▌       ▐░▌   ▐░█▄▄▄▄▄▄▄▄▄ ▐░█▄▄▄▄▄▄▄█░▌        ▐░▌ ▄▄▄▄▄▄▄▄▄▄▄ ");
+            System.out.println("▐░░░░░░░░░░░▌▐░▌        ▐░▌▐░░░░░░░░▌▐░░░░░░░░░░░▌▐░▌  ▐░▌  ▐░▌▐░░░░░░░░░░░▌     ▐░▌       ▐░▌    ▐░▌     ▐░▌    ▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌        ▐░▌▐░░░░░░░░░░░▌");
+            System.out.println(" ▀▀▀▀▀▀▀▀▀▀▀ ▐░▌        ▐░▌ ▀▀▀▀▀▀█░▌▐░█▀▀▀▀▀▀▀█░▌▐░▌   ▀   ▐░▌▐░█▀▀▀▀▀▀▀▀▀      ▐░▌       ▐░▌     ▐░▌   ▐░▌     ▐░█▀▀▀▀▀▀▀▀▀ ▐░█▀▀▀▀█░█▀▀         ▐░▌ ▀▀▀▀▀▀▀▀▀▀▀ ");
+            System.out.println("              ▐░▌       ▐░▌       ▐░▌▐░▌       ▐░▌▐░▌       ▐░▌▐░▌               ▐░▌       ▐░▌      ▐░▌ ▐░▌      ▐░▌          ▐░▌     ▐░▌         ▐░▌              ");
+            System.out.println("               ▐░▌      ▐░█▄▄▄▄▄▄▄█░▌▐░▌       ▐░▌▐░▌       ▐░▌▐░█▄▄▄▄▄▄▄▄▄      ▐░█▄▄▄▄▄▄▄█░▌       ▐░▐░▌       ▐░█▄▄▄▄▄▄▄▄▄ ▐░▌      ▐░▌       ▐░▌               ");
+            System.out.println("                ▐░▌     ▐░░░░░░░░░░░▌▐░▌       ▐░▌▐░▌       ▐░▌▐░░░░░░░░░░░▌     ▐░░░░░░░░░░░▌        ▐░▌        ▐░░░░░░░░░░░▌▐░▌       ▐░▌     ▐░▌                ");
+            System.out.println("                 ▀       ▀▀▀▀▀▀▀▀▀▀▀  ▀         ▀  ▀         ▀  ▀▀▀▀▀▀▀▀▀▀▀       ▀▀▀▀▀▀▀▀▀▀▀          ▀          ▀▀▀▀▀▀▀▀▀▀▀  ▀         ▀       ▀                 " + ANSI_RESET);
 
             running = false;
+            refreshAndDisplayThread.interrupt();
+            keyboardInputThread.interrupt();
         } else {
             // Information relative au nombre de piece necessaire pour gagner le niveau
             System.out.println("\t" + ANSI_RED + "NIVEAUX: " + mapsEngine.getMapLvl() + ANSI_RESET);
@@ -236,27 +238,31 @@ public class Game
     /** Actualise les valeurs qui ont besoin d'etre actualisé à chaque passage de la boucle */
     public synchronized void updates()
     {
-
-        if (keyboardInput.getQuitAction())
+        // Quit le jeu
+        if (keyboardInput.getQuitAction()) {
             running = false;
-        else
-            // les déplacements du joueur
+            refreshAndDisplayThread.interrupt();
+            keyboardInputThread.interrupt();
+        }
+        else {             // les déplacements du joueur
             if (!player.getCollideUp() && keyboardInput.getMoveUp())
                 player.moveUp();
-        if (!player.getCollideDown() && keyboardInput.getMoveDown())
-            player.moveDown();
-        if (!player.getCollideLeft() && keyboardInput.getMoveLeft())
-            player.moveLeft();
-        if (!player.getCollideRight() && keyboardInput.getMoveRight())
-            player.moveRight();
+            if (!player.getCollideDown() && keyboardInput.getMoveDown())
+                player.moveDown();
+            if (!player.getCollideLeft() && keyboardInput.getMoveLeft())
+                player.moveLeft();
+            if (!player.getCollideRight() && keyboardInput.getMoveRight())
+                player.moveRight();
+        }
 
-        // TODO: faire un truc plus propre pour les changements de niveau
+        // Si toute les pieces on était récolté par le joueur, change de niveau
         if (player.getCoins() == mapsEngine.getDeterminateCoins())
             mapsEngine.addMapLvl();
 
+        // Génère une nouvelle map si on change de niveau
         if (mapsEngine.getMapLvl() > 1 && !mapsEngine.getIsGenerate()) {
-            mapsEngine.setHeight(RANDOM.nextInt(20, 60));
-            mapsEngine.setWidth(RANDOM.nextInt(20, 60));
+            mapsEngine.setHeight(RANDOM.nextInt(20, 35));
+            mapsEngine.setWidth(RANDOM.nextInt(20, 35));
             mapsEngine.generateMap();
             mapsEngine.generateObstacles();
             spawnEntity();
@@ -265,9 +271,11 @@ public class Game
         for (Entity sprite : allSprites)
         {
             sprite.checkCollision(mapsEngine.getCalqueCollide());
-            mapsEngine.updateEntity(sprite, sprite.getDataImg() != COIN && sprite.getDataImg() != KEY && sprite.getDataImg() != LASER_VERTICAL && sprite.getDataImg() != LASER_HORIZONTAL);
+            boolean collide = sprite.getDataImg() != COIN && sprite.getDataImg() != KEY && sprite.getDataImg() != LASER_VERTICAL && sprite.getDataImg() != LASER_HORIZONTAL;
+            mapsEngine.updateEntity(sprite, collide);
             sprite.updates();
 
+            // Update all coins
             if (sprite instanceof Coin coin)
                 if (sprite.getXPosition() == player.getXPosition() && sprite.getYPosition() == player.getYPosition()) {
                     player.addCoin();
@@ -275,6 +283,7 @@ public class Game
                     allSprites.remove(coin);
                 }
 
+            // Update all chest
             if (sprite instanceof Chest chest)
                 if (keyboardInput.getSelect())
                     if ((sprite.getXPosition() == player.getXPosition()-1 || sprite.getXPosition() == player.getXPosition()+1)
@@ -289,6 +298,7 @@ public class Game
                             player.haventKey();
                         }
 
+            // Update all keys
             if (sprite instanceof Key key)
                 if (keyboardInput.getSelect())
                     if ((sprite.getXPosition() == player.getXPosition()-1 || sprite.getXPosition() == player.getXPosition()+1)
@@ -300,6 +310,7 @@ public class Game
                             allSprites.remove(key);
                         }
 
+            // Update all lasers
             if (sprite instanceof Laser laser) {
                 if (laser.getXPosition() == player.getXPosition() && laser.getYPosition() == player.getYPosition()) {
                     player.hit();
@@ -319,8 +330,6 @@ public class Game
                         laser.moveLeft();
                     else {
                         mapsEngine.setElementMap(laser.getXPosition(), laser.getYPosition(), EMPTY, false);
-                        if (laser.getXPreviousPosition() != -1 && laser.getYPreviousPosition() != -1)
-                            mapsEngine.setElementMap(laser.getXPreviousPosition(), laser.getYPreviousPosition(), EMPTY, false);
                         allSprites.remove(laser);
                     }
                 }
