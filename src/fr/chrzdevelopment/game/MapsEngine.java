@@ -9,23 +9,27 @@ import static fr.chrzdevelopment.game.Const.*;
 
 /**
  * <h1 style="font-size: 115%;">Le générateur de cartes</h1>
- * <h2 style="font-size: 105%; text-decoration: underline;">Qu'est-ce qu'il fait ?</h2>
+ * <h2 style="font-size: 105%; text-decoration: underline;">A quoi sert-il ?</h2>
  * <ul>
- *     <li><p>Genere une carte avec la taille qu'on lui a mit lors de l'initialisation grâce à la fonction "generationMap()".</p></li>
  *     <li><p>Genere des obstacles, le nombre d'obstacles est générer de facon aleatoire y compris la taille de celui-ci, mais pas que, le placement des obstacles le sont aussi sur la carte.</p></li>
- *     <li><p>Place le joueur sur la carte qui sera obtenable grâce au getter "getPlayer()" ou bien dans cette classe grâce a la variable player.</p></li>
- *     <li><p>Genere les monstres avec des positions aléatoire grâce a "findALocation()" et range les monstres dans "allSprites", c'est Sprite sont updates dans la fonction "updates()" de cette classe</p></li>
+ *     <li><p>Genere les monstres avec des positions aléatoire grâce a "findALocation()"</p></li>
  *     <li><p>Genere les coffres et les pieces qui permet une victoire sur la carte (Sur les nombres de pieces obtenue)</p></li>
- *     <li><p>Dessine toutes les choses present sur la carte grâce a la fonction "draw()"</p></li>
+ *     <li><p>Genere les clés qui permet d'ouvrir les coffres</p></li>
+ *     <li><p>Dessine la carte grâce a la fonction "draw()"</p></li>
  * </ul>
  *
  * @see fr.chrzdevelopment.game.Game
- * @since 1.0
+ *
+ * @see fr.chrzdevelopment.game.entities.Player
+ * @see fr.chrzdevelopment.game.entities.Monster
+ * @see fr.chrzdevelopment.game.entities.Chest
+ * @see fr.chrzdevelopment.game.entities.Coin
+ * @see fr.chrzdevelopment.game.entities.Key
+
  * @author CHRZASZCZ Naulan
  */
 public class MapsEngine
 {
-    // Calques
     private boolean[][] calqueCollide;
     private int[][] map;
     // Map size
@@ -34,7 +38,6 @@ public class MapsEngine
 
     private int determinateCoins;
     private int mapLvl = 1;
-
     private boolean isGenerate = false;
 
 
@@ -48,7 +51,7 @@ public class MapsEngine
         this.height = height;
     }
 
-    /** Determine une position et fait en sorte que ne soit pas dans un mur. */
+    /** Determine une position et fait en sorte que ne soit pas dans un mur ou dans une autre entité. */
     private int[] findALocation()
     {
         int[] loc = new int[2];
@@ -60,7 +63,10 @@ public class MapsEngine
         return loc;
     }
 
-    /** Crée et place les monstres et le joueur sur la carte */
+    /**
+     * Crée le joueur sur la carte
+     * @param allSprites Permet de ranger et de faire fonctionner les entités générer
+     */
     public Player spawnPlayer(List<Entity> allSprites)
     {
         int x; int y; int[] loc;
@@ -71,6 +77,10 @@ public class MapsEngine
         return new Player(allSprites, x, y, 1);
     }
 
+    /**
+     * Génère les monstres grâce à un nombre qui est déterminé aléatoirement.
+     * @param allSprites Permet de ranger et de faire fonctionner les entités générer
+     */
     public void spawnMonster(List<Entity> allSprites)
     {
         int nbMonster = (int) (Math.random()*6);
@@ -86,6 +96,11 @@ public class MapsEngine
         }
     }
 
+    /**
+     * Génère et determine de manière non definitive les pieces qui faudrait avoir pour gagner le niveau.
+     * Le nombre de piece est déterminé de facon aléatoires (Le max est de 10).
+     * @param allSprites Permet de ranger et de faire fonctionner les entités générer
+     */
     public void spawnCoin(List<Entity> allSprites)
     {
         determinateCoins = (int) (1+Math.random()*11);
@@ -100,6 +115,12 @@ public class MapsEngine
         }
     }
 
+    /**
+     * Génère les coffres et determine (Si un coffre a une piece ou non) les pieces à avoir de facon definitive pour gagner le niveau
+     * Les loots du coffre est determine de facon aléatoire
+     * @param allSprites Permet de ranger et de faire fonctionner les entités générer
+     * @see fr.chrzdevelopment.game.Const
+     */
     public void spawnChest(List<Entity> allSprites)
     {
         int nbChest = 2;
@@ -117,12 +138,16 @@ public class MapsEngine
         }
     }
 
+    /**
+     * Génère les clés (Max 2) qui permet d'ouvrir les coffres sur la carte.
+     * @param allSprites Permet de ranger et de faire fonctionner les entités générer
+     */
     public void spawnKey(List<Entity> allSprites)
     {
         int nbKey = 2;
 
         int x; int y; int[] loc;
-        for (int k = 0; k < 2; k++) {
+        for (int k = 0; k < nbKey; k++) {
             loc = findALocation();
             x = loc[0]; y = loc[1];
 
@@ -132,11 +157,10 @@ public class MapsEngine
 
     /**
      * <p>Ecrit sur la carte, une donnée propre a l'entité selon la position en x et en y</p>
-     * <ul>
-     *     <li>Si, il ne sait pas déplacé... Il ne clear pas la dernier frame.</li>
-     *     <li>Sinon, il clear la frame si, il ce deplace.</li>
-     * </ul>
+     * Si, il ne sait pas déplacé... Il ne clear pas la dernier frame.
+     * Sinon, il clear la frame si, il ce deplace.
      * @param entity Un Sprite (ou une entité) qui doit avoir un clear de la frame precedent.
+     * @see fr.chrzdevelopment.game.Const
      */
     public void updateEntity(Entity entity, boolean collide)
     {
@@ -149,7 +173,6 @@ public class MapsEngine
 
     public int[][] getMap() { return map; }
     public boolean getIsGenerate() { return isGenerate; }
-    /** Donne une matrice de 0 et de 1 qui determine sur la map, qu'est-ce qui ont la fonction "collide" */
     public boolean[][] getCalqueCollide() { return calqueCollide; }
     public int getDeterminateCoins() { return determinateCoins; }
     public int getMapLvl() { return mapLvl; }
@@ -163,13 +186,20 @@ public class MapsEngine
         map[y][x] = val;
     }
 
+    /**
+     * Mets "isGenerate" en false pour regenerate un niveau (Le niveau suivant).
+     * Ajoute +1 a mapLvl.
+     */
     public void addMapLvl()
     {
         isGenerate = false;
         mapLvl++;
     }
 
-    /** Genere une map selon la taille specifié lors de l'initialisation de la classe */
+    /**
+     * Genere une map selon la taille contenue dans "width" et "height"
+     * @see fr.chrzdevelopment.game.Const
+     */
     public void generateMap()
     {
         map = new int[height][width];
@@ -183,6 +213,12 @@ public class MapsEngine
         isGenerate = true;
     }
 
+    /**
+     * <p>Determine premièrement combien d'obstacle il pourrait y avoir.</p>
+     * <p>Génère un obstacle dans une table propre a lui (La taille de l'obstacle est determiner aléatoirement)</p>
+     * <p>Trouve un endroit ou il pourrait placer l'obstacle</p>
+     * @see fr.chrzdevelopment.game.Const
+     */
     public void generateObstacles()
     {
         // Determine le nombre d'obstacle a prevoir

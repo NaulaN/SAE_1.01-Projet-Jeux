@@ -7,7 +7,8 @@ import static fr.chrzdevelopment.game.Const.CHEST_OPEN;
 
 
 /**
- *
+ * @see fr.chrzdevelopment.game.entities.Entity
+ * @author CHRZASZCZ Naulan
  */
 public class Chest extends Entity
 {
@@ -17,10 +18,10 @@ public class Chest extends Entity
 
 
     /**
-     * @param group
-     * @param whatInside
-     * @param x
-     * @param y
+     * @param group Un endroit où on place tous les Sprites (Les entités) et qui permet de les faire fonctionner.
+     * @param whatInside Détermine ce qy'il doit donner au joueur lors de l'ouverture.
+     * @param x Les coordonnées en x pour l'entité.
+     * @param y Les coordonnées en y pour l'entité.
      */
     public Chest(List<Entity> group, String whatInside, int x, int y)
     {

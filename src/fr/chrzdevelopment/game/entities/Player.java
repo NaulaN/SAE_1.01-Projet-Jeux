@@ -4,7 +4,8 @@ import java.util.List;
 
 
 /**
- *
+ * @see fr.chrzdevelopment.game.entities.Entity
+ * @author CHRZASZCZ Naulan
  */
 public class Player extends Entity
 {
@@ -16,10 +17,10 @@ public class Player extends Entity
 
 
     /**
-     * @param group
-     * @param x
-     * @param y
-     * @param velocity
+     * @param group Un endroit où on place tous les Sprites (Les entités) et qui permet de les faire fonctionner.
+     * @param x La localisation en x du Sprite.
+     * @param y La localisation en x du Sprite.
+     * @param velocity La vitesse du joueur.
      */
     public Player(List<Entity> group, int x, int y, int velocity)
     {

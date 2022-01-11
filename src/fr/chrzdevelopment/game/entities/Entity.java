@@ -6,12 +6,13 @@ import static fr.chrzdevelopment.game.Const.allDataObj;
 
 
 /**
- *
+ * @see fr.chrzdevelopment.game.Const
  * @see fr.chrzdevelopment.game.entities.Chest
  * @see fr.chrzdevelopment.game.entities.Coin
  * @see fr.chrzdevelopment.game.entities.Monster
  * @see fr.chrzdevelopment.game.entities.Player
- * @since v1.0
+ * @see fr.chrzdevelopment.game.entities.Key
+ * @see fr.chrzdevelopment.game.entities.Laser
  * @author CHRZASZCZ Naulan
  */
 public class Entity
@@ -30,19 +31,18 @@ public class Entity
 
 
     /**
-     * @param spriteGroup Un endroit où on place tous les Sprites (Les entités).
+     * @param group Un endroit où on place tous les Sprites (Les entités) et qui permet de les faire fonctionner.
      * @param type Pour savoir de quel type d'entité qu'on va crée.
      * @param x Les coordonnées en x pour l'entité.
      * @param y Les coordonnées en y pour l'entité.
-     * @param velocity La vitesse de deplacement.
+     * @param velocity La vitesse de déplacement.
      */
-    public Entity(List<Entity> spriteGroup, String type, int x, int y, int velocity)
+    public Entity(List<Entity> group, String type, int x, int y, int velocity)
     {
-        // TODO: Changement effectué, regarde les éventuels erreur
-        group = spriteGroup;
+        this.group = group;
         if (!type.equalsIgnoreCase("player"))
-            spriteGroup.add(0, this);
-        else spriteGroup.add(this);
+            group.add(0, this);
+        else group.add(this);
 
         dataImg = allDataObj.get(type.toLowerCase());
 

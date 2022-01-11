@@ -5,6 +5,12 @@ import java.util.Scanner;
 import static fr.chrzdevelopment.game.Const.*;
 
 
+/**
+ * Gere tous les imputs qui sera entré dans le terminal grâce au clavier
+ *
+ * @see fr.chrzdevelopment.game.Game
+ * @author CHRZASZCZ Naulan
+ */
 public class KeyboardInput
 {
     private final Scanner sc = new Scanner(System.in);
@@ -45,8 +51,10 @@ public class KeyboardInput
         }
     }
 
+    /** Permet de faire des inputs plus ciblés (moins général) et personnalisé */
     public String getStringInput() { return sc.nextLine(); }
 
+    /* Les inputs généraux */
     public boolean getQuitAction() { return offset == QUIT; }
     public boolean getMoveUp() { return offset == UP; }
     public boolean getMoveDown() { return offset == DOWN; }

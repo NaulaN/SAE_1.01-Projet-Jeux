@@ -1,18 +1,14 @@
 package fr.chrzdevelopment.game;
 
-
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 
 
-/** Je voulais utilisé un fichier ".json" mais il faut Gradle pour importer des libraries externe,
- *      Par peur de pas pouvoir me faire noté, je le met dans une classe du nom de Const pour les Constantes */
 public class Const
 {
-    public static final Random RANDOM = new Random();
+    public static final String DEFAULT_RESOURCE_PATH = "res/";
 
-
+    // Détermine une couleur dans un terminal.
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_BLACK = "\u001B[30m";
     public static final String ANSI_RED = "\u001B[31m";
@@ -61,11 +57,12 @@ public class Const
     public static final int DOWN = 1;
     public static final int LEFT = 2;
     public static final int RIGHT = 3;
+
     // Les valeurs qui determines une interaction.
     public static final int SELECT = 10;
     public static final int QUIT = 11;
 
-
+    /** Range toutes les données dans une HashMap */
     private static void initGraphics()
     {
         allDataObjImg = new HashMap<>();

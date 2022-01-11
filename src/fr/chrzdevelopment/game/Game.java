@@ -13,7 +13,9 @@ import static fr.chrzdevelopment.game.Const.*;
 
 
 /**
- * Ce Thread représente un processus parallel qui se charge des inputs au clavier
+ * <p>Ce Thread représente un processus parallel qui se charge des inputs au clavier.</p>
+ * @see fr.chrzdevelopment.game.KeyboardInput
+ * @see fr.chrzdevelopment.game.Game
  */
 class KeyboardInputThread extends Thread
 {
@@ -21,6 +23,10 @@ class KeyboardInputThread extends Thread
     private final Game game;
 
 
+    /**
+     * @param game La classe principale (Main) du jeu
+     * @param keyboardInput La classe qui gère les inputs dans le terminal
+     */
     public KeyboardInputThread(Game game, KeyboardInput keyboardInput)
     {
         this.keyboardInput = keyboardInput;
@@ -44,13 +50,15 @@ class KeyboardInputThread extends Thread
 
 
 /**
- * Ce Thread représente un processus parallel qui se charge de l'actualisation et l'affichage du jeu
+ * <p>Ce Thread représente un processus parallel qui se charge de l'actualisation et l'affichage du jeu.</p>
+ * @see fr.chrzdevelopment.game.Game
  */
 class RefreshAndDisplayThread extends Thread
 {
     private final Game game;
 
 
+    /** @param game La classe principale (Main) du jeu */
     RefreshAndDisplayThread(Game game) { this.game = game; }
 
     @Override
@@ -71,18 +79,21 @@ class RefreshAndDisplayThread extends Thread
 
 
 /**
- * <p>Permet le bon fonctionnement du jeu</p>
- * <p>Rassemble tous !</p>
+ * <p>Rassemble tous les éléments du jeu !</p>
+ * @author CHRZASZCZ Naulan
+ * @see fr.chrzdevelopment.game.KeyboardInputThread
+ * @see fr.chrzdevelopment.game.RefreshAndDisplayThread
+ * @see fr.chrzdevelopment.game.MapsEngine
+ * @see fr.chrzdevelopment.game.KeyboardInput
+ * @see fr.chrzdevelopment.game.Const
  */
 public class Game
 {
     private JSONObject saveFile;
-
     // Entities
     private final List<Entity> allSprites = new CopyOnWriteArrayList<>();
     private Player player;
-
-    // TODO
+    // TODO:
     private String playerName;
     private int totalCoins;
     private int maxLvl;
@@ -99,6 +110,13 @@ public class Game
     private final Thread keyboardInputThread = new KeyboardInputThread(this, keyboardInput);
 
 
+    /**
+     * <p>Charge le fichier de sauvegarde .json</p>
+     * <p>Charge les graphics selon l'OS utilisé</p>
+     * <p>Charge le moteur de la carte et genere une carte par default</p>
+     * <p>Charge et fait spawn tous les entity</p>
+     * <p>Ne charge pas les murs, seulement à partir du Niveau2 et +</p>
+     */
     public Game()
     {
         // Load JSON file
@@ -131,7 +149,10 @@ public class Game
 
     public boolean getRunning() { return running; }
 
-    /** Démarre la boucle principale du jeu */
+    /**
+     * <p>Démarre la boucle principale du jeu.</p>
+     * <p>Démarre avant ça, un écran titre où il va avoir un input au clavier pour le nom du joueur.</p>
+     */
     public void loop()
     {
         Sound.play("music.wav", -1);
@@ -160,16 +181,13 @@ public class Game
 
         // Game loops
         refreshAndDisplayThread.start();
-        keyboardInputThread.setPriority(Thread.MAX_PRIORITY);
+        keyboardInputThread.setPriority(Thread.MAX_PRIORITY);  // Au cas où :eyes:
         keyboardInputThread.start();
     }
 
-    /**
-     * Nettoie tout ce qui est present et afficher sur le terminal.
-     */
+    /** Nettoie tout ce qui est present et afficher sur le terminal. */
     private void clearConsole()
     {
-        // TODO: Demander a l'enseignant si cela est correct. J'ai essayé de bien faire pour qu'il est deux essaie au cas où
         // Essaye encore une fois si le premier essaie ne marche pas sinon il casse la boucle.
         Process process = null;
         try {
@@ -188,6 +206,7 @@ public class Game
             } catch (InterruptedException ignored) { }
     }
 
+    /** Chaque changement de niveau, cette fonction est appelée et qui permet de tous regenerate proprement */
     private void spawnEntity()
     {
         allSprites.clear();
@@ -203,6 +222,7 @@ public class Game
     {
         clearConsole();
 
+        // Quand le joueur na plus de vie, un ecran de Game Over s'affiche et interrompt la boucle et les Threads en fonctionnement
         if (player.getHealth() <= 0) {
             // Game over
             System.out.println(ANSI_RED + "                 ▄       ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄▄       ▄▄  ▄▄▄▄▄▄▄▄▄▄▄       ▄▄▄▄▄▄▄▄▄▄▄  ▄               ▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄       ▄                 ");
@@ -221,7 +241,7 @@ public class Game
             refreshAndDisplayThread.interrupt();
             keyboardInputThread.interrupt();
         } else {
-            // Information relative au nombre de piece necessaire pour gagner le niveau
+            // Information relative au nombre de piece nécessaire pour gagner le niveau
             System.out.println("\t" + ANSI_RED + "NIVEAUX: " + mapsEngine.getMapLvl() + ANSI_RESET);
             System.out.println(ANSI_GREEN + playerName + " ! Vous devez avoir " + mapsEngine.getDeterminateCoins() + " " + COIN_IMG + ANSI_GREEN + " pour pouvoir gagner le niveau" + ANSI_RESET);
             mapsEngine.draw();
@@ -271,17 +291,23 @@ public class Game
 
         for (Entity sprite : allSprites)
         {
+            // Actualise l'affichage sur l'écran et supprime la dernière frame.
             sprite.checkCollision(mapsEngine.getCalqueCollide());
             boolean collide = sprite.getDataImg() != COIN && sprite.getDataImg() != KEY && sprite.getDataImg() != LASER_VERTICAL && sprite.getDataImg() != LASER_HORIZONTAL;
             mapsEngine.updateEntity(sprite, collide);
 
-            // Update all Monsters
+
+            /*      Update all Monsters
+                Cette partie du code permet juste de faire tirer des lasers au monstre. */
             if (sprite instanceof Monster) {
                 Monster monster = (Monster) sprite;
                 monster.shoot(player, mapsEngine.getMap()[0].length, mapsEngine.getMap().length);
             }
 
-            // Update all coins
+
+            /*      Update all coins
+                 Cette partie du code permet de faire disparaitre et d'ajouter une pièce à l'inventaire imaginaire du joueur lorsqu'il est dessus.
+                 Joue un bruitage lorsqu'il la pièce disparaît qui informe au joueur qu'il la bien prirent cette pièce. */
             if (sprite instanceof Coin) {
                 Coin coin = (Coin) sprite;
                 if (sprite.getXPosition() == player.getXPosition() && sprite.getYPosition() == player.getYPosition()) {
@@ -293,18 +319,27 @@ public class Game
                 }
             }
 
-            // Update all chest
+
+            /*      Update all chest
+                Cette partie du code permet lorsque "a" est entrée dans l'input au clavier dans le terminal et que le joueur et autours du coffre (Max un block), le coffre s'ouvre.
+                Selon le contenu du coffre, il va se passer différentes choses.
+                Il peut avoir une vie, une pièce ou rien.
+                Bien entendu, un bruitage sera joué selon le contenu.
+                Le coffre s'ouvre uniquement si le joueur a une clé ! */
             if (sprite instanceof Chest) {
                 Chest chest = (Chest) sprite;
                 if (keyboardInput.getSelect())
+                    // Si le coffre est autours du joueur.
                     if ((sprite.getXPosition() == player.getXPosition()-1 || sprite.getXPosition() == player.getXPosition()+1)
                             || (sprite.getYPosition() == player.getYPosition()-1 || sprite.getYPosition() == player.getYPosition()+1))
                         if (player.getHaveAKey()) {
+                            // Quand le contenu du coffre est une piece.
                             if (chest.getWhatInside().equalsIgnoreCase("coin")) {
                                 player.addCoin();
 
                                 Sound.play("pickupCoin.wav", 0);
                             }
+                            // Quand le contenu du coffre est une vie en plus pour le joueur.
                             else if (chest.getWhatInside().equalsIgnoreCase("health")) {
                                 player.setHealth(player.getHealth()+1);
 
@@ -317,13 +352,17 @@ public class Game
                         }
             }
 
-
-            // Update all keys
+            /*      Update all keys
+                Cette partie du code permet lorsque "a" est entrée dans l'input au clavier dans le terminal et que le joueur et autours de la clé (Max un block), la clé est dans l'inventaire du joueur.
+                Une fois que le joueur obtient la clé dans l'inventaire, l'état de la variable "haveKey" change en "true", uniquement si le joueur na pas de clé present dans l'inventaire.
+                Ensuite, la clé disparait de la carte et joue un bruitage pour informer au joueur qu'il a bien obtenue la clé */
             if (sprite instanceof Key) {
                 Key key = (Key) sprite;
                 if (keyboardInput.getSelect())
+                    // Si la clé est autours du joueur.
                     if ((sprite.getXPosition() == player.getXPosition()-1 || sprite.getXPosition() == player.getXPosition()+1)
                             || (sprite.getYPosition() == player.getYPosition()-1 || sprite.getYPosition() == player.getYPosition()+1))
+                        // na pas de clé dans l'inventaire
                         if (!player.getHaveAKey()) {
                             player.haveKey();
                             mapsEngine.setElementMap(key.getXPosition(), key.getYPosition(), EMPTY, false);
@@ -333,9 +372,15 @@ public class Game
                         }
             }
 
-            // Update all lasers
+            /*      Update all lasers
+                 Cette partie du code permet de gérer tous les projectiles qui sont lancés depuis les monstres.
+                  Si le laser touche le joueur, cela va engendrer une perte de vie au joueur.
+                  Sinon, s'il est en collision avec rien... Les lasers continus sont trajets en ligne droite.
+                  Joue un son si le laser rentre en collision avec le joueur pour l'informer d'un dégât physique.
+                 Le projectile est supprimé de la carte s'il rencontre une collision lors de son trajet. */
             if (sprite instanceof Laser) {
                 Laser laser = (Laser) sprite;
+                // Si il touche un joueur.
                 if (laser.getXPosition() == player.getXPosition() && laser.getYPosition() == player.getYPosition()) {
                     player.hit();
                     mapsEngine.setElementMap(laser.getXPosition(), laser.getYPosition(), EMPTY, false);
@@ -343,6 +388,7 @@ public class Game
 
                     Sound.play("hitHurt.wav", 0);
                 } else {
+                    // Regarde si il rentre pas en collision et regarde dans quelle direction il va.
                     if (!laser.getCollideUp() && laser.getDirection() == 0)
                         laser.moveUp();
                     else if (!laser.getCollideDown() && laser.getDirection() == 3)
@@ -358,6 +404,7 @@ public class Game
                 }
             }
 
+            // Refresh les sprites (Entités)
             sprite.updates();
         }
     }

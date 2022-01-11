@@ -8,7 +8,12 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 
+import static fr.chrzdevelopment.game.Const.DEFAULT_RESOURCE_PATH;
 
+
+/**
+ * @see fr.chrzdevelopment.game.Const
+ */
 public class Sound
 {
 
@@ -17,8 +22,8 @@ public class Sound
     public static void play(final String fileName, int loopCount)
     {
         Clip clip;
-        File wavFile = new File("res/" + fileName);
-        if (!wavFile.canRead()) {
+        File wavFile = new File(DEFAULT_RESOURCE_PATH + fileName);
+        if (!wavFile.canRead()) {   // Si le code est compilé en .jar
             BufferedInputStream in = new BufferedInputStream(Sound.class.getResourceAsStream("/" + fileName));
             try {
                 clip = AudioSystem.getClip();
@@ -26,7 +31,7 @@ public class Sound
                 clip.loop(loopCount);
                 clip.start();
             } catch (LineUnavailableException | IOException | UnsupportedAudioFileException e) { e.printStackTrace(); }
-        } else {
+        } else {    // Si le code est ouvert en tant que projet dans un IDE
             try {
                 clip = AudioSystem.getClip();
                 clip.open(AudioSystem.getAudioInputStream(wavFile));

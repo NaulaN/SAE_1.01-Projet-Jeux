@@ -4,14 +4,15 @@ import java.util.List;
 
 
 /**
- *
+ * @see fr.chrzdevelopment.game.entities.Entity
+ * @author CHRZASZCZ Naulan
  */
 public class Coin extends Entity
 {
 
 
     /**
-     * @param group Un endroit où on place tous les Sprites (Les entités).
+     * @param group Un endroit où on place tous les Sprites (Les entités) et qui permet de les faire fonctionner.
      * @param x La localisation en x du Sprite.
      * @param y La localisation en y du Sprite.
      */
