@@ -1,8 +1,8 @@
 package fr.chrzdevelopment.game.entities;
 
-import static fr.chrzdevelopment.game.Const.*;
-
 import java.util.List;
+
+import static fr.chrzdevelopment.game.Const.allDataObj;
 
 
 /**

@@ -2,9 +2,9 @@ package fr.chrzdevelopment.game.entities;
 
 import fr.chrzdevelopment.game.Sound;
 
-import static fr.chrzdevelopment.game.Const.*;
-
 import java.util.List;
+
+import static fr.chrzdevelopment.game.Const.*;
 
 
 /**

@@ -1,15 +1,16 @@
 package fr.chrzdevelopment.entities;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static fr.chrzdevelopment.game.Const.*;
-
-import fr.chrzdevelopment.game.entities.Entity;
 import fr.chrzdevelopment.game.MapsEngine;
+import fr.chrzdevelopment.game.entities.Entity;
 import fr.chrzdevelopment.game.entities.Player;
-
 import org.junit.jupiter.api.Test;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import static fr.chrzdevelopment.game.Const.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 public class PlayerTest

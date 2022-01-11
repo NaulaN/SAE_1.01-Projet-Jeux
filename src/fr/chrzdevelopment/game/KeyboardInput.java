@@ -1,8 +1,8 @@
 package fr.chrzdevelopment.game;
 
-import static fr.chrzdevelopment.game.Const.*;
-
 import java.util.Scanner;
+
+import static fr.chrzdevelopment.game.Const.*;
 
 
 public class KeyboardInput

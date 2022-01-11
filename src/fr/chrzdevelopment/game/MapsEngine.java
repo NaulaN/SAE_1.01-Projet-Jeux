@@ -1,10 +1,10 @@
 package fr.chrzdevelopment.game;
 
-import static fr.chrzdevelopment.game.Const.*;
-
 import fr.chrzdevelopment.game.entities.*;
 
 import java.util.List;
+
+import static fr.chrzdevelopment.game.Const.*;
 
 
 /**

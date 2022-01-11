@@ -2,7 +2,8 @@ package fr.chrzdevelopment.game.entities;
 
 import java.util.List;
 
-import static fr.chrzdevelopment.game.Const.*;
+import static fr.chrzdevelopment.game.Const.LASER_HORIZONTAL;
+import static fr.chrzdevelopment.game.Const.LASER_VERTICAL;
 
 
 public class Laser extends Entity

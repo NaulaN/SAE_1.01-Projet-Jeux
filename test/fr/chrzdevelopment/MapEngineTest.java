@@ -1,11 +1,11 @@
 package fr.chrzdevelopment;
 
-import static fr.chrzdevelopment.game.Const.EMPTY;
-import static fr.chrzdevelopment.game.Const.WALL;
-import static org.junit.jupiter.api.Assertions.*;
-
 import fr.chrzdevelopment.game.MapsEngine;
 import org.junit.jupiter.api.Test;
+
+import static fr.chrzdevelopment.game.Const.EMPTY;
+import static fr.chrzdevelopment.game.Const.WALL;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 
 public class MapEngineTest

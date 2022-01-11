@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
+
 /** Je voulais utilisé un fichier ".json" mais il faut Gradle pour importer des libraries externe,
  *      Par peur de pas pouvoir me faire noté, je le met dans une classe du nom de Const pour les Constantes */
 public class Const

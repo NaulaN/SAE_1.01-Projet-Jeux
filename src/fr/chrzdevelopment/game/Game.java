@@ -1,15 +1,15 @@
 package fr.chrzdevelopment.game;
 // https://r12a.github.io/app-conversion/   Java char compatibility
 
-import static fr.chrzdevelopment.game.Const.*;
 import fr.chrzdevelopment.game.entities.*;
-
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import java.io.*;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import static fr.chrzdevelopment.game.Const.*;
 
 
 /**
