@@ -34,7 +34,7 @@ public class Monster extends Entity
     /** Bouge le monstre aléatoirement sur les 4 directions possible. */
     private void randomMove()
     {
-        int moveRandomly = RANDOM.nextInt(0, 4);
+        int moveRandomly = (int) (Math.random()*4);
 
         if (moveRandomly == UP && !getWhereCollide()[0])
             moveUp();
@@ -82,7 +82,7 @@ public class Monster extends Entity
                     }
             }
         } else {
-            int shoot = RANDOM.nextInt(0, 50);
+            int shoot = (int) (Math.random()*50);
 
             if (shoot == 0 || shoot == 1 || shoot == 2 || shoot == 3) {
                 getGroup().add(new Laser(getGroup(), getXPosition(), getYPosition(), shoot));

@@ -53,8 +53,8 @@ public class MapsEngine
     {
         int[] loc = new int[2];
         do {
-            loc[0] = RANDOM.nextInt(1, map[0].length-1);
-            loc[1] = RANDOM.nextInt(1, map.length-1);
+            loc[0] = (int) (1+Math.random()*map[0].length-1);
+            loc[1] = (int) (1+Math.random()*map.length-1);
         } while (map[loc[1]][loc[0]] == WALL || map[loc[1]][loc[0]] == MONSTER || map[loc[1]][loc[0]] == CHEST || map[loc[1]][loc[0]] == COIN);
 
         return loc;
@@ -73,7 +73,7 @@ public class MapsEngine
 
     public void spawnMonster(List<Entity> allSprites)
     {
-        int nbMonster = RANDOM.nextInt(0, 6);
+        int nbMonster = (int) (Math.random()*6);
 
         int x; int y; int[] loc;
         for (int m = 0; m < nbMonster; m++) {
@@ -88,7 +88,7 @@ public class MapsEngine
 
     public void spawnCoin(List<Entity> allSprites)
     {
-        determinateCoins = RANDOM.nextInt(1, 11);
+        determinateCoins = (int) (1+Math.random()*11);
 
         int x; int y; int[] loc;
         // TODO: Faire un truc plus complet avec des formes et des chemins de piece
@@ -110,7 +110,7 @@ public class MapsEngine
             x = loc[0]; y = loc[1];
 
             // Crée le coffre, on lui dit ce qu'il va loot et on le place dans le tableau
-            String loot = LOOTS[RANDOM.nextInt(0, LOOTS.length)];
+            String loot = LOOTS[(int) (Math.random()*LOOTS.length)];
             if (loot.equalsIgnoreCase("coin"))
                 determinateCoins++;
             new Chest(allSprites, loot, x, y);
@@ -186,13 +186,13 @@ public class MapsEngine
     public void generateObstacles()
     {
         // Determine le nombre d'obstacle a prevoir
-        int nbObstacle = RANDOM.nextInt(1, 4);
+        int nbObstacle = (int) (1+Math.random()*4);
 
         // Generation des obstacles
         for (int o = 0; o <= nbObstacle; o++) {
             // Détermine la taille
-            int h = RANDOM.nextInt(1, 5);
-            int w = RANDOM.nextInt(1, 5);
+            int h = (int) (1+Math.random()*5);
+            int w = (int) (1+Math.random()*5);
             // Creation de l'obstacle
             char[][] obstacle = new char[h][w];
             for (int c = 0; c < h; c++)
@@ -200,8 +200,8 @@ public class MapsEngine
                     obstacle[c][r] = WALL;
 
             // Placement sur la Map
-            int x = Math.abs(RANDOM.nextInt(0, width)-(obstacle[0].length-1));
-            int y = Math.abs(RANDOM.nextInt(0, height)-(obstacle.length-1));
+            int x = Math.abs((int) ((Math.random()*width)-(obstacle[0].length-1)));
+            int y = Math.abs((int) ((Math.random()*height)-(obstacle.length-1)));
             // Ecriture sur la Map
             for (int yMap = 0; yMap < y; yMap++)
                 for (int xMap = 0; xMap < x; xMap++)

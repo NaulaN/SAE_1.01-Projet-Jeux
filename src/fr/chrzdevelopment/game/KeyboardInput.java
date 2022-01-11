@@ -22,12 +22,24 @@ public class KeyboardInput
                 char key = input.toLowerCase().charAt(0);
                 switch (key)
                 {
-                    case 'z' -> offset = UP;
-                    case 's' -> offset = DOWN;
-                    case 'q' -> offset = LEFT;
-                    case 'd' -> offset = RIGHT;
-                    case 'a' -> offset = SELECT;
-                    default ->  offset = -1;
+                    case 'z':
+                        offset = UP;
+                        break;
+                    case 's':
+                        offset = DOWN;
+                        break;
+                    case 'q':
+                        offset = LEFT;
+                        break;
+                    case 'd':
+                        offset = RIGHT;
+                        break;
+                    case 'a':
+                        offset = SELECT;
+                        break;
+                    default:
+                        offset = -1;
+                        break;
                 }
             }
         }

@@ -67,28 +67,26 @@ public class Const
 
     private static void initGraphics()
     {
-        allDataObjImg = new HashMap<>() {{
-            put(EMPTY, EMPTY_IMG);
-            put(WALL, WALL_IMG);
-            put(MONSTER, MONSTER_IMG);
-            put(PLAYER, PLAYER_IMG);
-            put(CHEST, CHEST_IMG);
-            put(CHEST_OPEN, CHEST_OPEN_IMG);
-            put(COIN, COIN_IMG);
-            put(KEY, KEY_IMG);
-            put(LASER_VERTICAL, LASER_VERTICAL_IMG);
-            put(LASER_HORIZONTAL, LASER_HORIZONTAL_IMG);
-        }};
+        allDataObjImg = new HashMap<>();
+        allDataObjImg.put(EMPTY, EMPTY_IMG);
+        allDataObjImg.put(WALL, WALL_IMG);
+        allDataObjImg.put(MONSTER, MONSTER_IMG);
+        allDataObjImg.put(PLAYER, PLAYER_IMG);
+        allDataObjImg.put(CHEST, CHEST_IMG);
+        allDataObjImg.put(CHEST_OPEN, CHEST_OPEN_IMG);
+        allDataObjImg.put(COIN, COIN_IMG);
+        allDataObjImg.put(KEY, KEY_IMG);
+        allDataObjImg.put(LASER_VERTICAL, LASER_VERTICAL_IMG);
+        allDataObjImg.put(LASER_HORIZONTAL, LASER_HORIZONTAL_IMG);
 
-        allDataObj = new HashMap<>() {{
-            put("wall", WALL);
-            put("monster", MONSTER);
-            put("player", PLAYER);
-            put("chest", CHEST);
-            put("chest_open", CHEST_OPEN);
-            put("coin", COIN);
-            put("key", KEY);
-        }};
+        allDataObj = new HashMap<>();
+        allDataObj.put("wall", WALL);
+        allDataObj.put("monster", MONSTER);
+        allDataObj.put("player", PLAYER);
+        allDataObj.put("chest", CHEST);
+        allDataObj.put("chest_open", CHEST_OPEN);
+        allDataObj.put("coin", COIN);
+        allDataObj.put("key", KEY);
     }
 
     /** Charge les graphismes compatible pour un terminal et un kernel Linux */

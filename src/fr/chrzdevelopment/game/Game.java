@@ -8,7 +8,6 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import java.io.*;
-import java.util.IllegalFormatCodePointException;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -263,8 +262,8 @@ public class Game
 
         // Génère une nouvelle map si on change de niveau
         if (mapsEngine.getMapLvl() > 1 && !mapsEngine.getIsGenerate()) {
-            mapsEngine.setHeight(RANDOM.nextInt(20, 35));
-            mapsEngine.setWidth(RANDOM.nextInt(20, 35));
+            mapsEngine.setHeight((int) (20+Math.random()*15));
+            mapsEngine.setWidth((int) (20+Math.random()*15));
             mapsEngine.generateMap();
             mapsEngine.generateObstacles();
             spawnEntity();
@@ -277,11 +276,14 @@ public class Game
             mapsEngine.updateEntity(sprite, collide);
 
             // Update all Monsters
-            if (sprite instanceof Monster monster)
+            if (sprite instanceof Monster) {
+                Monster monster = (Monster) sprite;
                 monster.shoot(player, mapsEngine.getMap()[0].length, mapsEngine.getMap().length);
+            }
 
             // Update all coins
-            if (sprite instanceof Coin coin)
+            if (sprite instanceof Coin) {
+                Coin coin = (Coin) sprite;
                 if (sprite.getXPosition() == player.getXPosition() && sprite.getYPosition() == player.getYPosition()) {
                     player.addCoin();
                     mapsEngine.setElementMap(coin.getXPosition(), coin.getYPosition(), EMPTY, false);
@@ -289,9 +291,11 @@ public class Game
 
                     Sound.play("pickupCoin.wav", 0);
                 }
+            }
 
             // Update all chest
-            if (sprite instanceof Chest chest)
+            if (sprite instanceof Chest) {
+                Chest chest = (Chest) sprite;
                 if (keyboardInput.getSelect())
                     if ((sprite.getXPosition() == player.getXPosition()-1 || sprite.getXPosition() == player.getXPosition()+1)
                             || (sprite.getYPosition() == player.getYPosition()-1 || sprite.getYPosition() == player.getYPosition()+1))
@@ -311,9 +315,12 @@ public class Game
 
                             Sound.play("openChest.wav", 0);
                         }
+            }
+
 
             // Update all keys
-            if (sprite instanceof Key key)
+            if (sprite instanceof Key) {
+                Key key = (Key) sprite;
                 if (keyboardInput.getSelect())
                     if ((sprite.getXPosition() == player.getXPosition()-1 || sprite.getXPosition() == player.getXPosition()+1)
                             || (sprite.getYPosition() == player.getYPosition()-1 || sprite.getYPosition() == player.getYPosition()+1))
@@ -324,9 +331,11 @@ public class Game
 
                             Sound.play("getKeys.wav", 0);
                         }
+            }
 
             // Update all lasers
-            if (sprite instanceof Laser laser) {
+            if (sprite instanceof Laser) {
+                Laser laser = (Laser) sprite;
                 if (laser.getXPosition() == player.getXPosition() && laser.getYPosition() == player.getYPosition()) {
                     player.hit();
                     mapsEngine.setElementMap(laser.getXPosition(), laser.getYPosition(), EMPTY, false);
