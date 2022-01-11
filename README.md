@@ -40,7 +40,7 @@ Windows aura un affichage ASCII alors que Linux aura un affichage beaucoup plus 
 **>** Représente une clé qui permet d'ouvrir les coffres.
 
 ##### Sur Linux:
-![illustrationMapOnLinux](https://eapi.pcloud.com/getpubthumb?code=XZSbgFZ7ry8QY4VqdF9rJFn1M7kSXitV1WV&linkpassword=undefined&size=482x684&crop=0&type=auto)
+![illustrationMapOnLinux](https://eapi.pcloud.com/getpubthumb?code=XZSbgFZ7ry8QY4VqdF9rJFn1M7kSXitV1WV&linkpassword=undefined&size=300x300&crop=0&type=auto)
 * 🤠 **>** Désigne le joueur, un joli cowboy !
 * 🧱 **>** Désigne un mur.
 * 👾 **>** Désigne un monstre.

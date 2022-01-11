@@ -1,5 +1,7 @@
 package fr.chrzdevelopment.game.entities;
 
+import fr.chrzdevelopment.game.Sound;
+
 import static fr.chrzdevelopment.game.Const.*;
 
 import java.util.List;
@@ -44,19 +46,55 @@ public class Monster extends Entity
             moveRight();
     }
 
-    /** Fait tirée un rayon laser aléatoirement au monstre sur 4 directions possible. */
-    private void randomShoot()
+    /** Fait tirer un rayon laser aléatoirement ou en direction du joueur selon en X ou en Y au monstre sur 4 directions possible. */
+    public void shoot(Player player, int XMax, int YMax)
     {
-        int shoot = RANDOM.nextInt(0, 20);
+        if (player.getYPosition() == getYPosition() || player.getXPosition() == getXPosition()) {
+            if (player.getXPosition() > getXPosition() && player.getYPosition() == getYPosition()) {
+                for (int x1 = getXPosition(); x1 < XMax; x1++)
+                    if (x1 == player.getXPosition()) {
+                        getGroup().add(new Laser(getGroup(), getXPosition(), getYPosition(), 1));
+                        Sound.play("laserShoot.wav", 0);
+                        return;
+                    }
+            } else if (player.getXPosition() < getXPosition() && player.getYPosition() == getYPosition()) {
+                for (int x2 = getXPosition(); x2 > 0; x2--)
+                    if (x2 == player.getXPosition()) {
+                        getGroup().add(new Laser(getGroup(), getXPosition(), getYPosition(), 2));
+                        Sound.play("laserShoot.wav", 0);
+                        return;
+                    }
+            }
 
-        if (shoot == 0 || shoot == 1 || shoot == 2 || shoot == 3)
-            getGroup().add(new Laser(getGroup(), getXPosition(), getYPosition(), shoot));
+            if (player.getYPosition() > getYPosition() && player.getXPosition() == getXPosition()) {
+                for (int y1 = getYPosition(); y1 < YMax; y1++)
+                    if (y1 == player.getYPosition()) {
+                        getGroup().add(new Laser(getGroup(), getXPosition(), getYPosition(), 3));
+                        Sound.play("laserShoot.wav", 0);
+                        return;
+                    }
+            } else if (player.getYPosition() < getYPosition() && player.getXPosition() == getXPosition()) {
+                for (int y2 = getYPosition(); y2 > 0; y2--)
+                    if (y2 == player.getYPosition()) {
+                        getGroup().add(new Laser(getGroup(), getXPosition(), getYPosition(), 0));
+                        Sound.play("laserShoot.wav", 0);
+                        return;
+                    }
+            }
+        } else {
+            int shoot = RANDOM.nextInt(0, 50);
+
+            if (shoot == 0 || shoot == 1 || shoot == 2 || shoot == 3) {
+                getGroup().add(new Laser(getGroup(), getXPosition(), getYPosition(), shoot));
+
+                Sound.play("laserShoot.wav", 0);
+            }
+        }
     }
 
     @Override
     public void updates()
     {
-        randomShoot();
         randomMove();
 
         if (getHealth() <= 0)

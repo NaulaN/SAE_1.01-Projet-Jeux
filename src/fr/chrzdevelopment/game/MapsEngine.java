@@ -67,8 +67,6 @@ public class MapsEngine
         loc = findALocation();
         x = loc[0]; y = loc[1];
 
-        if (allSprites.size() != 0 && allSprites.get(0).getDataImg() == PLAYER)
-            System.out.println("dfgkl,dfgnjklmergklpùer^flmopêrfrkopergkopegkortpejkoergjierjietjioe'tjioertjiortejioer");
         // Crée le joueur
         return new Player(allSprites, x, y, 1);
     }

@@ -8,6 +8,7 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import java.io.*;
+import java.util.IllegalFormatCodePointException;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -275,12 +276,18 @@ public class Game
             boolean collide = sprite.getDataImg() != COIN && sprite.getDataImg() != KEY && sprite.getDataImg() != LASER_VERTICAL && sprite.getDataImg() != LASER_HORIZONTAL;
             mapsEngine.updateEntity(sprite, collide);
 
+            // Update all Monsters
+            if (sprite instanceof Monster monster)
+                monster.shoot(player, mapsEngine.getMap()[0].length, mapsEngine.getMap().length);
+
             // Update all coins
             if (sprite instanceof Coin coin)
                 if (sprite.getXPosition() == player.getXPosition() && sprite.getYPosition() == player.getYPosition()) {
                     player.addCoin();
                     mapsEngine.setElementMap(coin.getXPosition(), coin.getYPosition(), EMPTY, false);
                     allSprites.remove(coin);
+
+                    Sound.play("pickupCoin.wav", 0);
                 }
 
             // Update all chest
@@ -289,13 +296,20 @@ public class Game
                     if ((sprite.getXPosition() == player.getXPosition()-1 || sprite.getXPosition() == player.getXPosition()+1)
                             || (sprite.getYPosition() == player.getYPosition()-1 || sprite.getYPosition() == player.getYPosition()+1))
                         if (player.getHaveAKey()) {
-                            if (chest.getWhatInside().equalsIgnoreCase("coin"))
+                            if (chest.getWhatInside().equalsIgnoreCase("coin")) {
                                 player.addCoin();
-                            else if (chest.getWhatInside().equalsIgnoreCase("health"))
+
+                                Sound.play("pickupCoin.wav", 0);
+                            }
+                            else if (chest.getWhatInside().equalsIgnoreCase("health")) {
                                 player.setHealth(player.getHealth()+1);
 
+                                Sound.play("powerUp.wav", 0);
+                            }
                             chest.hit();
                             player.haventKey();
+
+                            Sound.play("openChest.wav", 0);
                         }
 
             // Update all keys
@@ -305,18 +319,20 @@ public class Game
                             || (sprite.getYPosition() == player.getYPosition()-1 || sprite.getYPosition() == player.getYPosition()+1))
                         if (!player.getHaveAKey()) {
                             player.haveKey();
-
                             mapsEngine.setElementMap(key.getXPosition(), key.getYPosition(), EMPTY, false);
                             allSprites.remove(key);
+
+                            Sound.play("getKeys.wav", 0);
                         }
 
             // Update all lasers
             if (sprite instanceof Laser laser) {
                 if (laser.getXPosition() == player.getXPosition() && laser.getYPosition() == player.getYPosition()) {
                     player.hit();
-
                     mapsEngine.setElementMap(laser.getXPosition(), laser.getYPosition(), EMPTY, false);
                     allSprites.remove(laser);
+
+                    Sound.play("hitHurt.wav", 0);
                 } else {
                     if (!laser.getCollideUp() && laser.getDirection() == 0)
                         laser.moveUp();
