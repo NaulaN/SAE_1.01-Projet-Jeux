@@ -17,8 +17,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 class KeyboardInputThread extends Thread
 {
-    private KeyboardInput keyboardInput;
-    private Game game;
+    private final KeyboardInput keyboardInput;
+    private final Game game;
 
 
     public KeyboardInputThread(Game game, KeyboardInput keyboardInput)
@@ -32,11 +32,11 @@ class KeyboardInputThread extends Thread
     {
         synchronized (this) {
             while (game.getRunning() && !this.isInterrupted()) {
-                keyboardInput.getInput();
-
                 try {
                     this.wait(100);
                 } catch (InterruptedException ignored) { return; }
+
+                keyboardInput.getInput();
             }
         }
     }
@@ -48,7 +48,7 @@ class KeyboardInputThread extends Thread
  */
 class RefreshAndDisplayThread extends Thread
 {
-    private Game game;
+    private final Game game;
 
 
     RefreshAndDisplayThread(Game game) { this.game = game; }
@@ -58,12 +58,12 @@ class RefreshAndDisplayThread extends Thread
     {
         synchronized (this) {
             while (game.getRunning() && !this.isInterrupted()) {
-                game.updates();
-                game.draws();
-
                 try {
                     this.wait(100);
                 } catch (InterruptedException ignored) { return; }
+
+                game.updates();
+                game.draws();
             }
         }
     }
@@ -82,20 +82,21 @@ public class Game
     private final List<Entity> allSprites = new CopyOnWriteArrayList<>();
     private Player player;
 
+    // TODO
+    private String playerName;
     private int totalCoins;
     private int maxLvl;
-    private String playerName;
 
     private final KeyboardInput keyboardInput = new KeyboardInput();
-    private MapsEngine mapsEngine;
+    private final MapsEngine mapsEngine;
     private final String OS = System.getProperty("os.name");
     // clear terminal commands
     private final ProcessBuilder processBuilder = (OS.equalsIgnoreCase("windows") || OS.equalsIgnoreCase("windows 10")) ? new ProcessBuilder("cmd", "/c", "cls") : new ProcessBuilder("clear");
 
     private boolean running = true;
 
-    private Thread refreshAndDisplayThread = new RefreshAndDisplayThread(this);
-    private Thread keyboardInputThread = new KeyboardInputThread(this, keyboardInput);
+    private final Thread refreshAndDisplayThread = new RefreshAndDisplayThread(this);
+    private final Thread keyboardInputThread = new KeyboardInputThread(this, keyboardInput);
 
 
     public Game()
@@ -107,11 +108,13 @@ public class Game
         } catch (FileNotFoundException e) {
             // In a JAR
             InputStream in = getClass().getResourceAsStream("/save.json");
-            saveFile = new JSONObject(new JSONTokener( new BufferedReader(new InputStreamReader(in))));
+            if (in != null)
+                saveFile = new JSONObject(new JSONTokener( new BufferedReader(new InputStreamReader(in))));
         }
         playerName = saveFile.getString("playerName");
         totalCoins = saveFile.getInt("totalCoins");
         maxLvl = saveFile.getInt("maxLvl");
+
 
         // Load graphics
         if (OS.equalsIgnoreCase("windows") || OS.equalsIgnoreCase("windows 10"))
@@ -163,8 +166,6 @@ public class Game
 
     /**
      * Nettoie tout ce qui est present et afficher sur le terminal.
-     * @exception IOException Essaye avec une deuxième méthode pour nettoyer la console
-     * @exception InterruptedException Essaye encore une fois tout le processus
      */
     private void clearConsole()
     {
@@ -174,7 +175,7 @@ public class Game
         try {
             process = processBuilder.inheritIO().start();
         } catch (IOException IOe) {
-            if (!OS.equalsIgnoreCase("windows") || !OS.equalsIgnoreCase("windows 10")) {
+            if (!OS.equalsIgnoreCase("windows") && !OS.equalsIgnoreCase("windows 10")) {
                 // la deuxième méthode qui permet de nettoyer la console...
                 System.out.print("\033[H\033[2J");
                 System.out.flush();
@@ -273,7 +274,6 @@ public class Game
             sprite.checkCollision(mapsEngine.getCalqueCollide());
             boolean collide = sprite.getDataImg() != COIN && sprite.getDataImg() != KEY && sprite.getDataImg() != LASER_VERTICAL && sprite.getDataImg() != LASER_HORIZONTAL;
             mapsEngine.updateEntity(sprite, collide);
-            sprite.updates();
 
             // Update all coins
             if (sprite instanceof Coin coin)
@@ -316,8 +316,6 @@ public class Game
                     player.hit();
 
                     mapsEngine.setElementMap(laser.getXPosition(), laser.getYPosition(), EMPTY, false);
-                    if (laser.getXPreviousPosition() != -1 && laser.getYPreviousPosition() != -1)
-                        mapsEngine.setElementMap(laser.getXPreviousPosition(), laser.getYPreviousPosition(), EMPTY, false);
                     allSprites.remove(laser);
                 } else {
                     if (!laser.getCollideUp() && laser.getDirection() == 0)
@@ -334,6 +332,8 @@ public class Game
                     }
                 }
             }
+
+            sprite.updates();
         }
     }
 }

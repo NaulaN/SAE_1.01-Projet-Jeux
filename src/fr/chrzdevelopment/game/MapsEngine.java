@@ -76,7 +76,6 @@ public class MapsEngine
     public void spawnMonster(List<Entity> allSprites)
     {
         int nbMonster = RANDOM.nextInt(0, 6);
-        Monster[] monsters = new Monster[nbMonster];
 
         int x; int y; int[] loc;
         for (int m = 0; m < nbMonster; m++) {
@@ -85,14 +84,13 @@ public class MapsEngine
             y = loc[1];
 
             // Crée le monstre et le range dans le tableau.
-            monsters[m] = new Monster(allSprites, x, y, 1);
+            new Monster(allSprites, x, y, 1);
         }
     }
 
     public void spawnCoin(List<Entity> allSprites)
     {
         determinateCoins = RANDOM.nextInt(1, 11);
-        Coin[] coins = new Coin[determinateCoins];
 
         int x; int y; int[] loc;
         // TODO: Faire un truc plus complet avec des formes et des chemins de piece
@@ -100,17 +98,16 @@ public class MapsEngine
             loc = findALocation();
             x = loc[0]; y = loc[1];
 
-            coins[c] = new Coin(allSprites, x, y);
+            new Coin(allSprites, x, y);
         }
     }
 
     public void spawnChest(List<Entity> allSprites)
     {
         int nbChest = 2;
-        Chest[] chests = new Chest[nbChest];
 
         int x; int y; int[] loc;
-        for (int c = 0; c < chests.length; c++) {
+        for (int c = 0; c < 2; c++) {
             loc = findALocation();
             x = loc[0]; y = loc[1];
 
@@ -118,21 +115,20 @@ public class MapsEngine
             String loot = LOOTS[RANDOM.nextInt(0, LOOTS.length)];
             if (loot.equalsIgnoreCase("coin"))
                 determinateCoins++;
-            chests[c] = new Chest(allSprites, loot, x, y);
+            new Chest(allSprites, loot, x, y);
         }
     }
 
     public void spawnKey(List<Entity> allSprites)
     {
         int nbKey = 2;
-        Key[] keys = new Key[nbKey];
 
         int x; int y; int[] loc;
-        for (int k = 0; k < keys.length; k++) {
+        for (int k = 0; k < 2; k++) {
             loc = findALocation();
             x = loc[0]; y = loc[1];
 
-            keys[k] = new Key(allSprites, x, y);
+            new Key(allSprites, x, y);
         }
     }
 

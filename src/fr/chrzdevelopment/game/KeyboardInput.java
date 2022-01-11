@@ -14,9 +14,8 @@ public class KeyboardInput
     public synchronized void getInput()
     {
         String input = sc.nextLine();
-        // Evite une erreur
-        if (input.length() != 0)
-        {
+        // évite une erreur
+        if (input.length() != 0) {
             if (input.equalsIgnoreCase("quit"))
                 offset = QUIT;
             else {
