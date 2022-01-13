@@ -335,7 +335,9 @@ public class Game
 
 
                 /*
-                    Update all swords
+                        Update all swords*
+                    Cette partie du code permet que lors que le joueur n'a pas d'épée dans son inventaire et que l'épée se trouve autours du joueur.
+                    Range l'épée dans l'inventaire et supprimer physiquement sur la carte.
                  */
                 if (sprite instanceof Sword) {
                     Sword sword = (Sword) sprite;
@@ -350,7 +352,7 @@ public class Game
 
 
             /*
-                Update all swords
+                    Update all swords
             */
             if (sprite instanceof Sword) {
                 Sword sword = (Sword) sprite;

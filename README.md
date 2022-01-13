@@ -38,6 +38,8 @@ Windows aura un affichage ASCII alors que Linux aura un affichage beaucoup plus 
 **>** Un mur, juste un mur.
 * ![key](https://eapi.pcloud.com/getpubthumb?code=XZft9FZHwcGC1shg2kab63IONGqYJ6Y3Bc7&linkpassword=undefined&size=20x20&crop=0&type=auto) 
 **>** Représente une clé qui permet d'ouvrir les coffres.
+* ![sword](https://eapi.pcloud.com/getpubthumb?code=XZgUwFZJA7WoKuTudkLtzYhpn9ae8vhV3rX&linkpassword=undefined&size=20x20&crop=0&type=auto)
+**>** Représente une épée qui permet de tuer des monstres.
 
 ##### Sur Linux:
 ![illustrationMapOnLinux](https://eapi.pcloud.com/getpubthumb?code=XZSbgFZ7ry8QY4VqdF9rJFn1M7kSXitV1WV&linkpassword=undefined&size=300x300&crop=0&type=auto)

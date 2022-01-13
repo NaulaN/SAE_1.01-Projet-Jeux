@@ -106,7 +106,7 @@ public class Const
         HEART_IMG = "\u2764\uFE0F";
         RECT_RED_IMG = "\uD83D\uDFE5";
         KEY_IMG = "\uD83D\uDD11";
-        SWORD_IMG = "\uD83D\uDDE1️";
+        SWORD_IMG = " \uD83D\uDDE1️";
         LASER_VERTICAL_IMG = "\u26A1";
         LASER_HORIZONTAL_IMG = "\u26A1";
 
