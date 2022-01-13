@@ -49,6 +49,9 @@ public class KeyboardInput
                     case 'a':
                         offset = SELECT;
                         break;
+                    case 'e':
+                        offset = LAUNCH;
+                        break;
                     default:
                         offset = -1;
                         break;
@@ -67,5 +70,6 @@ public class KeyboardInput
     public boolean getMoveLeft() { return offset == LEFT; }
     public boolean getMoveRight() { return offset == RIGHT; }
     public boolean getSelect() { return offset == SELECT; }
+    public boolean getLaunch() { return offset == LAUNCH; }
 }
 

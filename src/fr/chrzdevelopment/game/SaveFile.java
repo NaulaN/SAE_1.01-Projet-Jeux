@@ -24,8 +24,8 @@ public class SaveFile
                 f.createNewFile();
                 FileWriter fileWriter = new FileWriter(f);
                 fileWriter.write("{\"maxLvl\":0,\"playerName\":\"Naulan\",\"howManyPlay\":0,\"totalCoins\":0}");
-                fileWriter.close();
                 fileWriter.flush();
+                fileWriter.close();
             } catch (IOException e) { e.printStackTrace(); }
         }
 

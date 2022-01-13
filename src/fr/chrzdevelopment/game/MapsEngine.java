@@ -40,6 +40,8 @@ public class MapsEngine
     private int mapLvl = 1;
     private boolean isGenerate = false;
 
+    private int nbMonster = 0;
+
 
     /**
      * @param width La taille initiale de la carte en largeur
@@ -58,7 +60,7 @@ public class MapsEngine
         do {
             loc[0] = (int) (1+Math.random()*map[0].length-1);
             loc[1] = (int) (1+Math.random()*map.length-1);
-        } while (map[loc[1]][loc[0]] == WALL || map[loc[1]][loc[0]] == MONSTER || map[loc[1]][loc[0]] == CHEST || map[loc[1]][loc[0]] == COIN);
+        } while (map[loc[1]][loc[0]] == WALL || map[loc[1]][loc[0]] == MONSTER || map[loc[1]][loc[0]] == CHEST || map[loc[1]][loc[0]] == COIN || map[loc[1]][loc[0]] == SWORD);
 
         return loc;
     }
@@ -83,7 +85,7 @@ public class MapsEngine
      */
     public void spawnMonster(List<Entity> allSprites)
     {
-        int nbMonster = (int) (Math.random()*6);
+        nbMonster = (int) (1+Math.random()*5);
         finalSpawnMonster(allSprites, nbMonster);
     }
 
@@ -140,7 +142,7 @@ public class MapsEngine
         int nbChest = 2;
 
         int x; int y; int[] loc;
-        for (int c = 0; c < 2; c++) {
+        for (int c = 0; c < nbChest; c++) {
             loc = findALocation();
             x = loc[0]; y = loc[1];
 
@@ -166,6 +168,19 @@ public class MapsEngine
             x = loc[0]; y = loc[1];
 
             new Key(allSprites, x, y);
+        }
+    }
+
+    public void spawnSword(List<Entity> allSprites)
+    {
+        int nbSword = nbMonster;
+
+        int x; int y; int[] loc;
+        for (int k = 0; k < nbSword; k++) {
+            loc = findALocation();
+            x = loc[0]; y = loc[1];
+
+            new Sword(allSprites, x, y);
         }
     }
 

@@ -25,7 +25,7 @@ public class Chest extends Entity
      */
     public Chest(List<Entity> group, String whatInside, int x, int y)
     {
-        super(group, "Chest", x, y, 0);
+        super(group, "Chest", x, y, 1);
 
         this.whatInside = whatInside;
         setHealth(1);

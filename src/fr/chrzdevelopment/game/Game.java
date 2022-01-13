@@ -40,6 +40,10 @@ public class Game
     private final RefreshAndDisplayThread refreshAndDisplayThread = new RefreshAndDisplayThread(this);
     private final KeyboardInputThread keyboardInputThread = new KeyboardInputThread(this, keyboardInput);
 
+    private int timeInvulnerability = 20;
+    private int timerInvulnerability = 0;
+
+
     /**
      * <p>Charge le fichier de sauvegarde .json</p>
      * <p>Charge les graphics selon l'OS utilisé</p>
@@ -111,6 +115,7 @@ public class Game
         mapsEngine.spawnCoin(allSprites);
         mapsEngine.spawnChest(allSprites);
         mapsEngine.spawnKey(allSprites);
+        mapsEngine.spawnSword(allSprites);
     }
 
     private void titleScreen()
@@ -183,7 +188,8 @@ public class Game
             StringBuilder msgHud = new StringBuilder().append(COIN_IMG).append(": ").append(player.getCoins()).append("   ");
             for (int h = 1; h <= player.getHealth(); h++)
                 msgHud.append(HEART_IMG).append(" ");
-            msgHud.append("   ").append(KEY_IMG).append(": ").append((player.getHaveAKey()) ? "oui" : "non");
+            msgHud.append("   ").append(KEY_IMG).append(": ").append((player.getHaveAKey()) ? "oui" : "non").append("   ");
+            msgHud.append(SWORD_IMG).append(": ").append((player.getHaveSword()) ? "oui" : "non");
             System.out.print("\t" + msgHud);
             System.out.println();
         }
@@ -220,6 +226,9 @@ public class Game
             mapsEngine.generateObstacles();
             spawnEntity();
 
+            timerInvulnerability = 0;
+            player.enableInvulnerability();
+
             saveFile.put("maxLvl", mapsEngine.getMapLvl());
         }
 
@@ -227,8 +236,28 @@ public class Game
         {
             // Actualise l'affichage sur l'écran et supprime la dernière frame.
             sprite.checkCollision(mapsEngine.getCalqueCollide());
-            boolean collide = sprite.getDataImg() != COIN && sprite.getDataImg() != KEY && sprite.getDataImg() != LASER_VERTICAL && sprite.getDataImg() != LASER_HORIZONTAL;
+            boolean collide = sprite.getDataImg() != COIN && sprite.getDataImg() != KEY && sprite.getDataImg() != LASER_VERTICAL && sprite.getDataImg() != LASER_HORIZONTAL && sprite.getDataImg() != SWORD;
             mapsEngine.updateEntity(sprite, collide);
+
+
+            /*
+
+             */
+            if (sprite instanceof Player)
+            {
+                if (player.getHaveInvulnerability())
+                    if (timerInvulnerability != timeInvulnerability)
+                        timerInvulnerability++;
+                    else player.disableInvulnerability();
+
+                if (keyboardInput.getLaunch())
+                    if (player.getHaveSword()) {
+                        Sword sword = new Sword(allSprites,player.getXPosition()+1,player.getYPosition()+1);
+                        sword.launch();
+                        player.haventSword();
+                    }
+            }
+
 
             /*      Update all Monsters
                 Cette partie du code permet juste de faire tirer des lasers au monstre. */
@@ -253,18 +282,20 @@ public class Game
                 }
             }
 
-            /*      Update all chest
-                Cette partie du code permet lorsque "a" est entrée dans l'input au clavier dans le terminal et que le joueur et autours du coffre (Max un block), le coffre s'ouvre.
-                Selon le contenu du coffre, il va se passer différentes choses.
-                Il peut avoir une vie, une pièce ou rien.
-                Bien entendu, un bruitage sera joué selon le contenu.
-                Le coffre s'ouvre uniquement si le joueur a une clé ! */
-            if (sprite instanceof Chest) {
-                Chest chest = (Chest) sprite;
-                if (keyboardInput.getSelect())
-                    // Si le coffre est autours du joueur.
-                    if ((sprite.getXPosition() == player.getXPosition()-1 || sprite.getXPosition() == player.getXPosition()+1)
-                            || (sprite.getYPosition() == player.getYPosition()-1 || sprite.getYPosition() == player.getYPosition()+1))
+
+            if ((sprite.getXPosition() == player.getXPosition()-1 && sprite.getYPosition() == player.getYPosition())
+                    || (sprite.getXPosition() == player.getXPosition()+1 && sprite.getYPosition() == player.getYPosition())
+                    || (sprite.getYPosition() == player.getYPosition()-1 && sprite.getXPosition() == player.getXPosition())
+                    || (sprite.getYPosition() == player.getYPosition()+1 && sprite.getXPosition() == player.getXPosition())) {
+                /*      Update all chest
+                    Cette partie du code permet lorsque "a" est entrée dans l'input au clavier dans le terminal et que le joueur et autours du coffre (Max un block), le coffre s'ouvre.
+                    Selon le contenu du coffre, il va se passer différentes choses.
+                    Il peut avoir une vie, une pièce ou rien.
+                    Bien entendu, un bruitage sera joué selon le contenu.
+                    Le coffre s'ouvre uniquement si le joueur a une clé ! */
+                if (sprite instanceof Chest) {
+                    Chest chest = (Chest) sprite;
+                    if (keyboardInput.getSelect())
                         if (player.getHaveAKey()) {
                             // Quand le contenu du coffre est une piece.
                             if (chest.getWhatInside().equalsIgnoreCase("coin")) {
@@ -284,19 +315,15 @@ public class Game
 
                             Sound.play("openChest.wav", 0);
                         }
-            }
+                }
 
-            /*      Update all keys
-                Cette partie du code permet lorsque "a" est entrée dans l'input au clavier dans le terminal et que le joueur et autours de la clé (Max un block), la clé est dans l'inventaire du joueur.
-                Une fois que le joueur obtient la clé dans l'inventaire, l'état de la variable "haveKey" change en "true", uniquement si le joueur na pas de clé present dans l'inventaire.
-                Ensuite, la clé disparait de la carte et joue un bruitage pour informer au joueur qu'il a bien obtenue la clé */
-            if (sprite instanceof Key) {
-                Key key = (Key) sprite;
-                if (keyboardInput.getSelect())
-                    // Si la clé est autours du joueur.
-                    if ((sprite.getXPosition() == player.getXPosition()-1 || sprite.getXPosition() == player.getXPosition()+1)
-                            || (sprite.getYPosition() == player.getYPosition()-1 || sprite.getYPosition() == player.getYPosition()+1))
-                        // na pas de clé dans l'inventaire
+                /*      Update all keys
+                    Cette partie du code permet lorsque "a" est entrée dans l'input au clavier dans le terminal et que le joueur et autours de la clé (Max un block), la clé est dans l'inventaire du joueur.
+                    Une fois que le joueur obtient la clé dans l'inventaire, l'état de la variable "haveKey" change en "true", uniquement si le joueur na pas de clé present dans l'inventaire.
+                    Ensuite, la clé disparait de la carte et joue un bruitage pour informer au joueur qu'il a bien obtenue la clé */
+                if (sprite instanceof Key) {
+                    Key key = (Key) sprite;
+                    if (keyboardInput.getSelect())
                         if (!player.getHaveAKey()) {
                             player.haveKey();
                             mapsEngine.setElementMap(key.getXPosition(), key.getYPosition(), EMPTY, false);
@@ -304,7 +331,51 @@ public class Game
 
                             Sound.play("getKeys.wav", 0);
                         }
+                }
+
+
+                /*
+                    Update all swords
+                 */
+                if (sprite instanceof Sword) {
+                    Sword sword = (Sword) sprite;
+                    if (keyboardInput.getSelect())
+                        if (!player.getHaveSword()) {
+                            player.haveSword();
+                            mapsEngine.setElementMap(sword.getXPosition(), sword.getYPosition(), EMPTY, false);
+                            allSprites.remove(sprite);
+                        }
+                }
             }
+
+
+            /*
+                Update all swords
+            */
+            if (sprite instanceof Sword) {
+                Sword sword = (Sword) sprite;
+                if (sword.getIsThrow()) {
+                    boolean yMovement = sword.getMonsterAtTrack().getYPosition() > sword.getYPosition();
+                    boolean xMovement = sword.getMonsterAtTrack().getXPosition() > sword.getXPosition();
+
+                    if (sword.getYPosition() != sword.getMonsterAtTrack().getYPosition() && sword.getXPosition() != sword.getMonsterAtTrack().getXPosition()) {
+                        if (yMovement)
+                            sword.moveDown();
+                        else sword.moveUp();
+
+                        if (xMovement)
+                            sword.moveRight();
+                        else sword.moveLeft();
+                    } else if (sword.getYPosition() == sword.getMonsterAtTrack().getYPosition() && sword.getXPosition() == sword.getMonsterAtTrack().getXPosition()) {
+                        mapsEngine.setElementMap(sword.getXPosition(), sword.getYPosition(), EMPTY, false);
+                        mapsEngine.setElementMap(sword.getMonsterAtTrack().getXPosition(), sword.getMonsterAtTrack().getYPosition(), EMPTY, false);
+
+                        allSprites.remove(sword.getMonsterAtTrack());
+                        allSprites.remove(sword);
+                    }
+                }
+            }
+
 
             /*      Update all lasers
                  Cette partie du code permet de gérer tous les projectiles qui sont lancés depuis les monstres.
@@ -319,7 +390,8 @@ public class Game
                         (laser.getYPosition()-1 == player.getYPosition() || laser.getYPosition() == player.getYPosition())
                                 && (player.getXPosition() == laser.getXPosition())
                 )) {
-                    player.hit();
+                    if (!player.getHaveInvulnerability())
+                        player.hit();
                     mapsEngine.setElementMap(laser.getXPosition(), laser.getYPosition(), EMPTY, false);
                     allSprites.remove(laser);
 
@@ -328,7 +400,8 @@ public class Game
                         (laser.getXPosition()+1 == player.getXPosition() || laser.getXPosition() == player.getXPosition())
                                 && (player.getYPosition() == laser.getYPosition())
                 )) {
-                    player.hit();
+                    if (!player.getHaveInvulnerability())
+                        player.hit();
                     mapsEngine.setElementMap(laser.getXPosition(), laser.getYPosition(), EMPTY, false);
                     allSprites.remove(laser);
 
@@ -337,7 +410,8 @@ public class Game
                         (laser.getYPosition()+1 == player.getYPosition() || laser.getYPosition() == player.getYPosition())
                                 && (player.getXPosition() == laser.getXPosition())
                 )) {
-                    player.hit();
+                    if (!player.getHaveInvulnerability())
+                        player.hit();
                     mapsEngine.setElementMap(laser.getXPosition(), laser.getYPosition(), EMPTY, false);
                     allSprites.remove(laser);
 
@@ -346,7 +420,8 @@ public class Game
                         (laser.getXPosition()-1 == player.getXPosition() || laser.getXPosition() == player.getXPosition())
                                 && (player.getYPosition() == laser.getYPosition())
                 )) {
-                    player.hit();
+                    if (!player.getHaveInvulnerability())
+                        player.hit();
                     mapsEngine.setElementMap(laser.getXPosition(), laser.getYPosition(), EMPTY, false);
                     allSprites.remove(laser);
 

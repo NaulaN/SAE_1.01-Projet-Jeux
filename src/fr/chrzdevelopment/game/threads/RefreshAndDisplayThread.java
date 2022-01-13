@@ -33,7 +33,7 @@ public class RefreshAndDisplayThread extends Thread
         synchronized (this) {
             while (running && !this.isInterrupted()) {
                 try {
-                    this.wait(100);
+                    this.wait(150);
                 } catch (InterruptedException ignored) { return; }
 
                 game.updates();

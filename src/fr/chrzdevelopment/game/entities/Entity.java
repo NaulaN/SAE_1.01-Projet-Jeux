@@ -21,8 +21,8 @@ public class Entity
 
     private final boolean[] collisions = {false, false, false, false};
     // x, y
-    private final int[] previousPos = {-1, -1};
-    private final int[] pos = new int[2];
+    protected final int[] previousPos = {-1, -1};
+    protected final int[] pos = new int[2];
 
     private int health = 3;
     private int velocity;

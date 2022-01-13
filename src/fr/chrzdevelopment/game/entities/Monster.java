@@ -2,7 +2,10 @@ package fr.chrzdevelopment.game.entities;
 
 import fr.chrzdevelopment.game.Sound;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 import static fr.chrzdevelopment.game.Const.*;
 
@@ -21,6 +24,8 @@ import static fr.chrzdevelopment.game.Const.*;
  */
 public class Monster extends Entity
 {
+
+
     /**
      * @param group Un endroit où on place tous les Sprites (Les entités) et qui permet de les faire fonctionner.
      * @param x La localisation en x du Sprite.
@@ -34,13 +39,13 @@ public class Monster extends Entity
     {
         int moveRandomly = (int) (Math.random()*4);
 
-        if (moveRandomly == UP && !getWhereCollide()[0])
+        if (moveRandomly == UP && !getCollideUp())
             moveUp();
-        if (moveRandomly == DOWN && !getWhereCollide()[1])
+        if (moveRandomly == DOWN && !getCollideDown())
             moveDown();
-        if (moveRandomly == LEFT && !getWhereCollide()[2])
+        if (moveRandomly == LEFT && !getCollideLeft())
             moveLeft();
-        if (moveRandomly == RIGHT && !getWhereCollide()[3])
+        if (moveRandomly == RIGHT && !getCollideRight())
             moveRight();
     }
 

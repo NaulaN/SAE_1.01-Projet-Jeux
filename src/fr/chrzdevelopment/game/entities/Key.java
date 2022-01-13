@@ -20,7 +20,6 @@ public class Key extends Entity
      */
     public Key(List<Entity> group, int x, int y)
     {
-        super(group, "key", x, y, 0);
-        setDataImg(KEY);
+        super(group, "key", x, y, 1);
     }
 }
