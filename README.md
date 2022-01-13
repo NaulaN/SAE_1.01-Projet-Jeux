@@ -48,14 +48,16 @@ Windows aura un affichage ASCII alors que Linux aura un affichage beaucoup plus 
 * 💰 **>** Désigne la moula, les pieces sur le niveau, seul moyen de gagné le niveau.
 * 🔑 **>** Désigne une clé qui permet d'ouvrir les coffres.
 * ⚡ **>** Désigne un projectile enemie qui engendra un dégât au joueur.
+* 🗡️ **>** Désigne une épée qui à pour but de tuer un ennemie.
 
 #### Les contrôles
-Les touches nécessaires sont les suivants → `z`, `q`, `s`, `d`, `a`.
+Les touches nécessaires sont les suivants → `z`, `q`, `s`, `d`, `a` et `e`.
 * `z` **>** Permet de bouger vers le haut.
 * `s` **>** Permet de bouger vers le bas.
 * `q` **>** Permet de bouger vers la gauche.
 * `d` **>** Permet de bouger vers la droite.
 * `a` **>** Permets d'actionner un element autour de vous.
+* `e` **>** Permets de lancer une épée si on en possede une dans notre inventaire.
 
 Une fois que vous êtes entrée votre touche dans le terminal, appuyé sur `enter` de votre clavier.
 
