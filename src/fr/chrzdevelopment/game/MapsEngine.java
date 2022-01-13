@@ -84,13 +84,27 @@ public class MapsEngine
     public void spawnMonster(List<Entity> allSprites)
     {
         int nbMonster = (int) (Math.random()*6);
+        finalSpawnMonster(allSprites, nbMonster);
+    }
 
+    public void spawnMonster(List<Entity> allSprites, int howMany, int x, int y) { finalSpawnMonster(allSprites, howMany, x, y); }
+
+    private void finalSpawnMonster(List<Entity> allSprites, int nbMonster)
+    {
         int x; int y; int[] loc;
         for (int m = 0; m < nbMonster; m++) {
             loc = findALocation();
             x = loc[0];
             y = loc[1];
 
+            // Crée le monstre et le range dans le tableau.
+            new Monster(allSprites, x, y, 1);
+        }
+    }
+
+    private void finalSpawnMonster(List<Entity> allSprites, int nbMonster, int x, int y)
+    {
+        for (int m = 0; m < nbMonster; m++) {
             // Crée le monstre et le range dans le tableau.
             new Monster(allSprites, x, y, 1);
         }

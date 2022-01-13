@@ -394,7 +394,37 @@ public class Game
             if (sprite instanceof Laser) {
                 Laser laser = (Laser) sprite;
                 // Si il touche un joueur.
-                if (laser.getXPosition() == player.getXPosition() && laser.getYPosition() == player.getYPosition()) {
+                if (laser.getDirection() == 0 && (
+                        (laser.getYPosition()-1 == player.getYPosition() || laser.getYPosition() == player.getYPosition()) &&
+                                (player.getXPosition() == laser.getXPosition())
+                )) {
+                    player.hit();
+                    mapsEngine.setElementMap(laser.getXPosition(), laser.getYPosition(), EMPTY, false);
+                    allSprites.remove(laser);
+
+                    Sound.play("hitHurt.wav", 1);
+                } else if (laser.getDirection() == 1 && (
+                        (laser.getXPosition()+1 == player.getXPosition() || laser.getXPosition() == player.getXPosition()) &&
+                                (player.getYPosition() == laser.getYPosition())
+                )) {
+                    player.hit();
+                    mapsEngine.setElementMap(laser.getXPosition(), laser.getYPosition(), EMPTY, false);
+                    allSprites.remove(laser);
+
+                    Sound.play("hitHurt.wav", 0);
+                } else if (laser.getDirection() == 3 && (
+                        (laser.getYPosition()+1 == player.getYPosition() || laser.getYPosition() == player.getYPosition()) &&
+                                (player.getXPosition() == laser.getXPosition())
+                )) {
+                    player.hit();
+                    mapsEngine.setElementMap(laser.getXPosition(), laser.getYPosition(), EMPTY, false);
+                    allSprites.remove(laser);
+
+                    Sound.play("hitHurt.wav", 0);
+                } else if (laser.getDirection() == 2 && (
+                        (laser.getXPosition()-1 == player.getXPosition() || laser.getXPosition() == player.getXPosition()) &&
+                                (player.getYPosition() == laser.getYPosition())
+                )) {
                     player.hit();
                     mapsEngine.setElementMap(laser.getXPosition(), laser.getYPosition(), EMPTY, false);
                     allSprites.remove(laser);
