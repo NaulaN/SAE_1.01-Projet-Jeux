@@ -5,7 +5,6 @@ import fr.chrzdevelopment.game.entities.*;
 import fr.chrzdevelopment.game.threads.KeyboardInputThread;
 import fr.chrzdevelopment.game.threads.RefreshAndDisplayThread;
 import org.json.JSONObject;
-import org.json.JSONTokener;
 
 import java.io.*;
 import java.util.List;
@@ -31,9 +30,6 @@ public class Game
     // TODO:
     private JSONObject saveFile;
     private String playerName;
-    private int totalCoins;
-    private int maxLvl;
-    private int howManyPlay;
 
     private final KeyboardInput keyboardInput = new KeyboardInput();
     private final MapsEngine mapsEngine;
@@ -58,10 +54,8 @@ public class Game
         // clear terminal commands
         processBuilder = (OS.equalsIgnoreCase("windows") || OS.equalsIgnoreCase("windows 10")) ? new ProcessBuilder("cmd", "/c", "cls") : new ProcessBuilder("clear");
 
-        saveFile = loadSaveFile("res/");
+        saveFile = SaveFile.load("res/");
         playerName = saveFile.getString("playerName");
-        totalCoins = saveFile.getInt("totalCoins");
-        maxLvl = saveFile.getInt("maxLvl");
 
         // Crée la taille de la carte
         mapsEngine = new MapsEngine(30, 20);
@@ -86,18 +80,6 @@ public class Game
         if (OS.equalsIgnoreCase("windows") || OS.equalsIgnoreCase("windows 10"))
             windowsGraphics();
         else linuxGraphics();
-    }
-
-    private JSONObject loadSaveFile(String resPath)
-    {
-        try {
-            // In an IDE environment
-            return new JSONObject(new JSONTokener( new FileReader(resPath + "save.json")));
-        } catch (FileNotFoundException e) {
-            // In a JAR
-            InputStream in = getClass().getResourceAsStream("/save.json");
-            return new JSONObject(new JSONTokener( new BufferedReader(new InputStreamReader(in))));
-        }
     }
 
     private void clearConsole()
@@ -156,6 +138,9 @@ public class Game
         System.out.println(ANSI_RED + "============================================================================================================================================" + ANSI_RESET);
         System.out.print("\t" + ANSI_GREEN + "Entrez votre nom > ");
         playerName = keyboardInput.getStringInput();
+
+        saveFile.put("playerName", playerName);
+        saveFile.put("howManyPlay", saveFile.getInt("howManyPlay")+1);
     }
 
     private void gameOverScreen()
@@ -171,6 +156,11 @@ public class Game
         System.out.println("               ▐░▌      ▐░█▄▄▄▄▄▄▄█░▌▐░▌       ▐░▌▐░▌       ▐░▌▐░█▄▄▄▄▄▄▄▄▄      ▐░█▄▄▄▄▄▄▄█░▌       ▐░▐░▌       ▐░█▄▄▄▄▄▄▄▄▄ ▐░▌      ▐░▌       ▐░▌               ");
         System.out.println("                ▐░▌     ▐░░░░░░░░░░░▌▐░▌       ▐░▌▐░▌       ▐░▌▐░░░░░░░░░░░▌     ▐░░░░░░░░░░░▌        ▐░▌        ▐░░░░░░░░░░░▌▐░▌       ▐░▌     ▐░▌                ");
         System.out.println("                 ▀       ▀▀▀▀▀▀▀▀▀▀▀  ▀         ▀  ▀         ▀  ▀▀▀▀▀▀▀▀▀▀▀       ▀▀▀▀▀▀▀▀▀▀▀          ▀          ▀▀▀▀▀▀▀▀▀▀▀  ▀         ▀       ▀                 " + ANSI_RESET);
+
+        System.out.println("Vous avez eu " + saveFile.getInt("totalCoins") + " " + COIN_IMG + " lors de vos sessions de jeu");
+        System.out.println("Vous avez jouée " + saveFile.getInt("howManyPlay") + " fois");
+
+        SaveFile.write(saveFile, "res/");
     }
 
     public synchronized void draws()
@@ -203,6 +193,7 @@ public class Game
     {
         // Quit le jeu
         if (keyboardInput.getQuitAction()) {
+            SaveFile.write(saveFile, "res/");
             refreshAndDisplayThread.terminate();
             keyboardInputThread.terminate();
         }
@@ -228,6 +219,8 @@ public class Game
             mapsEngine.generateMap();
             mapsEngine.generateObstacles();
             spawnEntity();
+
+            saveFile.put("maxLvl", mapsEngine.getMapLvl());
         }
 
         for (Entity sprite : allSprites)
@@ -255,6 +248,7 @@ public class Game
                     mapsEngine.setElementMap(coin.getXPosition(), coin.getYPosition(), EMPTY, false);
                     allSprites.remove(coin);
 
+                    saveFile.put("totalCoins", saveFile.getInt("totalCoins")+1);
                     Sound.play("pickupCoin.wav", 0);
                 }
             }
@@ -276,6 +270,7 @@ public class Game
                             if (chest.getWhatInside().equalsIgnoreCase("coin")) {
                                 player.addCoin();
 
+                                saveFile.put("totalCoins", saveFile.getInt("totalCoins")+1);
                                 Sound.play("pickupCoin.wav", 0);
                             }
                             // Quand le contenu du coffre est une vie en plus pour le joueur.
