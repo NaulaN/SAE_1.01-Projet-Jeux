@@ -2,6 +2,8 @@ package fr.chrzdevelopment.game;
 // https://r12a.github.io/app-conversion/   Java char compatibility
 
 import fr.chrzdevelopment.game.entities.*;
+import fr.chrzdevelopment.game.threads.KeyboardInputThread;
+import fr.chrzdevelopment.game.threads.RefreshAndDisplayThread;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
@@ -13,121 +15,34 @@ import static fr.chrzdevelopment.game.Const.*;
 
 
 /**
- * <p>Ce Thread représente un processus parallel qui se charge des inputs au clavier.</p>
- * @see fr.chrzdevelopment.game.KeyboardInput
- * @see fr.chrzdevelopment.game.Game
- */
-class KeyboardInputThread extends Thread
-{
-    private final KeyboardInput keyboardInput;
-    private final Game game;
-
-    private volatile boolean running = true;
-
-
-    /**
-     * @param game La classe principale (Main) du jeu
-     * @param keyboardInput La classe qui gère les inputs dans le terminal
-     */
-    public KeyboardInputThread(Game game, KeyboardInput keyboardInput)
-    {
-        super();
-        this.keyboardInput = keyboardInput;
-        this.game = game;
-    }
-
-    public void terminate()
-    {
-        running = false;
-        this.interrupt();
-    }
-
-    @Override
-    public void run()
-    {
-        synchronized (this) {
-            while (running && !this.isInterrupted()) {
-                try {
-                    this.wait(100);
-                } catch (InterruptedException ignored) { return; }
-
-                keyboardInput.input();
-            }
-        }
-    }
-}
-
-
-/**
- * <p>Ce Thread représente un processus parallel qui se charge de l'actualisation et l'affichage du jeu.</p>
- * @see fr.chrzdevelopment.game.Game
- */
-class RefreshAndDisplayThread extends Thread
-{
-    private final Game game;
-
-    private volatile boolean running = true;
-
-
-    /** @param game La classe principale (Main) du jeu */
-    RefreshAndDisplayThread(Game game)
-    {
-        super();
-        this.game = game;
-    }
-
-    public void terminate()
-    {
-        running = false;
-        this.interrupt();
-    }
-
-    @Override
-    public void run()
-    {
-        synchronized (this) {
-            while (running && !this.isInterrupted()) {
-                try {
-                    this.wait(100);
-                } catch (InterruptedException ignored) { return; }
-
-                game.updates();
-                game.draws();
-            }
-        }
-    }
-}
-
-
-/**
  * <p>Rassemble tous les éléments du jeu !</p>
  * @author CHRZASZCZ Naulan
- * @see fr.chrzdevelopment.game.KeyboardInputThread
- * @see fr.chrzdevelopment.game.RefreshAndDisplayThread
+ * @see KeyboardInputThread
+ * @see RefreshAndDisplayThread
  * @see fr.chrzdevelopment.game.MapsEngine
  * @see fr.chrzdevelopment.game.KeyboardInput
  * @see fr.chrzdevelopment.game.Const
  */
 public class Game
 {
-    private JSONObject saveFile;
-    // Entities
     private final List<Entity> allSprites = new CopyOnWriteArrayList<>();
     private Player player;
+
     // TODO:
+    private JSONObject saveFile;
     private String playerName;
     private int totalCoins;
     private int maxLvl;
+    private int howManyPlay;
 
     private final KeyboardInput keyboardInput = new KeyboardInput();
     private final MapsEngine mapsEngine;
-    private final String OS = System.getProperty("os.name");
-    // clear terminal commands
-    private final ProcessBuilder processBuilder = (OS.equalsIgnoreCase("windows") || OS.equalsIgnoreCase("windows 10")) ? new ProcessBuilder("cmd", "/c", "cls") : new ProcessBuilder("clear");
+
+    private final String OS;
+    private final ProcessBuilder processBuilder;
 
     private final RefreshAndDisplayThread refreshAndDisplayThread = new RefreshAndDisplayThread(this);
     private final KeyboardInputThread keyboardInputThread = new KeyboardInputThread(this, keyboardInput);
-
 
     /**
      * <p>Charge le fichier de sauvegarde .json</p>
@@ -138,25 +53,15 @@ public class Game
      */
     public Game()
     {
-        // Load JSON file
-        try {
-            // In an IDE
-            saveFile = new JSONObject(new JSONTokener( new FileReader("res/save.json")));
-        } catch (FileNotFoundException e) {
-            // In a JAR
-            InputStream in = getClass().getResourceAsStream("/save.json");
-            if (in != null)
-                saveFile = new JSONObject(new JSONTokener( new BufferedReader(new InputStreamReader(in))));
-        }
+        OS = System.getProperty("os.name");
+        initGraphics(OS);
+        // clear terminal commands
+        processBuilder = (OS.equalsIgnoreCase("windows") || OS.equalsIgnoreCase("windows 10")) ? new ProcessBuilder("cmd", "/c", "cls") : new ProcessBuilder("clear");
+
+        saveFile = loadSaveFile("res/");
         playerName = saveFile.getString("playerName");
         totalCoins = saveFile.getInt("totalCoins");
         maxLvl = saveFile.getInt("maxLvl");
-
-
-        // Load graphics
-        if (OS.equalsIgnoreCase("windows") || OS.equalsIgnoreCase("windows 10"))
-            windowsGraphics();
-        else linuxGraphics();
 
         // Crée la taille de la carte
         mapsEngine = new MapsEngine(30, 20);
@@ -166,35 +71,9 @@ public class Game
         spawnEntity();
     }
 
-    /**
-     * <p>Démarre la boucle principale du jeu.</p>
-     * <p>Démarre avant ça, un écran titre où il va avoir un input au clavier pour le nom du joueur.</p>
-     */
     public void loop()
     {
-        Sound.play("music.wav", -1);
-        clearConsole();
-
-        System.out.println();
-        // Title screen
-        System.out.println("\t" + ANSI_RED + "                 ▄       ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄       ▄                 ");
-        System.out.println("\t" + "                ▐░▌     ▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌     ▐░▌                ");
-        System.out.println("\t" + "               ▐░▌       ▀▀▀▀█░█▀▀▀▀ ▐░█▀▀▀▀▀▀▀█░▌▐░█▀▀▀▀▀▀▀█░▌ ▀▀▀▀█░█▀▀▀▀  ▀▀▀▀▀█░█▀▀▀       ▐░▌               ");
-        System.out.println("\t" + "              ▐░▌            ▐░▌     ▐░▌       ▐░▌▐░▌       ▐░▌     ▐░▌           ▐░▌           ▐░▌              ");
-        System.out.println("\t" + " ▄▄▄▄▄▄▄▄▄▄▄ ▐░▌             ▐░▌     ▐░█▄▄▄▄▄▄▄█░▌▐░█▄▄▄▄▄▄▄█░▌     ▐░▌           ▐░▌            ▐░▌ ▄▄▄▄▄▄▄▄▄▄▄ ");
-        System.out.println("\t" + "▐░░░░░░░░░░░▌▐░▌             ▐░▌     ▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌     ▐░▌           ▐░▌            ▐░▌▐░░░░░░░░░░░▌");
-        System.out.println("\t" + " ▀▀▀▀▀▀▀▀▀▀▀ ▐░▌             ▐░▌     ▐░█▀▀▀▀█░█▀▀ ▐░█▀▀▀▀▀▀▀▀▀      ▐░▌           ▐░▌            ▐░▌ ▀▀▀▀▀▀▀▀▀▀▀ ");
-        System.out.println("\t" + "              ▐░▌            ▐░▌     ▐░▌     ▐░▌  ▐░▌               ▐░▌           ▐░▌           ▐░▌              ");
-        System.out.println("\t" + "               ▐░▌       ▄▄▄▄█░█▄▄▄▄ ▐░▌      ▐░▌ ▐░▌           ▄▄▄▄█░█▄▄▄▄  ▄▄▄▄▄█░▌          ▐░▌               ");
-        System.out.println("\t" + "                ▐░▌     ▐░░░░░░░░░░░▌▐░▌       ▐░▌▐░▌          ▐░░░░░░░░░░░▌▐░░░░░░░▌         ▐░▌                ");
-        System.out.println("\t" + "                  ▀      ▀▀▀▀▀▀▀▀▀▀▀  ▀         ▀  ▀            ▀▀▀▀▀▀▀▀▀▀▀  ▀▀▀▀▀▀▀           ▀                 " + ANSI_RESET);
-        System.out.println();
-
-        System.out.println();
-        System.out.println("Bienvenue chèr(e) aventurièr(e) ! Ici, multiple aventure vous attend, entre les monstres, les coffres, les obstacles... Il a de quoi faire !");
-        System.out.println(ANSI_RED + "============================================================================================================================================" + ANSI_RESET);
-        System.out.print("\t" + ANSI_GREEN + "Entrez votre nom > ");
-        playerName = keyboardInput.getStringInput();
+        titleScreen();
 
         // Game loops
         refreshAndDisplayThread.start();
@@ -202,7 +81,25 @@ public class Game
         keyboardInputThread.start();
     }
 
-    /** Nettoie tout ce qui est present et afficher sur le terminal. */
+    private void initGraphics(String OS)
+    {
+        if (OS.equalsIgnoreCase("windows") || OS.equalsIgnoreCase("windows 10"))
+            windowsGraphics();
+        else linuxGraphics();
+    }
+
+    private JSONObject loadSaveFile(String resPath)
+    {
+        try {
+            // In an IDE environment
+            return new JSONObject(new JSONTokener( new FileReader(resPath + "save.json")));
+        } catch (FileNotFoundException e) {
+            // In a JAR
+            InputStream in = getClass().getResourceAsStream("/save.json");
+            return new JSONObject(new JSONTokener( new BufferedReader(new InputStreamReader(in))));
+        }
+    }
+
     private void clearConsole()
     {
         // Essaye encore une fois si le premier essaie ne marche pas sinon il casse la boucle.
@@ -234,25 +131,55 @@ public class Game
         mapsEngine.spawnKey(allSprites);
     }
 
-    /** Dessine les elements qui nécessite à voir sur la console */
+    private void titleScreen()
+    {
+        Sound.play("music.wav", -1);
+        clearConsole();
+
+        System.out.println();
+        // Title screen
+        System.out.println(ANSI_RED + "                 ▄       ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄       ▄                 ");
+        System.out.println("                ▐░▌     ▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌     ▐░▌                ");
+        System.out.println("               ▐░▌       ▀▀▀▀█░█▀▀▀▀ ▐░█▀▀▀▀▀▀▀█░▌▐░█▀▀▀▀▀▀▀█░▌ ▀▀▀▀█░█▀▀▀▀  ▀▀▀▀▀█░█▀▀▀       ▐░▌               ");
+        System.out.println("              ▐░▌            ▐░▌     ▐░▌       ▐░▌▐░▌       ▐░▌     ▐░▌           ▐░▌           ▐░▌              ");
+        System.out.println(" ▄▄▄▄▄▄▄▄▄▄▄ ▐░▌             ▐░▌     ▐░█▄▄▄▄▄▄▄█░▌▐░█▄▄▄▄▄▄▄█░▌     ▐░▌           ▐░▌            ▐░▌ ▄▄▄▄▄▄▄▄▄▄▄ ");
+        System.out.println("▐░░░░░░░░░░░▌▐░▌             ▐░▌     ▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌     ▐░▌           ▐░▌            ▐░▌▐░░░░░░░░░░░▌");
+        System.out.println(" ▀▀▀▀▀▀▀▀▀▀▀ ▐░▌             ▐░▌     ▐░█▀▀▀▀█░█▀▀ ▐░█▀▀▀▀▀▀▀▀▀      ▐░▌           ▐░▌            ▐░▌ ▀▀▀▀▀▀▀▀▀▀▀ ");
+        System.out.println("              ▐░▌            ▐░▌     ▐░▌     ▐░▌  ▐░▌               ▐░▌           ▐░▌           ▐░▌              ");
+        System.out.println("               ▐░▌       ▄▄▄▄█░█▄▄▄▄ ▐░▌      ▐░▌ ▐░▌           ▄▄▄▄█░█▄▄▄▄  ▄▄▄▄▄█░▌          ▐░▌               ");
+        System.out.println("                ▐░▌     ▐░░░░░░░░░░░▌▐░▌       ▐░▌▐░▌          ▐░░░░░░░░░░░▌▐░░░░░░░▌         ▐░▌                ");
+        System.out.println("                  ▀      ▀▀▀▀▀▀▀▀▀▀▀  ▀         ▀  ▀            ▀▀▀▀▀▀▀▀▀▀▀  ▀▀▀▀▀▀▀           ▀                 " + ANSI_RESET);
+        System.out.println();
+
+        System.out.println();
+        System.out.println("Bienvenue chèr(e) aventurièr(e) ! Ici, multiple aventure vous attend, entre les monstres, les coffres, les obstacles... Il a de quoi faire !");
+        System.out.println(ANSI_RED + "============================================================================================================================================" + ANSI_RESET);
+        System.out.print("\t" + ANSI_GREEN + "Entrez votre nom > ");
+        playerName = keyboardInput.getStringInput();
+    }
+
+    private void gameOverScreen()
+    {
+        System.out.println(ANSI_RED + "                 ▄       ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄▄       ▄▄  ▄▄▄▄▄▄▄▄▄▄▄       ▄▄▄▄▄▄▄▄▄▄▄  ▄               ▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄       ▄                 ");
+        System.out.println("                ▐░▌     ▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░░▌     ▐░░▌▐░░░░░░░░░░░▌     ▐░░░░░░░░░░░▌▐░▌             ▐░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌     ▐░▌                ");
+        System.out.println("               ▐░▌      ▐░█▀▀▀▀▀▀▀▀▀ ▐░█▀▀▀▀▀▀▀█░▌▐░▌░▌   ▐░▐░▌▐░█▀▀▀▀▀▀▀▀▀      ▐░█▀▀▀▀▀▀▀█░▌ ▐░▌           ▐░▌ ▐░█▀▀▀▀▀▀▀▀▀ ▐░█▀▀▀▀▀▀▀█░▌      ▐░▌               ");
+        System.out.println("              ▐░▌       ▐░▌          ▐░▌       ▐░▌▐░▌▐░▌ ▐░▌▐░▌▐░▌               ▐░▌       ▐░▌  ▐░▌         ▐░▌  ▐░▌          ▐░▌       ▐░▌       ▐░▌              ");
+        System.out.println(" ▄▄▄▄▄▄▄▄▄▄▄ ▐░▌        ▐░▌ ▄▄▄▄▄▄▄▄ ▐░█▄▄▄▄▄▄▄█░▌▐░▌ ▐░▐░▌ ▐░▌▐░█▄▄▄▄▄▄▄▄▄      ▐░▌       ▐░▌   ▐░▌       ▐░▌   ▐░█▄▄▄▄▄▄▄▄▄ ▐░█▄▄▄▄▄▄▄█░▌        ▐░▌ ▄▄▄▄▄▄▄▄▄▄▄ ");
+        System.out.println("▐░░░░░░░░░░░▌▐░▌        ▐░▌▐░░░░░░░░▌▐░░░░░░░░░░░▌▐░▌  ▐░▌  ▐░▌▐░░░░░░░░░░░▌     ▐░▌       ▐░▌    ▐░▌     ▐░▌    ▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌        ▐░▌▐░░░░░░░░░░░▌");
+        System.out.println(" ▀▀▀▀▀▀▀▀▀▀▀ ▐░▌        ▐░▌ ▀▀▀▀▀▀█░▌▐░█▀▀▀▀▀▀▀█░▌▐░▌   ▀   ▐░▌▐░█▀▀▀▀▀▀▀▀▀      ▐░▌       ▐░▌     ▐░▌   ▐░▌     ▐░█▀▀▀▀▀▀▀▀▀ ▐░█▀▀▀▀█░█▀▀         ▐░▌ ▀▀▀▀▀▀▀▀▀▀▀ ");
+        System.out.println("              ▐░▌       ▐░▌       ▐░▌▐░▌       ▐░▌▐░▌       ▐░▌▐░▌               ▐░▌       ▐░▌      ▐░▌ ▐░▌      ▐░▌          ▐░▌     ▐░▌         ▐░▌              ");
+        System.out.println("               ▐░▌      ▐░█▄▄▄▄▄▄▄█░▌▐░▌       ▐░▌▐░▌       ▐░▌▐░█▄▄▄▄▄▄▄▄▄      ▐░█▄▄▄▄▄▄▄█░▌       ▐░▐░▌       ▐░█▄▄▄▄▄▄▄▄▄ ▐░▌      ▐░▌       ▐░▌               ");
+        System.out.println("                ▐░▌     ▐░░░░░░░░░░░▌▐░▌       ▐░▌▐░▌       ▐░▌▐░░░░░░░░░░░▌     ▐░░░░░░░░░░░▌        ▐░▌        ▐░░░░░░░░░░░▌▐░▌       ▐░▌     ▐░▌                ");
+        System.out.println("                 ▀       ▀▀▀▀▀▀▀▀▀▀▀  ▀         ▀  ▀         ▀  ▀▀▀▀▀▀▀▀▀▀▀       ▀▀▀▀▀▀▀▀▀▀▀          ▀          ▀▀▀▀▀▀▀▀▀▀▀  ▀         ▀       ▀                 " + ANSI_RESET);
+    }
+
     public synchronized void draws()
     {
         clearConsole();
 
         // Quand le joueur na plus de vie, un ecran de Game Over s'affiche et interrompt la boucle et les Threads en fonctionnement
         if (player.getHealth() <= 0) {
-            // Game over
-            System.out.println(ANSI_RED + "                 ▄       ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄▄       ▄▄  ▄▄▄▄▄▄▄▄▄▄▄       ▄▄▄▄▄▄▄▄▄▄▄  ▄               ▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄       ▄                 ");
-            System.out.println("                ▐░▌     ▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░░▌     ▐░░▌▐░░░░░░░░░░░▌     ▐░░░░░░░░░░░▌▐░▌             ▐░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌     ▐░▌                ");
-            System.out.println("               ▐░▌      ▐░█▀▀▀▀▀▀▀▀▀ ▐░█▀▀▀▀▀▀▀█░▌▐░▌░▌   ▐░▐░▌▐░█▀▀▀▀▀▀▀▀▀      ▐░█▀▀▀▀▀▀▀█░▌ ▐░▌           ▐░▌ ▐░█▀▀▀▀▀▀▀▀▀ ▐░█▀▀▀▀▀▀▀█░▌      ▐░▌               ");
-            System.out.println("              ▐░▌       ▐░▌          ▐░▌       ▐░▌▐░▌▐░▌ ▐░▌▐░▌▐░▌               ▐░▌       ▐░▌  ▐░▌         ▐░▌  ▐░▌          ▐░▌       ▐░▌       ▐░▌              ");
-            System.out.println(" ▄▄▄▄▄▄▄▄▄▄▄ ▐░▌        ▐░▌ ▄▄▄▄▄▄▄▄ ▐░█▄▄▄▄▄▄▄█░▌▐░▌ ▐░▐░▌ ▐░▌▐░█▄▄▄▄▄▄▄▄▄      ▐░▌       ▐░▌   ▐░▌       ▐░▌   ▐░█▄▄▄▄▄▄▄▄▄ ▐░█▄▄▄▄▄▄▄█░▌        ▐░▌ ▄▄▄▄▄▄▄▄▄▄▄ ");
-            System.out.println("▐░░░░░░░░░░░▌▐░▌        ▐░▌▐░░░░░░░░▌▐░░░░░░░░░░░▌▐░▌  ▐░▌  ▐░▌▐░░░░░░░░░░░▌     ▐░▌       ▐░▌    ▐░▌     ▐░▌    ▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌        ▐░▌▐░░░░░░░░░░░▌");
-            System.out.println(" ▀▀▀▀▀▀▀▀▀▀▀ ▐░▌        ▐░▌ ▀▀▀▀▀▀█░▌▐░█▀▀▀▀▀▀▀█░▌▐░▌   ▀   ▐░▌▐░█▀▀▀▀▀▀▀▀▀      ▐░▌       ▐░▌     ▐░▌   ▐░▌     ▐░█▀▀▀▀▀▀▀▀▀ ▐░█▀▀▀▀█░█▀▀         ▐░▌ ▀▀▀▀▀▀▀▀▀▀▀ ");
-            System.out.println("              ▐░▌       ▐░▌       ▐░▌▐░▌       ▐░▌▐░▌       ▐░▌▐░▌               ▐░▌       ▐░▌      ▐░▌ ▐░▌      ▐░▌          ▐░▌     ▐░▌         ▐░▌              ");
-            System.out.println("               ▐░▌      ▐░█▄▄▄▄▄▄▄█░▌▐░▌       ▐░▌▐░▌       ▐░▌▐░█▄▄▄▄▄▄▄▄▄      ▐░█▄▄▄▄▄▄▄█░▌       ▐░▐░▌       ▐░█▄▄▄▄▄▄▄▄▄ ▐░▌      ▐░▌       ▐░▌               ");
-            System.out.println("                ▐░▌     ▐░░░░░░░░░░░▌▐░▌       ▐░▌▐░▌       ▐░▌▐░░░░░░░░░░░▌     ▐░░░░░░░░░░░▌        ▐░▌        ▐░░░░░░░░░░░▌▐░▌       ▐░▌     ▐░▌                ");
-            System.out.println("                 ▀       ▀▀▀▀▀▀▀▀▀▀▀  ▀         ▀  ▀         ▀  ▀▀▀▀▀▀▀▀▀▀▀       ▀▀▀▀▀▀▀▀▀▀▀          ▀          ▀▀▀▀▀▀▀▀▀▀▀  ▀         ▀       ▀                 " + ANSI_RESET);
+            gameOverScreen();
 
             refreshAndDisplayThread.terminate();
             keyboardInputThread.terminate();
@@ -272,7 +199,6 @@ public class Game
         }
     }
 
-    /** Actualise les valeurs qui ont besoin d'etre actualisé à chaque passage de la boucle */
     public synchronized void updates()
     {
         // Quit le jeu
@@ -395,8 +321,8 @@ public class Game
                 Laser laser = (Laser) sprite;
                 // Si il touche un joueur.
                 if (laser.getDirection() == 0 && (
-                        (laser.getYPosition()-1 == player.getYPosition() || laser.getYPosition() == player.getYPosition()) &&
-                                (player.getXPosition() == laser.getXPosition())
+                        (laser.getYPosition()-1 == player.getYPosition() || laser.getYPosition() == player.getYPosition())
+                                && (player.getXPosition() == laser.getXPosition())
                 )) {
                     player.hit();
                     mapsEngine.setElementMap(laser.getXPosition(), laser.getYPosition(), EMPTY, false);
@@ -404,8 +330,8 @@ public class Game
 
                     Sound.play("hitHurt.wav", 1);
                 } else if (laser.getDirection() == 1 && (
-                        (laser.getXPosition()+1 == player.getXPosition() || laser.getXPosition() == player.getXPosition()) &&
-                                (player.getYPosition() == laser.getYPosition())
+                        (laser.getXPosition()+1 == player.getXPosition() || laser.getXPosition() == player.getXPosition())
+                                && (player.getYPosition() == laser.getYPosition())
                 )) {
                     player.hit();
                     mapsEngine.setElementMap(laser.getXPosition(), laser.getYPosition(), EMPTY, false);
@@ -413,8 +339,8 @@ public class Game
 
                     Sound.play("hitHurt.wav", 0);
                 } else if (laser.getDirection() == 3 && (
-                        (laser.getYPosition()+1 == player.getYPosition() || laser.getYPosition() == player.getYPosition()) &&
-                                (player.getXPosition() == laser.getXPosition())
+                        (laser.getYPosition()+1 == player.getYPosition() || laser.getYPosition() == player.getYPosition())
+                                && (player.getXPosition() == laser.getXPosition())
                 )) {
                     player.hit();
                     mapsEngine.setElementMap(laser.getXPosition(), laser.getYPosition(), EMPTY, false);
@@ -422,8 +348,8 @@ public class Game
 
                     Sound.play("hitHurt.wav", 0);
                 } else if (laser.getDirection() == 2 && (
-                        (laser.getXPosition()-1 == player.getXPosition() || laser.getXPosition() == player.getXPosition()) &&
-                                (player.getYPosition() == laser.getYPosition())
+                        (laser.getXPosition()-1 == player.getXPosition() || laser.getXPosition() == player.getXPosition())
+                                && (player.getYPosition() == laser.getYPosition())
                 )) {
                     player.hit();
                     mapsEngine.setElementMap(laser.getXPosition(), laser.getYPosition(), EMPTY, false);

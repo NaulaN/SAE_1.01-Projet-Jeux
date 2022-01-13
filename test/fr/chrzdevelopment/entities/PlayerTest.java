@@ -22,11 +22,17 @@ public class PlayerTest
     @Test
     public final void checkCollisionTest()
     {
+        final String OS = System.getProperty("os.name");
+        // Load graphics
+        if (OS.equalsIgnoreCase("windows") || OS.equalsIgnoreCase("windows 10"))
+            windowsGraphics();
+        else linuxGraphics();
+
+
         List<Entity> allSprites = new ArrayList<>();
-
         MapsEngine mapsEngine = new MapsEngine(6, 6);
-
         mapsEngine.generateMap();
+
         // Genere un obstacle manuellement
         mapsEngine.setElementMap(2, 2, WALL, true);
         mapsEngine.setElementMap(3, 2, WALL, true);
@@ -57,16 +63,6 @@ public class PlayerTest
         player.checkCollision(mapsEngine.getCalqueCollide());
 
         mapsEngine.draw();
-        /*
-        for (int[] c : mapsEngine.getCalqueCollide())
-        {
-            System.out.println();
-            for (int r : c)
-                if (r == COLLIDE_OBJ)
-                    System.out.print(RECT_RED_IMG);
-                else System.out.print(EMPTY_IMG);
-        }
-         */
 
         assertTrue(player.getCollideUp());
         assertFalse(player.getCollideLeft());
