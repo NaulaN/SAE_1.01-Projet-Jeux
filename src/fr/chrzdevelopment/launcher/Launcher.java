@@ -1,8 +1,6 @@
 package fr.chrzdevelopment.launcher;
-/*
-    Developer par CHRZASZCZ Naulan
-        Jeu avec un affichage uniquement sur le terminal
- */
+/* Developer par CHRZASZCZ Naulan
+        Jeu avec un affichage uniquement sur le terminal */
 
 import fr.chrzdevelopment.game.Game;
 

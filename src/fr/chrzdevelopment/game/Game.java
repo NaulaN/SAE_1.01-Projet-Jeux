@@ -22,6 +22,8 @@ class KeyboardInputThread extends Thread
     private final KeyboardInput keyboardInput;
     private final Game game;
 
+    private volatile boolean running = true;
+
 
     /**
      * @param game La classe principale (Main) du jeu
@@ -29,20 +31,27 @@ class KeyboardInputThread extends Thread
      */
     public KeyboardInputThread(Game game, KeyboardInput keyboardInput)
     {
+        super();
         this.keyboardInput = keyboardInput;
         this.game = game;
+    }
+
+    public void terminate()
+    {
+        running = false;
+        this.interrupt();
     }
 
     @Override
     public void run()
     {
         synchronized (this) {
-            while (game.getRunning() && !this.isInterrupted()) {
+            while (running && !this.isInterrupted()) {
                 try {
                     this.wait(100);
                 } catch (InterruptedException ignored) { return; }
 
-                keyboardInput.getInput();
+                keyboardInput.input();
             }
         }
     }
@@ -57,15 +66,27 @@ class RefreshAndDisplayThread extends Thread
 {
     private final Game game;
 
+    private volatile boolean running = true;
+
 
     /** @param game La classe principale (Main) du jeu */
-    RefreshAndDisplayThread(Game game) { this.game = game; }
+    RefreshAndDisplayThread(Game game)
+    {
+        super();
+        this.game = game;
+    }
+
+    public void terminate()
+    {
+        running = false;
+        this.interrupt();
+    }
 
     @Override
     public void run()
     {
         synchronized (this) {
-            while (game.getRunning() && !this.isInterrupted()) {
+            while (running && !this.isInterrupted()) {
                 try {
                     this.wait(100);
                 } catch (InterruptedException ignored) { return; }
@@ -104,10 +125,8 @@ public class Game
     // clear terminal commands
     private final ProcessBuilder processBuilder = (OS.equalsIgnoreCase("windows") || OS.equalsIgnoreCase("windows 10")) ? new ProcessBuilder("cmd", "/c", "cls") : new ProcessBuilder("clear");
 
-    private boolean running = true;
-
-    private final Thread refreshAndDisplayThread = new RefreshAndDisplayThread(this);
-    private final Thread keyboardInputThread = new KeyboardInputThread(this, keyboardInput);
+    private final RefreshAndDisplayThread refreshAndDisplayThread = new RefreshAndDisplayThread(this);
+    private final KeyboardInputThread keyboardInputThread = new KeyboardInputThread(this, keyboardInput);
 
 
     /**
@@ -146,8 +165,6 @@ public class Game
         mapsEngine.generateMap();
         spawnEntity();
     }
-
-    public boolean getRunning() { return running; }
 
     /**
      * <p>Démarre la boucle principale du jeu.</p>
@@ -237,9 +254,8 @@ public class Game
             System.out.println("                ▐░▌     ▐░░░░░░░░░░░▌▐░▌       ▐░▌▐░▌       ▐░▌▐░░░░░░░░░░░▌     ▐░░░░░░░░░░░▌        ▐░▌        ▐░░░░░░░░░░░▌▐░▌       ▐░▌     ▐░▌                ");
             System.out.println("                 ▀       ▀▀▀▀▀▀▀▀▀▀▀  ▀         ▀  ▀         ▀  ▀▀▀▀▀▀▀▀▀▀▀       ▀▀▀▀▀▀▀▀▀▀▀          ▀          ▀▀▀▀▀▀▀▀▀▀▀  ▀         ▀       ▀                 " + ANSI_RESET);
 
-            running = false;
-            refreshAndDisplayThread.interrupt();
-            keyboardInputThread.interrupt();
+            refreshAndDisplayThread.terminate();
+            keyboardInputThread.terminate();
         } else {
             // Information relative au nombre de piece nécessaire pour gagner le niveau
             System.out.println("\t" + ANSI_RED + "NIVEAUX: " + mapsEngine.getMapLvl() + ANSI_RESET);
@@ -251,7 +267,7 @@ public class Game
             for (int h = 1; h <= player.getHealth(); h++)
                 msgHud.append(HEART_IMG).append(" ");
             msgHud.append("   ").append(KEY_IMG).append(": ").append((player.getHaveAKey()) ? "oui" : "non");
-            System.out.print("\t" + msgHud.toString());
+            System.out.print("\t" + msgHud);
             System.out.println();
         }
     }
@@ -261,9 +277,8 @@ public class Game
     {
         // Quit le jeu
         if (keyboardInput.getQuitAction()) {
-            running = false;
-            refreshAndDisplayThread.interrupt();
-            keyboardInputThread.interrupt();
+            refreshAndDisplayThread.terminate();
+            keyboardInputThread.terminate();
         }
         else {             // les déplacements du joueur
             if (!player.getCollideUp() && keyboardInput.getMoveUp())
@@ -296,7 +311,6 @@ public class Game
             boolean collide = sprite.getDataImg() != COIN && sprite.getDataImg() != KEY && sprite.getDataImg() != LASER_VERTICAL && sprite.getDataImg() != LASER_HORIZONTAL;
             mapsEngine.updateEntity(sprite, collide);
 
-
             /*      Update all Monsters
                 Cette partie du code permet juste de faire tirer des lasers au monstre. */
             if (sprite instanceof Monster) {
@@ -318,7 +332,6 @@ public class Game
                     Sound.play("pickupCoin.wav", 0);
                 }
             }
-
 
             /*      Update all chest
                 Cette partie du code permet lorsque "a" est entrée dans l'input au clavier dans le terminal et que le joueur et autours du coffre (Max un block), le coffre s'ouvre.

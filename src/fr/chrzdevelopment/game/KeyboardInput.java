@@ -16,10 +16,16 @@ public class KeyboardInput
     private final Scanner sc = new Scanner(System.in);
     private int offset = -1;
 
-
-    public synchronized void getInput()
+    public synchronized void input()
     {
         String input = sc.nextLine();
+        associateInputWithOffset(input);
+    }
+
+    public synchronized void input(String input) { associateInputWithOffset(input); }
+
+    private void associateInputWithOffset(String input)
+    {
         // évite une erreur
         if (input.length() != 0) {
             if (input.equalsIgnoreCase("quit"))
