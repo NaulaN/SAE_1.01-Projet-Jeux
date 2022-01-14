@@ -14,6 +14,12 @@ public class Sword extends Entity
 
     public Sword(List<Entity> allSprites, int x, int y) { super(allSprites, "sword", x, y, 1); }
 
+    /**
+     * Regarde dans la liste de sprite, quel est le plus proche du joueur.
+     *      Range les valeurs de difference (x-y) dans une HashMap.
+     * Détecte la plus petite valeur dans cette HashMap.
+     * Change l'etat de la variable isThrow pour annoncé qu'il est jetée.
+     */
     public void launch()
     {
         if (!isThrow) {
@@ -35,9 +41,6 @@ public class Sword extends Entity
             isThrow = true;
         }
     }
-
-    public void setXPreviousPosition(int position) { this.previousPos[0] = position; }
-    public void setYPreviousPosition(int position) { this.previousPos[1] = position; }
 
     public boolean getIsThrow() { return isThrow; }
     public Monster getMonsterAtTrack() { return monsterAtTrack; }

@@ -40,7 +40,6 @@ public class Game
     private final RefreshAndDisplayThread refreshAndDisplayThread = new RefreshAndDisplayThread(this);
     private final KeyboardInputThread keyboardInputThread = new KeyboardInputThread(this, keyboardInput);
 
-    private int timeInvulnerability = 20;
     private int timerInvulnerability = 0;
 
 
@@ -161,9 +160,11 @@ public class Game
         System.out.println("               ▐░▌      ▐░█▄▄▄▄▄▄▄█░▌▐░▌       ▐░▌▐░▌       ▐░▌▐░█▄▄▄▄▄▄▄▄▄      ▐░█▄▄▄▄▄▄▄█░▌       ▐░▐░▌       ▐░█▄▄▄▄▄▄▄▄▄ ▐░▌      ▐░▌       ▐░▌               ");
         System.out.println("                ▐░▌     ▐░░░░░░░░░░░▌▐░▌       ▐░▌▐░▌       ▐░▌▐░░░░░░░░░░░▌     ▐░░░░░░░░░░░▌        ▐░▌        ▐░░░░░░░░░░░▌▐░▌       ▐░▌     ▐░▌                ");
         System.out.println("                 ▀       ▀▀▀▀▀▀▀▀▀▀▀  ▀         ▀  ▀         ▀  ▀▀▀▀▀▀▀▀▀▀▀       ▀▀▀▀▀▀▀▀▀▀▀          ▀          ▀▀▀▀▀▀▀▀▀▀▀  ▀         ▀       ▀                 " + ANSI_RESET);
-
+        System.out.println(ANSI_RED + "============================================================================================================================================" + ANSI_RESET);
+        // Informe les données sauvegarde lors de la ou des session(s) de jeu
         System.out.println("Vous avez eu " + saveFile.getInt("totalCoins") + " " + COIN_IMG + " lors de vos sessions de jeu");
         System.out.println("Vous avez jouée " + saveFile.getInt("howManyPlay") + " fois");
+        System.out.println("Le niveau max que vous avez atteint est le niveau " + saveFile.getInt("maxLvl"));
 
         SaveFile.write(saveFile, "res/");
     }
@@ -180,7 +181,7 @@ public class Game
             keyboardInputThread.terminate();
         } else {
             // Information relative au nombre de piece nécessaire pour gagner le niveau
-            System.out.println("\t" + ANSI_RED + "NIVEAUX: " + mapsEngine.getMapLvl() + ANSI_RESET);
+            System.out.println("\t" + ANSI_RED + "NIVEAU: " + mapsEngine.getMapLvl() + ANSI_RESET);
             System.out.println(ANSI_GREEN + playerName + " ! Vous devez avoir " + mapsEngine.getDeterminateCoins() + " " + COIN_IMG + ANSI_GREEN + " pour pouvoir gagner le niveau" + ANSI_RESET);
             mapsEngine.draw();
 
@@ -226,10 +227,13 @@ public class Game
             mapsEngine.generateObstacles();
             spawnEntity();
 
+            // Active le moment où il doit être invulnerable
             timerInvulnerability = 0;
             player.enableInvulnerability();
 
-            saveFile.put("maxLvl", mapsEngine.getMapLvl());
+            // Range dans un fichier, le niveau maximum atteint s'il dépasse le precedent
+            if (mapsEngine.getMapLvl() > saveFile.getInt("maxLvl"))
+                saveFile.put("maxLvl", mapsEngine.getMapLvl());
         }
 
         for (Entity sprite : allSprites)
@@ -241,18 +245,31 @@ public class Game
 
 
             /*
-
+                    Update player
+                Lorsqu'il apparait sur un niveau, il va etres invincible pendant 3s
+                Lorsqu'il possede une épée dans sont inventaire, il va lancée une nouvelle épée
              */
             if (sprite instanceof Player)
             {
                 if (player.getHaveInvulnerability())
-                    if (timerInvulnerability != timeInvulnerability)
+                    if (timerInvulnerability != TIME_INVULNERABILITY)
                         timerInvulnerability++;
                     else player.disableInvulnerability();
 
                 if (keyboardInput.getLaunch())
                     if (player.getHaveSword()) {
-                        Sword sword = new Sword(allSprites,player.getXPosition()+1,player.getYPosition()+1);
+                        Sword sword;
+                        // Determine sur quel sens on doit lancer l'épée
+                        if (keyboardInput.getMoveUp())
+                            sword = new Sword(allSprites, player.getXPosition(), player.getYPosition()+1);
+                        else if (keyboardInput.getMoveDown())
+                            sword = new Sword(allSprites, player.getXPosition(), player.getYPosition()-1);
+                        else if (keyboardInput.getMoveRight())
+                            sword = new Sword(allSprites, player.getXPosition()+1, player.getYPosition());
+                        else if (keyboardInput.getMoveLeft())
+                            sword = new Sword(allSprites, player.getXPosition()-1, player.getYPosition());
+                        else    // Au cas où si il a pas de input
+                            sword = new Sword(allSprites, player.getXPosition(), player.getYPosition());
                         sword.launch();
                         player.haventSword();
                     }
@@ -335,7 +352,7 @@ public class Game
 
 
                 /*
-                        Update all swords*
+                        Update all swords
                     Cette partie du code permet que lors que le joueur n'a pas d'épée dans son inventaire et que l'épée se trouve autours du joueur.
                     Range l'épée dans l'inventaire et supprimer physiquement sur la carte.
                  */
@@ -353,6 +370,8 @@ public class Game
 
             /*
                     Update all swords
+                Gère les déplacements de l'épée lorsque le joueur actionne le bouton 'e'.
+                Supprime le monstre et l'épée lors d'une collision avec le monstre.
             */
             if (sprite instanceof Sword) {
                 Sword sword = (Sword) sprite;
@@ -361,19 +380,27 @@ public class Game
                     boolean xMovement = sword.getMonsterAtTrack().getXPosition() > sword.getXPosition();
 
                     if (sword.getYPosition() != sword.getMonsterAtTrack().getYPosition() && sword.getXPosition() != sword.getMonsterAtTrack().getXPosition()) {
-                        if (yMovement)
-                            sword.moveDown();
-                        else sword.moveUp();
+                            if (yMovement)
+                                sword.moveDown();
+                            else sword.moveUp();
 
-                        if (xMovement)
-                            sword.moveRight();
-                        else sword.moveLeft();
+                            if (xMovement)
+                                sword.moveRight();
+                            else sword.moveLeft();
                     } else if (sword.getYPosition() == sword.getMonsterAtTrack().getYPosition() && sword.getXPosition() == sword.getMonsterAtTrack().getXPosition()) {
                         mapsEngine.setElementMap(sword.getXPosition(), sword.getYPosition(), EMPTY, false);
                         mapsEngine.setElementMap(sword.getMonsterAtTrack().getXPosition(), sword.getMonsterAtTrack().getYPosition(), EMPTY, false);
 
                         allSprites.remove(sword.getMonsterAtTrack());
                         allSprites.remove(sword);
+                    } else if (sword.getYPosition() == sword.getMonsterAtTrack().getYPosition() && sword.getXPosition() != sword.getMonsterAtTrack().getXPosition()) {
+                        if (yMovement)
+                            sword.moveDown();
+                        else sword.moveUp();
+                    } else if (sword.getYPosition() != sword.getMonsterAtTrack().getYPosition() && sword.getXPosition() == sword.getMonsterAtTrack().getXPosition()) {
+                        if (xMovement)
+                            sword.moveRight();
+                        else sword.moveLeft();
                     }
                 }
             }

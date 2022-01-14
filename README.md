@@ -50,7 +50,7 @@ Windows aura un affichage ASCII alors que Linux aura un affichage beaucoup plus 
 * 💰 **>** Désigne la moula, les pieces sur le niveau, seul moyen de gagné le niveau.
 * 🔑 **>** Désigne une clé qui permet d'ouvrir les coffres.
 * ⚡ **>** Désigne un projectile enemie qui engendra un dégât au joueur.
-* 🗡️ **>** Désigne une épée qui à pour but de tuer un ennemie.
+* 🪓️ **>** Désigne une épée qui à pour but de tuer un ennemie.
 
 #### Les contrôles
 Les touches nécessaires sont les suivants → `z`, `q`, `s`, `d`, `a` et `e`.

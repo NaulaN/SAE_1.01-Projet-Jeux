@@ -63,8 +63,10 @@ public class Const
     // Les valeurs qui determines une interaction.
     public static final int SELECT = 10;
     public static final int LAUNCH = 11;
-
     public static final int QUIT = 12;
+
+    public static final int TIME_INVULNERABILITY = 20;
+
 
     /** Range toutes les données dans une HashMap */
     private static void initGraphics()
@@ -106,7 +108,7 @@ public class Const
         HEART_IMG = "\u2764\uFE0F";
         RECT_RED_IMG = "\uD83D\uDFE5";
         KEY_IMG = "\uD83D\uDD11";
-        SWORD_IMG = " \uD83D\uDDE1️";
+        SWORD_IMG = "\uD83E\uDE93";
         LASER_VERTICAL_IMG = "\u26A1";
         LASER_HORIZONTAL_IMG = "\u26A1";
 
