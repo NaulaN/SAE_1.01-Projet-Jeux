@@ -8,14 +8,10 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 
-import static fr.chrzdevelopment.game.Const.DEFAULT_RESOURCE_PATH;
 
-
-/**
- * @see fr.chrzdevelopment.game.Const
- */
 public class Sound
 {
+    public static final String DEFAULT_RESOURCE_PATH = "res/";
 
 
     /** Joue une music, un bruitage, ... */

@@ -1,13 +1,11 @@
 package fr.chrzdevelopment.game.entities;
 
+import fr.chrzdevelopment.game.MapKeys;
 import fr.chrzdevelopment.game.Sound;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import java.lang.reflect.Parameter;
 import java.util.List;
-import java.util.Random;
 
-import static fr.chrzdevelopment.game.Const.*;
 
 
 /**
@@ -22,7 +20,7 @@ import static fr.chrzdevelopment.game.Const.*;
  * @see fr.chrzdevelopment.game.entities.Entity
  * @author CHRZASZCZ Naulan
  */
-public class Monster extends Entity
+public class Monster extends Entity implements MapKeys
 {
 
 
@@ -96,7 +94,7 @@ public class Monster extends Entity
     }
 
     @Override
-    public void updates()
+    public void updates(Parameter... parameters)
     {
         randomMove();
 

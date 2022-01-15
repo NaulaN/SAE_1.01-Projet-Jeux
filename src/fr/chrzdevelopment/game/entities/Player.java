@@ -1,5 +1,6 @@
 package fr.chrzdevelopment.game.entities;
 
+import java.lang.reflect.Parameter;
 import java.util.List;
 
 
@@ -49,5 +50,8 @@ public class Player extends Entity
     public void addCoin() { coins++; }
 
     @Override
-    public void updates() { }
+    public void updates(Parameter... parameters)
+    {
+
+    }
 }

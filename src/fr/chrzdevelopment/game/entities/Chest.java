@@ -1,9 +1,10 @@
 package fr.chrzdevelopment.game.entities;
 
+import java.lang.reflect.Parameter;
 import java.util.List;
 
-import static fr.chrzdevelopment.game.Const.CHEST;
-import static fr.chrzdevelopment.game.Const.CHEST_OPEN;
+import static fr.chrzdevelopment.game.TilesData.CHEST;
+import static fr.chrzdevelopment.game.TilesData.CHEST_OPEN;
 
 
 /**
@@ -35,7 +36,7 @@ public class Chest extends Entity
     public String getWhatInside() { return whatInside; }
 
     @Override
-    public void updates()
+    public void updates(Parameter... parameters)
     {
         if (getHealth() <= 0)
             isOpen = true;

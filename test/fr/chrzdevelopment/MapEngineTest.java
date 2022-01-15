@@ -1,14 +1,13 @@
 package fr.chrzdevelopment;
 
 import fr.chrzdevelopment.game.MapsEngine;
+import fr.chrzdevelopment.game.TilesData;
 import org.junit.jupiter.api.Test;
 
-import static fr.chrzdevelopment.game.Const.EMPTY;
-import static fr.chrzdevelopment.game.Const.WALL;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 
-public class MapEngineTest
+public class MapEngineTest implements TilesData
 {
     @Test
     public final void generateMapTest()

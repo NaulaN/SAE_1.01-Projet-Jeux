@@ -1,5 +1,6 @@
 package fr.chrzdevelopment.game.entities;
 
+import java.lang.reflect.Parameter;
 import java.util.List;
 
 import static fr.chrzdevelopment.game.Const.KEY;
@@ -21,5 +22,11 @@ public class Key extends Entity
     public Key(List<Entity> group, int x, int y)
     {
         super(group, "key", x, y, 1);
+    }
+
+    @Override
+    public void updates(Parameter... parameters)
+    {
+
     }
 }

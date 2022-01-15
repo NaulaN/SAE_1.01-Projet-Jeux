@@ -2,8 +2,6 @@ package fr.chrzdevelopment.game;
 
 import java.util.Scanner;
 
-import static fr.chrzdevelopment.game.Const.*;
-
 
 /**
  * Gere tous les imputs qui sera entré dans le terminal grâce au clavier
@@ -11,7 +9,7 @@ import static fr.chrzdevelopment.game.Const.*;
  * @see fr.chrzdevelopment.game.Game
  * @author CHRZASZCZ Naulan
  */
-public class KeyboardInput
+public class KeyboardInput implements MapKeys
 {
     private final Scanner sc = new Scanner(System.in);
     private int offset = -1;

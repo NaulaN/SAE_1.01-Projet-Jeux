@@ -1,8 +1,9 @@
 package fr.chrzdevelopment.game.entities;
 
+import java.lang.reflect.Parameter;
 import java.util.List;
 
-import static fr.chrzdevelopment.game.Const.allDataObj;
+import static fr.chrzdevelopment.game.LoadGraphics.allDataObj;
 
 
 /**
@@ -15,7 +16,7 @@ import static fr.chrzdevelopment.game.Const.allDataObj;
  * @see fr.chrzdevelopment.game.entities.Laser
  * @author CHRZASZCZ Naulan
  */
-public class Entity
+public abstract class Entity
 {
     private final List<Entity> group;
 
@@ -51,7 +52,22 @@ public class Entity
         this.velocity = velocity;
     }
 
+    public Entity(List<Entity> group, String type, int x, int y)
+    {
+        this.group = group;
+        if (!type.equalsIgnoreCase("player"))
+            group.add(0, this);
+        else group.add(this);
+
+        dataImg = allDataObj.get(type.toLowerCase());
+
+        pos[0] = x;
+        pos[1] = y;
+    }
+
     protected List<Entity> getGroup() { return group; }
+
+    public abstract void updates(Parameter... parameters);
 
     public int getDataImg() { return dataImg; }
     public int getHealth() { return health; }
@@ -59,15 +75,12 @@ public class Entity
     public int getYPosition() { return pos[1]; }
     public int getXPreviousPosition() { return previousPos[0]; }
     public int getYPreviousPosition() { return previousPos[1]; }
-    public int[] getPosition() { return pos; }
     public boolean getCollideUp() { return collisions[0]; }
     public boolean getCollideDown() { return collisions[1]; }
     public boolean getCollideLeft() { return collisions[2]; }
     public boolean getCollideRight() { return collisions[3]; }
-    public boolean[] getWhereCollide() { return collisions; }
 
     public void setDataImg(int newDataImg) { dataImg = newDataImg; }
-    public void setVelocity(int newVelocity) { velocity = newVelocity; }
     public void setHealth(int newHealth) { health = newHealth; }
 
     public void setXPosition(int newXPosition)
@@ -123,6 +136,4 @@ public class Entity
     public void hit() {
         health--;
     }
-
-    public void updates() {}
 }

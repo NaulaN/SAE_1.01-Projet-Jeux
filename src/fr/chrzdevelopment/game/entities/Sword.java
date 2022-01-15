@@ -1,5 +1,6 @@
 package fr.chrzdevelopment.game.entities;
 
+import java.lang.reflect.Parameter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,5 +45,11 @@ public class Sword extends Entity
 
     public boolean getIsThrow() { return isThrow; }
     public Monster getMonsterAtTrack() { return monsterAtTrack; }
+
+    @Override
+    public void updates(Parameter... parameters)
+    {
+
+    }
 }
 

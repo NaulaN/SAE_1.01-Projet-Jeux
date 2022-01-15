@@ -12,7 +12,6 @@ import fr.chrzdevelopment.game.KeyboardInput;
 public class KeyboardInputThread extends Thread
 {
     private final KeyboardInput keyboardInput;
-    private final Game game;
 
     private volatile boolean running = true;
 
@@ -21,11 +20,10 @@ public class KeyboardInputThread extends Thread
      * @param game La classe principale (Main) du jeu
      * @param keyboardInput La classe qui gère les inputs dans le terminal
      */
-    public KeyboardInputThread(Game game, KeyboardInput keyboardInput)
+    public KeyboardInputThread(KeyboardInput keyboardInput)
     {
         super();
         this.keyboardInput = keyboardInput;
-        this.game = game;
     }
 
     public void terminate()

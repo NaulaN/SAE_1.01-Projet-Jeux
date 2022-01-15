@@ -2,6 +2,7 @@ package fr.chrzdevelopment.entities;
 
 import fr.chrzdevelopment.game.MapsEngine;
 import fr.chrzdevelopment.game.Sound;
+import fr.chrzdevelopment.game.TilesData;
 import fr.chrzdevelopment.game.entities.Entity;
 import fr.chrzdevelopment.game.entities.Laser;
 import fr.chrzdevelopment.game.entities.Monster;
@@ -12,21 +13,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import static fr.chrzdevelopment.game.Const.*;
+import static fr.chrzdevelopment.game.LoadGraphics.allDataObjImg;
+import static fr.chrzdevelopment.game.LoadGraphics.initGraphics;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
-public class PlayerTest
+public class PlayerTest implements TilesData
 {
     @Test
     public final void checkCollisionTest()
     {
         final String OS = System.getProperty("os.name");
         // Load graphics
-        if (OS.equalsIgnoreCase("windows") || OS.equalsIgnoreCase("windows 10"))
-            windowsGraphics();
-        else linuxGraphics();
+        initGraphics(OS);
 
 
         List<Entity> allSprites = new ArrayList<>();
@@ -48,7 +48,7 @@ public class PlayerTest
         mapsEngine.setElementMap(player.getXPosition(), player.getYPosition(), PLAYER, true);
         player.checkCollision(mapsEngine.getCalqueCollide());
 
-        mapsEngine.draw();
+        mapsEngine.draw(allDataObjImg);
 
         // Check où il entre en collision
         assertTrue(player.getCollideUp());
@@ -62,7 +62,7 @@ public class PlayerTest
         mapsEngine.setElementMap(1, 1, EMPTY, false);
         player.checkCollision(mapsEngine.getCalqueCollide());
 
-        mapsEngine.draw();
+        mapsEngine.draw(allDataObjImg);
 
         assertTrue(player.getCollideUp());
         assertFalse(player.getCollideLeft());
@@ -76,7 +76,7 @@ public class PlayerTest
         mapsEngine.setElementMap(3, 1, EMPTY, false);
         player.checkCollision(mapsEngine.getCalqueCollide());
 
-        mapsEngine.draw();
+        mapsEngine.draw(allDataObjImg);
 
         assertFalse(player.getCollideUp());
         assertTrue(player.getCollideLeft());
@@ -89,10 +89,7 @@ public class PlayerTest
     {
         final String OS = System.getProperty("os.name");
         // Load graphics
-        if (OS.equalsIgnoreCase("windows") || OS.equalsIgnoreCase("windows 10"))
-            windowsGraphics();
-        else linuxGraphics();
-
+        initGraphics(OS);
 
         List<Entity> allSprites = new CopyOnWriteArrayList<>();
 
@@ -112,7 +109,7 @@ public class PlayerTest
                 Thread.currentThread().sleep(100);
             } catch (InterruptedException e) { e.printStackTrace(); }
 
-            mapsEngine.draw();
+            mapsEngine.draw(allDataObjImg);
 
             for (Entity sprite : allSprites)
             {

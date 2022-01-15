@@ -1,10 +1,8 @@
 package fr.chrzdevelopment.game;
 
 import fr.chrzdevelopment.game.entities.*;
-
 import java.util.List;
-
-import static fr.chrzdevelopment.game.Const.*;
+import java.util.Map;
 
 
 /**
@@ -28,8 +26,11 @@ import static fr.chrzdevelopment.game.Const.*;
 
  * @author CHRZASZCZ Naulan
  */
-public class MapsEngine
+public class MapsEngine implements TilesData
 {
+    public static final String[] LOOTS = {"coin", "nothing", "health"};
+
+
     private boolean[][] calqueCollide;
     private int[][] map;
     // Map size
@@ -227,7 +228,6 @@ public class MapsEngine
 
     /**
      * Genere une map selon la taille contenue dans "width" et "height"
-     * @see fr.chrzdevelopment.game.Const
      */
     public void generateMap()
     {
@@ -246,7 +246,6 @@ public class MapsEngine
      * <p>Determine premièrement combien d'obstacle il pourrait y avoir.</p>
      * <p>Génère un obstacle dans une table propre a lui (La taille de l'obstacle est determiner aléatoirement)</p>
      * <p>Trouve un endroit ou il pourrait placer l'obstacle</p>
-     * @see fr.chrzdevelopment.game.Const
      */
     public void generateObstacles()
     {
@@ -275,7 +274,7 @@ public class MapsEngine
         }
     }
 
-    public void draw()
+    public void draw(Map<Integer, String> allDataObjImg)
     {
         for (int[] row : map) {
             StringBuilder line = new StringBuilder();

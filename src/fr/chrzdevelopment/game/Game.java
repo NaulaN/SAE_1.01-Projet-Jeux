@@ -10,7 +10,7 @@ import java.io.*;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import static fr.chrzdevelopment.game.Const.*;
+import static fr.chrzdevelopment.game.LoadGraphics.*;
 
 
 /**
@@ -20,14 +20,15 @@ import static fr.chrzdevelopment.game.Const.*;
  * @see RefreshAndDisplayThread
  * @see fr.chrzdevelopment.game.MapsEngine
  * @see fr.chrzdevelopment.game.KeyboardInput
- * @see fr.chrzdevelopment.game.Const
  */
-public class Game
+public class Game implements TilesData, ANSIs
 {
+    public static final int TIME_INVULNERABILITY = 20;
+
+
     private final List<Entity> allSprites = new CopyOnWriteArrayList<>();
     private Player player;
 
-    // TODO:
     private JSONObject saveFile;
     private String playerName;
 
@@ -38,7 +39,7 @@ public class Game
     private final ProcessBuilder processBuilder;
 
     private final RefreshAndDisplayThread refreshAndDisplayThread = new RefreshAndDisplayThread(this);
-    private final KeyboardInputThread keyboardInputThread = new KeyboardInputThread(this, keyboardInput);
+    private final KeyboardInputThread keyboardInputThread = new KeyboardInputThread(keyboardInput);
 
     private int timerInvulnerability = 0;
 
@@ -76,13 +77,6 @@ public class Game
         refreshAndDisplayThread.start();
         keyboardInputThread.setPriority(Thread.MAX_PRIORITY);  // Au cas où :eyes:
         keyboardInputThread.start();
-    }
-
-    private void initGraphics(String OS)
-    {
-        if (OS.equalsIgnoreCase("windows") || OS.equalsIgnoreCase("windows 10"))
-            windowsGraphics();
-        else linuxGraphics();
     }
 
     private void clearConsole()
@@ -183,7 +177,7 @@ public class Game
             // Information relative au nombre de piece nécessaire pour gagner le niveau
             System.out.println("\t" + ANSI_RED + "NIVEAU: " + mapsEngine.getMapLvl() + ANSI_RESET);
             System.out.println(ANSI_GREEN + playerName + " ! Vous devez avoir " + mapsEngine.getDeterminateCoins() + " " + COIN_IMG + ANSI_GREEN + " pour pouvoir gagner le niveau" + ANSI_RESET);
-            mapsEngine.draw();
+            mapsEngine.draw(allDataObjImg);
 
             // Affiche les pieces du joueur obtenu et son nombre de point de vie total (Nombre de <3)
             StringBuilder msgHud = new StringBuilder().append(COIN_IMG).append(": ").append(player.getCoins()).append("   ");
