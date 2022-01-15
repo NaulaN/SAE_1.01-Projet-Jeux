@@ -9,9 +9,11 @@ import fr.chrzdevelopment.game.Game;
  */
 public class RefreshAndDisplayThread extends Thread
 {
+    private int timeout = 150;
+
     private final Game game;
 
-    private volatile boolean running = true;
+    private boolean running = true;
 
 
     /** @param game La classe principale (Main) du jeu */
@@ -33,7 +35,7 @@ public class RefreshAndDisplayThread extends Thread
         synchronized (this) {
             while (running && !this.isInterrupted()) {
                 try {
-                    this.wait(150);
+                    this.wait(timeout);
                 } catch (InterruptedException ignored) { return; }
 
                 game.updates();
@@ -41,4 +43,6 @@ public class RefreshAndDisplayThread extends Thread
             }
         }
     }
+
+    public void setThreadTimeout(int newTimeout) { timeout = newTimeout; }
 }

@@ -16,6 +16,10 @@ public class Launcher
     public static void main(String[] args)
     {
         Game game = new Game();
+        game.setThreadTimout(100);
+        game.setWidthDefaultMap(40);
+        game.setHeightDefaultMap(15);
+
         game.loop();
     }
 }

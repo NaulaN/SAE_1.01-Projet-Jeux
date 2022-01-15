@@ -1,6 +1,5 @@
 package fr.chrzdevelopment.game.threads;
 
-import fr.chrzdevelopment.game.Game;
 import fr.chrzdevelopment.game.KeyboardInput;
 
 
@@ -11,9 +10,11 @@ import fr.chrzdevelopment.game.KeyboardInput;
  */
 public class KeyboardInputThread extends Thread
 {
+    private int timeout = 150;
+
     private final KeyboardInput keyboardInput;
 
-    private volatile boolean running = true;
+    private boolean running = true;
 
 
     /**
@@ -25,6 +26,8 @@ public class KeyboardInputThread extends Thread
         super();
         this.keyboardInput = keyboardInput;
     }
+
+    public void setThreadTimout(int newThreadTimout) { timeout = newThreadTimout; }
 
     public void terminate()
     {
@@ -38,7 +41,7 @@ public class KeyboardInputThread extends Thread
         synchronized (this) {
             while (running && !this.isInterrupted()) {
                 try {
-                    this.wait(150);
+                    this.wait(timeout);
                 } catch (InterruptedException ignored) { return; }
 
                 keyboardInput.input();

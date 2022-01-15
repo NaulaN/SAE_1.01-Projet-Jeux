@@ -23,22 +23,26 @@ public class Sword extends Entity
      */
     public void launch()
     {
+        boolean i = true;
         if (!isThrow) {
-            Map<Integer, Monster> diffBetweenLoc = new HashMap<>();
-            for (Entity sprite : getGroup())
-                if (sprite instanceof Monster)
-                    diffBetweenLoc.put((sprite.getXPosition()+sprite.getYPosition())-(getXPosition()+getYPosition()), (Monster) sprite);
+            int minHypo = 0;
 
-            final Integer[] min = {null};
-            diffBetweenLoc.forEach((integer, monster) -> {
-                if (min[0] == null)
-                    min[0] = integer;
+            for (Entity sprite : getGroup()){
+                if (sprite instanceof Monster) {
+                    int coteAdjacent = sprite.getYPosition()-this.getXPosition();
+                    int coteOppose = sprite.getYPosition()-this.getYPosition();
 
-                if (min[0] >= integer)
-                    min[0] = integer;
-            });
+                    int hypotenuse = (int) Math.sqrt(Math.pow(coteAdjacent, 2) + Math.pow(coteOppose, 2));
+                    // Tres moche, mais pas le choix
+                    if (i) { minHypo = hypotenuse; i = false; }
 
-            monsterAtTrack = diffBetweenLoc.get(min[0]);
+                    if (hypotenuse < minHypo) {
+                        minHypo = hypotenuse;
+                        monsterAtTrack = (Monster) sprite;
+                    }
+                }
+            }
+
             isThrow = true;
         }
     }
@@ -47,9 +51,6 @@ public class Sword extends Entity
     public Monster getMonsterAtTrack() { return monsterAtTrack; }
 
     @Override
-    public void updates(Parameter... parameters)
-    {
-
-    }
+    public void updates(Parameter... parameters) { }
 }
 

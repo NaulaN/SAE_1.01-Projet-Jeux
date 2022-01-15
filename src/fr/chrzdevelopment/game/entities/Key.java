@@ -19,7 +19,7 @@ public class Key extends Entity
      */
     public Key(List<Entity> group, int x, int y)
     {
-        super(group, "key", x, y, 1);
+        super(group, "key", x, y);
     }
 
     @Override

@@ -143,13 +143,14 @@ public class MapsEngine implements TilesData
                     x = (int) (loc[0] + (rayon * Math.cos(t)));
                     y = (int) (loc[1] + (rayon * Math.sin(t)));
 
-                    if (x < map[0].length && x > 0)
-                        if (y < map.length && y > 0)
-                            new Coin(allSprites, x, y);
+                    if (x < map[0].length-1 && x > 0)
+                        if (y < map.length-1 && y > 0)
+                            if (map[y][x] != WALL && map[y][x] != MONSTER && map[y][x] != CHEST && map[y][x] != SWORD) {
+                                new Coin(allSprites, x, y);
+                                determinateCoins++;
+                            }
                         else break;
                     else break;
-
-                    determinateCoins++;
                 }
                 generateCircleCoins = true;
             } else {

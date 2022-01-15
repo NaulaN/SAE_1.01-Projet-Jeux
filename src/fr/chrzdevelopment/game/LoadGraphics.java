@@ -26,7 +26,6 @@ public class LoadGraphics implements ANSIs, TilesData
 
     public static void initGraphics(String OS)
     {
-        System.out.println(OS);
         if (OS.equalsIgnoreCase("windows") || OS.equalsIgnoreCase("windows 10")) {
             EMPTY_IMG = " " + ANSI_RESET;
             WALL_IMG = "\u2588" + ANSI_RESET;

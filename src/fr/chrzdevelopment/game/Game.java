@@ -63,14 +63,14 @@ public class Game implements TilesData, ANSIs
 
         // Crée la taille de la carte
         mapsEngine = new MapsEngine(30, 20);
-
-        // La generation.
-        mapsEngine.generateMap();
-        spawnEntity();
     }
 
     public void loop()
     {
+        // La generation.
+        mapsEngine.generateMap();
+        spawnEntity();
+
         titleScreen();
 
         // Game loops
@@ -78,6 +78,15 @@ public class Game implements TilesData, ANSIs
         keyboardInputThread.setPriority(Thread.MAX_PRIORITY);  // Au cas où :eyes:
         keyboardInputThread.start();
     }
+
+    public void setThreadTimout(int newThreadTimeout)
+    {
+        refreshAndDisplayThread.setThreadTimeout(newThreadTimeout);
+        keyboardInputThread.setThreadTimout(newThreadTimeout);
+    }
+
+    public void setHeightDefaultMap(int newHeight) { mapsEngine.setHeight(newHeight); }
+    public void setWidthDefaultMap(int newWidth) { mapsEngine.setWidth(newWidth); }
 
     private void clearConsole()
     {
@@ -109,6 +118,33 @@ public class Game implements TilesData, ANSIs
         mapsEngine.spawnKey(allSprites);
         mapsEngine.spawnSword(allSprites);
         player = mapsEngine.spawnPlayer(allSprites);
+    }
+
+    public synchronized void draws()
+    {
+        clearConsole();
+
+        // Quand le joueur na plus de vie, un ecran de Game Over s'affiche et interrompt la boucle et les Threads en fonctionnement
+        if (player.getHealth() <= 0) {
+            gameOverScreen();
+
+            refreshAndDisplayThread.terminate();
+            keyboardInputThread.terminate();
+        } else {
+            // Information relative au nombre de piece nécessaire pour gagner le niveau
+            System.out.println("\t" + ANSI_RED + "NIVEAU: " + mapsEngine.getMapLvl() + ANSI_RESET);
+            System.out.println(ANSI_GREEN + playerName + " ! Vous devez avoir " + mapsEngine.getDeterminateCoins() + " " + COIN_IMG + ANSI_GREEN + " pour pouvoir gagner le niveau" + ANSI_RESET);
+            mapsEngine.draw(allDataObjImg);
+
+            // Affiche les pieces du joueur obtenu et son nombre de point de vie total (Nombre de <3)
+            StringBuilder msgHud = new StringBuilder().append(COIN_IMG).append(": ").append(player.getCoins()).append("   ");
+            for (int h = 1; h <= player.getHealth(); h++)
+                msgHud.append(HEART_IMG).append(" ");
+            msgHud.append("   ").append(KEY_IMG).append(": ").append((player.getHaveAKey()) ? "oui" : "non").append("   ");
+            msgHud.append(SWORD_IMG).append(": ").append((player.getHaveSword()) ? "oui" : "non");
+            System.out.print("\t" + msgHud);
+            System.out.println();
+        }
     }
 
     private void titleScreen()
@@ -163,33 +199,6 @@ public class Game implements TilesData, ANSIs
         SaveFile.write(saveFile, "res/");
     }
 
-    public synchronized void draws()
-    {
-        clearConsole();
-
-        // Quand le joueur na plus de vie, un ecran de Game Over s'affiche et interrompt la boucle et les Threads en fonctionnement
-        if (player.getHealth() <= 0) {
-            gameOverScreen();
-
-            refreshAndDisplayThread.terminate();
-            keyboardInputThread.terminate();
-        } else {
-            // Information relative au nombre de piece nécessaire pour gagner le niveau
-            System.out.println("\t" + ANSI_RED + "NIVEAU: " + mapsEngine.getMapLvl() + ANSI_RESET);
-            System.out.println(ANSI_GREEN + playerName + " ! Vous devez avoir " + mapsEngine.getDeterminateCoins() + " " + COIN_IMG + ANSI_GREEN + " pour pouvoir gagner le niveau" + ANSI_RESET);
-            mapsEngine.draw(allDataObjImg);
-
-            // Affiche les pieces du joueur obtenu et son nombre de point de vie total (Nombre de <3)
-            StringBuilder msgHud = new StringBuilder().append(COIN_IMG).append(": ").append(player.getCoins()).append("   ");
-            for (int h = 1; h <= player.getHealth(); h++)
-                msgHud.append(HEART_IMG).append(" ");
-            msgHud.append("   ").append(KEY_IMG).append(": ").append((player.getHaveAKey()) ? "oui" : "non").append("   ");
-            msgHud.append(SWORD_IMG).append(": ").append((player.getHaveSword()) ? "oui" : "non");
-            System.out.print("\t" + msgHud);
-            System.out.println();
-        }
-    }
-
     public synchronized void updates()
     {
         // Quit le jeu
@@ -197,8 +206,7 @@ public class Game implements TilesData, ANSIs
             SaveFile.write(saveFile, "res/");
             refreshAndDisplayThread.terminate();
             keyboardInputThread.terminate();
-        }
-        else {             // les déplacements du joueur
+        } else {             // les déplacements du joueur
             if (!player.getCollideUp() && keyboardInput.getMoveUp())
                 player.moveUp();
             if (!player.getCollideDown() && keyboardInput.getMoveDown())
@@ -379,7 +387,8 @@ public class Game implements TilesData, ANSIs
                             sword.moveRight();
                         if (sword.getXPosition() > sword.getMonsterAtTrack().getXPosition() || sword.getXPosition() == sword.getMonsterAtTrack().getXPosition())
                             sword.moveLeft();
-                    } else if (sword.getYPosition() == sword.getMonsterAtTrack().getYPosition() && sword.getXPosition() == sword.getMonsterAtTrack().getXPosition()) {
+                    } else if ((sword.getYPosition() == sword.getMonsterAtTrack().getYPosition() || sword.getYPosition()+1 == sword.getMonsterAtTrack().getYPosition() || sword.getYPosition()-1 == sword.getMonsterAtTrack().getYPosition())
+                            && (sword.getXPosition() == sword.getMonsterAtTrack().getXPosition() || sword.getXPosition()+1 == sword.getMonsterAtTrack().getXPosition() || sword.getXPosition()-1 == sword.getMonsterAtTrack().getXPosition())) {
                         mapsEngine.setElementMap(sword.getXPosition(), sword.getYPosition(), EMPTY, false);
                         mapsEngine.setElementMap(sword.getMonsterAtTrack().getXPosition(), sword.getMonsterAtTrack().getYPosition(), EMPTY, false);
 

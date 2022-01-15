@@ -19,7 +19,7 @@ public class Coin extends Entity
      */
     public Coin(List<Entity> group, int x, int y)
     {
-        super(group, "Coin", x, y, 1);
+        super(group, "Coin", x, y);
     }
 
     @Override
