@@ -3,8 +3,6 @@ package fr.chrzdevelopment.game.entities;
 import java.lang.reflect.Parameter;
 import java.util.List;
 
-import static fr.chrzdevelopment.game.Const.KEY;
-
 
 /**
  * @see fr.chrzdevelopment.game.entities.Entity
@@ -25,8 +23,5 @@ public class Key extends Entity
     }
 
     @Override
-    public void updates(Parameter... parameters)
-    {
-
-    }
+    public void updates(Parameter... parameters) { }
 }

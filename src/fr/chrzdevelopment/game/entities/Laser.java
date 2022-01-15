@@ -3,8 +3,8 @@ package fr.chrzdevelopment.game.entities;
 import java.lang.reflect.Parameter;
 import java.util.List;
 
-import static fr.chrzdevelopment.game.Const.LASER_HORIZONTAL;
-import static fr.chrzdevelopment.game.Const.LASER_VERTICAL;
+import static fr.chrzdevelopment.game.TilesData.LASER_HORIZONTAL;
+import static fr.chrzdevelopment.game.TilesData.LASER_VERTICAL;
 
 
 /**
@@ -33,8 +33,5 @@ public class Laser extends Entity
     public int getDirection() { return direction; }
 
     @Override
-    public void updates(Parameter... parameters)
-    {
-
-    }
+    public void updates(Parameter... parameters) { }
 }

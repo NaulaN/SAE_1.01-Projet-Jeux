@@ -7,7 +7,6 @@ import static fr.chrzdevelopment.game.LoadGraphics.allDataObj;
 
 
 /**
- * @see fr.chrzdevelopment.game.Const
  * @see fr.chrzdevelopment.game.entities.Chest
  * @see fr.chrzdevelopment.game.entities.Coin
  * @see fr.chrzdevelopment.game.entities.Monster
@@ -41,7 +40,7 @@ public abstract class Entity
     public Entity(List<Entity> group, String type, int x, int y, int velocity)
     {
         this.group = group;
-        if (!type.equalsIgnoreCase("player"))
+        if (type.equalsIgnoreCase("player"))
             group.add(0, this);
         else group.add(this);
 

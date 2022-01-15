@@ -103,12 +103,12 @@ public class Game implements TilesData, ANSIs
     private void spawnEntity()
     {
         allSprites.clear();
-        player = mapsEngine.spawnPlayer(allSprites);
         mapsEngine.spawnMonster(allSprites);
         mapsEngine.spawnCoin(allSprites);
         mapsEngine.spawnChest(allSprites);
         mapsEngine.spawnKey(allSprites);
         mapsEngine.spawnSword(allSprites);
+        player = mapsEngine.spawnPlayer(allSprites);
     }
 
     private void titleScreen()
@@ -370,31 +370,21 @@ public class Game implements TilesData, ANSIs
             if (sprite instanceof Sword) {
                 Sword sword = (Sword) sprite;
                 if (sword.getIsThrow()) {
-                    boolean yMovement = sword.getMonsterAtTrack().getYPosition() > sword.getYPosition();
-                    boolean xMovement = sword.getMonsterAtTrack().getXPosition() > sword.getXPosition();
-
                     if (sword.getYPosition() != sword.getMonsterAtTrack().getYPosition() && sword.getXPosition() != sword.getMonsterAtTrack().getXPosition()) {
-                            if (yMovement)
-                                sword.moveDown();
-                            else sword.moveUp();
-
-                            if (xMovement)
-                                sword.moveRight();
-                            else sword.moveLeft();
+                        if (sword.getYPosition() < sword.getMonsterAtTrack().getYPosition() || sword.getYPosition() == sword.getMonsterAtTrack().getYPosition())
+                            sword.moveDown();
+                        if (sword.getYPosition() > sword.getMonsterAtTrack().getYPosition() || sword.getYPosition() == sword.getMonsterAtTrack().getYPosition())
+                            sword.moveUp();
+                        if (sword.getXPosition() < sword.getMonsterAtTrack().getXPosition() || sword.getXPosition() == sword.getMonsterAtTrack().getXPosition())
+                            sword.moveRight();
+                        if (sword.getXPosition() > sword.getMonsterAtTrack().getXPosition() || sword.getXPosition() == sword.getMonsterAtTrack().getXPosition())
+                            sword.moveLeft();
                     } else if (sword.getYPosition() == sword.getMonsterAtTrack().getYPosition() && sword.getXPosition() == sword.getMonsterAtTrack().getXPosition()) {
                         mapsEngine.setElementMap(sword.getXPosition(), sword.getYPosition(), EMPTY, false);
                         mapsEngine.setElementMap(sword.getMonsterAtTrack().getXPosition(), sword.getMonsterAtTrack().getYPosition(), EMPTY, false);
 
                         allSprites.remove(sword.getMonsterAtTrack());
                         allSprites.remove(sword);
-                    } else if (sword.getYPosition() == sword.getMonsterAtTrack().getYPosition() && sword.getXPosition() != sword.getMonsterAtTrack().getXPosition()) {
-                        if (yMovement)
-                            sword.moveDown();
-                        else sword.moveUp();
-                    } else if (sword.getYPosition() != sword.getMonsterAtTrack().getYPosition() && sword.getXPosition() == sword.getMonsterAtTrack().getXPosition()) {
-                        if (xMovement)
-                            sword.moveRight();
-                        else sword.moveLeft();
                     }
                 }
             }

@@ -4,6 +4,8 @@ import fr.chrzdevelopment.game.entities.*;
 import java.util.List;
 import java.util.Map;
 
+import static java.lang.Math.PI;
+
 
 /**
  * <h1 style="font-size: 115%;">Le générateur de cartes</h1>
@@ -120,15 +122,39 @@ public class MapsEngine implements TilesData
      */
     public void spawnCoin(List<Entity> allSprites)
     {
-        determinateCoins = (int) (1+Math.random()*11);
+        determinateCoins = (int) (1+Math.random()*10);
+        int initDeterminateCoins = determinateCoins;
 
+        boolean generateCircleCoins = false;
         int x; int y; int[] loc;
-        // TODO: Faire un truc plus complet avec des formes et des chemins de piece
-        for (int c = 0; c < determinateCoins; c++) {
+        for (int c = 0; c < initDeterminateCoins; c++) {
             loc = findALocation();
             x = loc[0]; y = loc[1];
 
-            new Coin(allSprites, x, y);
+            // Genère pour une seule piece, un rond
+            if (!generateCircleCoins) {
+                int rayon = 3;
+                // C = 2*pi*rayon
+                int circonference = (int) (2*PI*rayon);
+
+                for (int t = 1; t < circonference; t++) {
+                    /* x(temps) = r * cos(temps + angleDeDépart)
+                       y(temps) = r * sin(temps + angleDeDépart) */
+                    x = (int) (loc[0] + (rayon * Math.cos(t)));
+                    y = (int) (loc[1] + (rayon * Math.sin(t)));
+
+                    if (x < map[0].length && x > 0)
+                        if (y < map.length && y > 0)
+                            new Coin(allSprites, x, y);
+                        else break;
+                    else break;
+
+                    determinateCoins++;
+                }
+                generateCircleCoins = true;
+            } else {
+                new Coin(allSprites, x, y);
+            }
         }
     }
 
@@ -136,7 +162,6 @@ public class MapsEngine implements TilesData
      * Génère les coffres et determine (Si un coffre a une piece ou non) les pieces à avoir de facon definitive pour gagner le niveau
      * Les loots du coffre est determine de facon aléatoire
      * @param allSprites Permet de ranger et de faire fonctionner les entités générer
-     * @see fr.chrzdevelopment.game.Const
      */
     public void spawnChest(List<Entity> allSprites)
     {
@@ -190,7 +215,6 @@ public class MapsEngine implements TilesData
      * Si, il ne sait pas déplacé... Il ne clear pas la dernier frame.
      * Sinon, il clear la frame si, il ce deplace.
      * @param entity Un Sprite (ou une entité) qui doit avoir un clear de la frame precedent.
-     * @see fr.chrzdevelopment.game.Const
      */
     public void updateEntity(Entity entity, boolean collide)
     {

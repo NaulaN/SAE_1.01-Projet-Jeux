@@ -26,23 +26,8 @@ public class LoadGraphics implements ANSIs, TilesData
 
     public static void initGraphics(String OS)
     {
+        System.out.println(OS);
         if (OS.equalsIgnoreCase("windows") || OS.equalsIgnoreCase("windows 10")) {
-            EMPTY_IMG = "  ";
-            WALL_IMG = "\uD83E\uDDF1";
-            MONSTER_IMG = "\uD83D\uDC7E";
-            PLAYER_IMG = "\uD83E\uDD20";
-            CHEST_IMG = "\uD83E\uDDF0";
-            CHEST_OPEN_IMG = "\uD83E\uDDF0";
-            COIN_IMG = "\uD83D\uDCB0";
-            HEART_IMG = "\u2764\uFE0F";
-            RECT_RED_IMG = "\uD83D\uDFE5";
-            KEY_IMG = "\uD83D\uDD11";
-            SWORD_IMG = "\uD83E\uDE93";
-            LASER_VERTICAL_IMG = "\u26A1";
-            LASER_HORIZONTAL_IMG = "\u26A1";
-
-            initGraphics();
-        } else {
             EMPTY_IMG = " " + ANSI_RESET;
             WALL_IMG = "\u2588" + ANSI_RESET;
             MONSTER_IMG = ANSI_RED + "\u25A0" + ANSI_RESET;
@@ -56,6 +41,22 @@ public class LoadGraphics implements ANSIs, TilesData
             KEY_IMG = ANSI_YELLOW + "*" + ANSI_RESET;
             LASER_VERTICAL_IMG = ANSI_BLUE + "\u25A0" + ANSI_RESET;
             LASER_HORIZONTAL_IMG = ANSI_BLUE +  "\u25A0" + ANSI_RESET;
+
+            initGraphics();
+        } else {
+            EMPTY_IMG = "  ";
+            WALL_IMG = "\uD83E\uDDF1";
+            MONSTER_IMG = "\uD83D\uDC7E";
+            PLAYER_IMG = "\uD83E\uDD20";
+            CHEST_IMG = "\uD83E\uDDF0";
+            CHEST_OPEN_IMG = "\uD83E\uDDF0";
+            COIN_IMG = "\uD83D\uDCB0";
+            HEART_IMG = "\u2764\uFE0F";
+            RECT_RED_IMG = "\uD83D\uDFE5";
+            KEY_IMG = "\uD83D\uDD11";
+            SWORD_IMG = "\uD83E\uDE93";
+            LASER_VERTICAL_IMG = "\u26A1";
+            LASER_HORIZONTAL_IMG = "\u26A1";
 
             initGraphics();
         }
