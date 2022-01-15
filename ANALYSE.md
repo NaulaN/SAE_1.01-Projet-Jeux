@@ -1,7 +1,7 @@
-#Document d'analyse.
-
-##Presentation du jeux.
+# Document d'analyse.
+## Presentation du jeux.
 _Extrait du [README.md](https://github.com/NaulaN/SAE_1.01-Projet-Jeux#readme)_
+
 * Le jeu est un jeu de type aventure dans une sorte de donjon où il y va avoir des monstres qui vont vous embêter lors
   de collectes de nombreuses pièces qui seront sur votre chemin ou dans les coffres qui sera généré aléatoirement sur la carte.
 * Ce jeu possède beaucoup de RNG (Aléatoire) comme la génération supplémentaire des obstacles, le spawn du joueur et des
