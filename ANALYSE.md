@@ -188,3 +188,55 @@ if (player.getYPosition() == getYPosition() || player.getXPosition() == getXPosi
 * Avantage ? `Tire enemie plus intelligent.`,
 * Inconvénients ? `Légerement moins lisible au niveau des conditions`
 
+### Generation des pieces
+````java
+determinateCoins = (int) (1+Math.random()*10);
+int initDeterminateCoins = determinateCoins;
+
+boolean generateCircleCoins = false;
+int x; int y; int[] loc;
+for (int c = 0; c < initDeterminateCoins; c++) {
+    loc = findALocation();
+    /*  private int[] findALocation()
+        {
+            int[] loc = new int[2];
+            do {
+                loc[0] = (int) (1+Math.random()*map[0].length-1);
+                loc[1] = (int) (1+Math.random()*map.length-1);
+            } while (map[loc[1]][loc[0]] == WALL || map[loc[1]][loc[0]] == MONSTER || map[loc[1]][loc[0]] == CHEST || map[loc[1]][loc[0]] == COIN || map[loc[1]][loc[0]] == SWORD);
+    
+            return loc;
+        } */
+        
+    x = loc[0]; y = loc[1];
+
+    // Genère pour une seule piece, un rond
+    if (!generateCircleCoins) {
+        int rayon = 3;
+        // C = 2*pi*rayon
+        int circonference = (int) (2*PI*rayon);
+
+        for (int t = 1; t < circonference; t++) {
+            /* x(temps) = r * cos(temps + angleDeDépart)
+               y(temps) = r * sin(temps + angleDeDépart) */
+            x = (int) (loc[0] + (rayon * Math.cos(t)));
+            y = (int) (loc[1] + (rayon * Math.sin(t)));
+
+            if (x < map[0].length-1 && x > 0)
+                if (y < map.length-1 && y > 0)
+                    if (map[y][x] != WALL && map[y][x] != MONSTER && map[y][x] != CHEST && map[y][x] != SWORD) {
+                        new Coin(allSprites, x, y);
+                        determinateCoins++;
+                    }
+                else break;
+            else break;
+        }
+        generateCircleCoins = true;
+    } else {
+        new Coin(allSprites, x, y);
+    }
+}
+````
+> Cette algo genere des pieces a des endroits different.
+> Genere les pieces une seul fois en forme de rond.
+
