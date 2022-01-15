@@ -100,7 +100,7 @@ if (!isThrow) {
 
             int hypotenuse = (int) Math.sqrt(Math.pow(coteAdjacent, 2) + Math.pow(coteOppose, 2));
             // Tres moche, mais pas le choix
-            if (i) { minHypo = hypotenuse; i = false; }
+            if (i) { minHypo = hypotenuse; monsterAtTrack = (Monster) sprite; i = false; }
 
             if (hypotenuse < minHypo) {
                 minHypo = hypotenuse;
