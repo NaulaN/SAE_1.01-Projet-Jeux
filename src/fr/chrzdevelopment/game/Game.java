@@ -238,8 +238,10 @@ public class Game implements TilesData, ANSIs
                 saveFile.put("maxLvl", mapsEngine.getMapLvl());
         }
 
-        for (Entity sprite : allSprites)
+        int sizeAllSprites = allSprites.size();
+        for (int i = 0; i < sizeAllSprites; i++)
         {
+            Entity sprite = allSprites.get(i);
             // Actualise l'affichage sur l'écran et supprime la dernière frame.
             sprite.checkCollision(mapsEngine.getCalqueCollide());
             boolean collide = sprite.getDataImg() != COIN && sprite.getDataImg() != KEY && sprite.getDataImg() != LASER_VERTICAL && sprite.getDataImg() != LASER_HORIZONTAL && sprite.getDataImg() != SWORD;
@@ -467,6 +469,7 @@ public class Game implements TilesData, ANSIs
 
             // Refresh les sprites (Entités)
             sprite.updates();
+            sizeAllSprites = allSprites.size();
         }
     }
 }
